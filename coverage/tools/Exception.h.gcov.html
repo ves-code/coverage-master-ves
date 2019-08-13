@@ -1,0 +1,418 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+<meta name="robots" content="noindex">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - plumed test coverage - tools/Exception.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">tools</a> - Exception.h<span style="font-size: 80%;"> (source / <a href="Exception.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">plumed test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryMed">77.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-08-13 10:15:31</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">133</td>
+            <td class="headerCovTableEntryLo">6.8 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (c) 2012-2019 The plumed team</a>
+<a name="3"><span class="lineNum">       3 </span>            :    (see the PEOPLE file at the root of the distribution for a list of names)</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            :    See http://www.plumed.org for more information.</a>
+<a name="6"><span class="lineNum">       6 </span>            : </a>
+<a name="7"><span class="lineNum">       7 </span>            :    This file is part of plumed, version 2.</a>
+<a name="8"><span class="lineNum">       8 </span>            : </a>
+<a name="9"><span class="lineNum">       9 </span>            :    plumed is free software: you can redistribute it and/or modify</a>
+<a name="10"><span class="lineNum">      10 </span>            :    it under the terms of the GNU Lesser General Public License as published by</a>
+<a name="11"><span class="lineNum">      11 </span>            :    the Free Software Foundation, either version 3 of the License, or</a>
+<a name="12"><span class="lineNum">      12 </span>            :    (at your option) any later version.</a>
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<a name="14"><span class="lineNum">      14 </span>            :    plumed is distributed in the hope that it will be useful,</a>
+<a name="15"><span class="lineNum">      15 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="16"><span class="lineNum">      16 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="17"><span class="lineNum">      17 </span>            :    GNU Lesser General Public License for more details.</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span>            :    You should have received a copy of the GNU Lesser General Public License</a>
+<a name="20"><span class="lineNum">      20 </span>            :    along with plumed.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="21"><span class="lineNum">      21 </span>            : +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */</a>
+<a name="22"><span class="lineNum">      22 </span>            : #ifndef __PLUMED_tools_Exception_h</a>
+<a name="23"><span class="lineNum">      23 </span>            : #define __PLUMED_tools_Exception_h</a>
+<a name="24"><span class="lineNum">      24 </span>            : </a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &lt;string&gt;</a>
+<a name="26"><span class="lineNum">      26 </span>            : #include &lt;stdexcept&gt;</a>
+<a name="27"><span class="lineNum">      27 </span>            : #include &lt;sstream&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>            : </a>
+<a name="29"><span class="lineNum">      29 </span>            : namespace PLMD {</a>
+<a name="30"><span class="lineNum">      30 </span>            : </a>
+<a name="31"><span class="lineNum">      31 </span>            : /**</a>
+<a name="32"><span class="lineNum">      32 </span>            : \ingroup TOOLBOX</a>
+<a name="33"><span class="lineNum">      33 </span>            : Class to deal with Plumed runtime errors.</a>
+<a name="34"><span class="lineNum">      34 </span>            : </a>
+<a name="35"><span class="lineNum">      35 </span>            : This class and the related macros can be used to detect programming</a>
+<a name="36"><span class="lineNum">      36 </span>            : errors. Typical cases are internal inconsistencies or errors in the plumed&lt;-&gt;MD</a>
+<a name="37"><span class="lineNum">      37 </span>            : interface. Mistakes made by final users (i.e. in the `plumed.dat` file)</a>
+<a name="38"><span class="lineNum">      38 </span>            : should probably be documented in some better way (e.g. printing parts of the manual in the output).</a>
+<a name="39"><span class="lineNum">      39 </span>            : However, also this class allows for significant information to be attached.</a>
+<a name="40"><span class="lineNum">      40 </span>            : Let's try to make error messages as informative as possible!</a>
+<a name="41"><span class="lineNum">      41 </span>            : </a>
+<a name="42"><span class="lineNum">      42 </span>            : \note This class has been rewritten in PLUMED 2.5. It works in a backward compatible manner,</a>
+<a name="43"><span class="lineNum">      43 </span>            : but is much more flexible. The main novelty is that we can use insertion operators to</a>
+<a name="44"><span class="lineNum">      44 </span>            : add arbitrary messages, as in `plumed_error()&lt;&lt;&quot;check this vector &quot;&lt;&lt;v;`</a>
+<a name="45"><span class="lineNum">      45 </span>            : See below for more details.</a>
+<a name="46"><span class="lineNum">      46 </span>            : </a>
+<a name="47"><span class="lineNum">      47 </span>            : To throw an error, just throw a c++ exception</a>
+<a name="48"><span class="lineNum">      48 </span>            : \verbatim</a>
+<a name="49"><span class="lineNum">      49 </span>            :   if(something_bad) throw Exception();</a>
+<a name="50"><span class="lineNum">      50 </span>            : \endverbatim</a>
+<a name="51"><span class="lineNum">      51 </span>            : or better add an error message to that</a>
+<a name="52"><span class="lineNum">      52 </span>            : \verbatim</a>
+<a name="53"><span class="lineNum">      53 </span>            :   if(something_bad) throw Exception(&quot;describe the error here&quot;);</a>
+<a name="54"><span class="lineNum">      54 </span>            : \endverbatim</a>
+<a name="55"><span class="lineNum">      55 </span>            : </a>
+<a name="56"><span class="lineNum">      56 </span>            : As of PLUMED 2.5 you can add multiple messages, they will just be concatenated,</a>
+<a name="57"><span class="lineNum">      57 </span>            : but to do se you should use the insertion operator. Notice that anything that</a>
+<a name="58"><span class="lineNum">      58 </span>            : can be formatted with an insertion operator can go to the exception, even a \ref Vector</a>
+<a name="59"><span class="lineNum">      59 </span>            : \verbatim</a>
+<a name="60"><span class="lineNum">      60 </span>            :   Vector v;</a>
+<a name="61"><span class="lineNum">      61 </span>            :   if(something_bad) throw Exception()&lt;&lt;&quot;problem with this &quot;&lt;&lt;v;</a>
+<a name="62"><span class="lineNum">      62 </span>            : \endverbatim</a>
+<a name="63"><span class="lineNum">      63 </span>            : In principle you can mix the two syntax (add a message as an argument and insert others with `&lt;&lt;`),</a>
+<a name="64"><span class="lineNum">      64 </span>            : however it is not very clear and should be avoided.</a>
+<a name="65"><span class="lineNum">      65 </span>            : We only allow using arguments in parenthesis in order to keep backward compatibility.</a>
+<a name="66"><span class="lineNum">      66 </span>            : </a>
+<a name="67"><span class="lineNum">      67 </span>            : \par Using macros</a>
+<a name="68"><span class="lineNum">      68 </span>            : </a>
+<a name="69"><span class="lineNum">      69 </span>            : In order to provide more context, especially for debugging, it might be useful to know where the exception</a>
+<a name="70"><span class="lineNum">      70 </span>            : originated from. The macros below add information about the exact location of the error in the file (filename, line</a>
+<a name="71"><span class="lineNum">      71 </span>            : and, when available, function name). Macros ending in &quot;error&quot; unconditionally throw</a>
+<a name="72"><span class="lineNum">      72 </span>            : the exception, whereas macros ending in &quot;assert&quot; first perform a conditional check</a>
+<a name="73"><span class="lineNum">      73 </span>            : (similarly to standard assert()).</a>
+<a name="74"><span class="lineNum">      74 </span>            : An extra `m` in the name (e.g. `plumed_merror`) indicates a macro that provides a message as its argument.</a>
+<a name="75"><span class="lineNum">      75 </span>            : However, as of PLUMED 2.5 we should prefer adding messages using insertion operators.</a>
+<a name="76"><span class="lineNum">      76 </span>            : \verbatim</a>
+<a name="77"><span class="lineNum">      77 </span>            : // this is correct but not recommended. add a message please!</a>
+<a name="78"><span class="lineNum">      78 </span>            :   plumed_assert(a&gt;0);</a>
+<a name="79"><span class="lineNum">      79 </span>            : </a>
+<a name="80"><span class="lineNum">      80 </span>            : // this is the old syntax (with argument).</a>
+<a name="81"><span class="lineNum">      81 </span>            : // this syntax is basically available for backward compatibility.</a>
+<a name="82"><span class="lineNum">      82 </span>            :   plumed_massert(a&gt;0,&quot;a should be larger than zero);</a>
+<a name="83"><span class="lineNum">      83 </span>            : </a>
+<a name="84"><span class="lineNum">      84 </span>            : // this is the recommended syntax, with insertion operators.</a>
+<a name="85"><span class="lineNum">      85 </span>            : // it allows to easily insert multiple objects</a>
+<a name="86"><span class="lineNum">      86 </span>            :   plumed_assert(a&gt;0)&lt;&lt;&quot;a should be larger than zero. a=&quot;&lt;&lt;a;</a>
+<a name="87"><span class="lineNum">      87 </span>            : </a>
+<a name="88"><span class="lineNum">      88 </span>            : // same as above, but the test is made explicitly:</a>
+<a name="89"><span class="lineNum">      89 </span>            :   if(a&lt;=0) plumed_error();</a>
+<a name="90"><span class="lineNum">      90 </span>            :   if(a&lt;=0) plumed_error(&quot;a should be larger than zero);</a>
+<a name="91"><span class="lineNum">      91 </span>            :   if(a&lt;=0) plumed_error()&lt;&lt;&quot;a should be larger than zero. a=&quot;&lt;&lt;a;</a>
+<a name="92"><span class="lineNum">      92 </span>            : \endverbatim</a>
+<a name="93"><span class="lineNum">      93 </span>            : </a>
+<a name="94"><span class="lineNum">      94 </span>            : The additional macros</a>
+<a name="95"><span class="lineNum">      95 </span>            : plumed_dbg_assert() and plumed_dbg_massert() are similar</a>
+<a name="96"><span class="lineNum">      96 </span>            : to plumed_assert() and plumed_massert() respectively, but the corresponding</a>
+<a name="97"><span class="lineNum">      97 </span>            : check is only performed when NDEBUG macro is not defined. They should</a>
+<a name="98"><span class="lineNum">      98 </span>            : be used when the check is expensive and should be skipped in production</a>
+<a name="99"><span class="lineNum">      99 </span>            : code. So, for instance, in the following case:</a>
+<a name="100"><span class="lineNum">     100 </span>            : \verbatim</a>
+<a name="101"><span class="lineNum">     101 </span>            :   plumed_dbg_assert(expensive_function(i)&gt;0)&lt;&lt;&quot;message&quot;;</a>
+<a name="102"><span class="lineNum">     102 </span>            : \endverbatim</a>
+<a name="103"><span class="lineNum">     103 </span>            : `expensive_function()` is not called in the production code.</a>
+<a name="104"><span class="lineNum">     104 </span>            : Notice that the compiler should be able to completely optimize away the</a>
+<a name="105"><span class="lineNum">     105 </span>            : whole statement including functions used to produce the message as in this example:</a>
+<a name="106"><span class="lineNum">     106 </span>            : \verbatim</a>
+<a name="107"><span class="lineNum">     107 </span>            :   plumed_dbg_assert(expensive_function(i)&gt;0)&lt;&lt;&quot;I did this check &quot;&lt;&lt;other_expensive_function(i);</a>
+<a name="108"><span class="lineNum">     108 </span>            : \endverbatim</a>
+<a name="109"><span class="lineNum">     109 </span>            : </a>
+<a name="110"><span class="lineNum">     110 </span>            : Finally, notice that there is another macro available, \ref plumed_here.</a>
+<a name="111"><span class="lineNum">     111 </span>            : In can be used in order to create an exception with information about the</a>
+<a name="112"><span class="lineNum">     112 </span>            : line/file coordinates without trowing it. That is, the two following syntaxes</a>
+<a name="113"><span class="lineNum">     113 </span>            : are equivalent</a>
+<a name="114"><span class="lineNum">     114 </span>            : \verbatim</a>
+<a name="115"><span class="lineNum">     115 </span>            : // First way, all at once</a>
+<a name="116"><span class="lineNum">     116 </span>            : plumed_error()&lt;&lt;&quot;some message&quot;;</a>
+<a name="117"><span class="lineNum">     117 </span>            : /////////////////////////////////</a>
+<a name="118"><span class="lineNum">     118 </span>            : // Second way, one step at a time</a>
+<a name="119"><span class="lineNum">     119 </span>            : // Create exception</a>
+<a name="120"><span class="lineNum">     120 </span>            : Exception e;</a>
+<a name="121"><span class="lineNum">     121 </span>            : // Append information about line and file</a>
+<a name="122"><span class="lineNum">     122 </span>            : e&lt;&lt;plumed_here;</a>
+<a name="123"><span class="lineNum">     123 </span>            : // Append some other message</a>
+<a name="124"><span class="lineNum">     124 </span>            : e&lt;&lt;&quot;some message&quot;;</a>
+<a name="125"><span class="lineNum">     125 </span>            : // Throw the resulting exception</a>
+<a name="126"><span class="lineNum">     126 </span>            : throw e;</a>
+<a name="127"><span class="lineNum">     127 </span>            : \endverbatim</a>
+<a name="128"><span class="lineNum">     128 </span>            : </a>
+<a name="129"><span class="lineNum">     129 </span>            : Exceptions can be caught within plumed or outside of it.</a>
+<a name="130"><span class="lineNum">     130 </span>            : E.g., in an external c++ code using PLUMED as a library, one can type</a>
+<a name="131"><span class="lineNum">     131 </span>            : \verbatim</a>
+<a name="132"><span class="lineNum">     132 </span>            :   try{</a>
+<a name="133"><span class="lineNum">     133 </span>            :     plumed.cmd(&quot;setPrecision&quot;,n);</a>
+<a name="134"><span class="lineNum">     134 </span>            :   } catch (std::exception &amp; e) {</a>
+<a name="135"><span class="lineNum">     135 </span>            :     printf(&quot;ee %s&quot;,e.what());</a>
+<a name="136"><span class="lineNum">     136 </span>            :     exit(1);</a>
+<a name="137"><span class="lineNum">     137 </span>            :   }</a>
+<a name="138"><span class="lineNum">     138 </span>            : \endverbatim</a>
+<a name="139"><span class="lineNum">     139 </span>            : This can be useful if an external code wants to exit in a controlled manner</a>
+<a name="140"><span class="lineNum">     140 </span>            : (e.g. flushing files, printing the error message in a specific file, etc.)</a>
+<a name="141"><span class="lineNum">     141 </span>            : but is anyway limited to c++ codes. Moreover,</a>
+<a name="142"><span class="lineNum">     142 </span>            : since these errors are expected to be unrecoverable, the MD code will</a>
+<a name="143"><span class="lineNum">     143 </span>            : usually not be able to do something more clever than exiting.</a>
+<a name="144"><span class="lineNum">     144 </span>            : </a>
+<a name="145"><span class="lineNum">     145 </span>            : \note</a>
+<a name="146"><span class="lineNum">     146 </span>            : We store message and stack trace in growing strings. This is in</a>
+<a name="147"><span class="lineNum">     147 </span>            : principle not recommended, since copying the exception might fail if</a>
+<a name="148"><span class="lineNum">     148 </span>            : copying the string throw another exception. However, this has been like</a>
+<a name="149"><span class="lineNum">     149 </span>            : this in all previous PLUMED versions. In case it is necessary, we can replace</a>
+<a name="150"><span class="lineNum">     150 </span>            : it later with a fixed size array placed on the stack.</a>
+<a name="151"><span class="lineNum">     151 </span>            : </a>
+<a name="152"><span class="lineNum">     152 </span>            : */</a>
+<a name="153"><span class="lineNum">     153 </span>            : class Exception : public std::exception</a>
+<a name="154"><span class="lineNum">     154 </span>            : {</a>
+<a name="155"><span class="lineNum">     155 </span>            : /// Reported message</a>
+<a name="156"><span class="lineNum">     156 </span>            :   std::string msg;</a>
+<a name="157"><span class="lineNum">     157 </span>            : /// Stack trace at exception</a>
+<a name="158"><span class="lineNum">     158 </span>            :   std::string stackString;</a>
+<a name="159"><span class="lineNum">     159 </span>            : /// Flag to remembed if we have to write the `+++ message follows +++` string.</a>
+<a name="160"><span class="lineNum">     160 </span>            : /// Needed so that the string appears only at the beginning of the message.</a>
+<a name="161"><span class="lineNum">     161 </span>            :   bool note;</a>
+<a name="162"><span class="lineNum">     162 </span>            : /// Stream used to insert objects.</a>
+<a name="163"><span class="lineNum">     163 </span>            : /// It is not copied when the Exception is copied.</a>
+<a name="164"><span class="lineNum">     164 </span>            :   std::stringstream stream;</a>
+<a name="165"><span class="lineNum">     165 </span>            : </a>
+<a name="166"><span class="lineNum">     166 </span>            : public:</a>
+<a name="167"><span class="lineNum">     167 </span>            : </a>
+<a name="168"><span class="lineNum">     168 </span>            : /// Auxiliary containing the location of the exception in the file.</a>
+<a name="169"><span class="lineNum">     169 </span>            : /// Typically used from the macros below.</a>
+<a name="170"><span class="lineNum">     170 </span>            :   class Location {</a>
+<a name="171"><span class="lineNum">     171 </span>            :   public:</a>
+<a name="172"><span class="lineNum">     172 </span>            :     const char*file;</a>
+<a name="173"><span class="lineNum">     173 </span>            :     const unsigned line;</a>
+<a name="174"><span class="lineNum">     174 </span>            :     const char* pretty;</a>
+<a name="175"><span class="lineNum">     175 </span>            :     explicit Location(const char*file,unsigned line,const char* pretty=nullptr):</a>
+<a name="176"><span class="lineNum">     176 </span>            :       file(file),</a>
+<a name="177"><span class="lineNum">     177 </span>            :       line(line),</a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">         48 :       pretty(pretty)</span></a>
+<a name="179"><span class="lineNum">     179 </span>            :     {}</a>
+<a name="180"><span class="lineNum">     180 </span>            :   };</a>
+<a name="181"><span class="lineNum">     181 </span>            : </a>
+<a name="182"><span class="lineNum">     182 </span>            : /// Auxiliary containing the failed assertion.</a>
+<a name="183"><span class="lineNum">     183 </span>            : /// Typically used from the macros below.</a>
+<a name="184"><span class="lineNum">     184 </span>            :   class Assertion {</a>
+<a name="185"><span class="lineNum">     185 </span>            :   public:</a>
+<a name="186"><span class="lineNum">     186 </span>            :     const char*assertion;</a>
+<a name="187"><span class="lineNum">     187 </span>            :     explicit Assertion(const char*assertion=nullptr):</a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         11 :       assertion(assertion)</span></a>
+<a name="189"><span class="lineNum">     189 </span>            :     {}</a>
+<a name="190"><span class="lineNum">     190 </span>            :   };</a>
+<a name="191"><span class="lineNum">     191 </span>            : </a>
+<a name="192"><span class="lineNum">     192 </span>            : /// Default constructor with no message.</a>
+<a name="193"><span class="lineNum">     193 </span>            : /// Only records the stack trace.</a>
+<a name="194"><span class="lineNum">     194 </span>            :   Exception();</a>
+<a name="195"><span class="lineNum">     195 </span>            : </a>
+<a name="196"><span class="lineNum">     196 </span>            : /// Constructor compatible with PLUMED &lt;=2.4.</a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">          3 :   explicit Exception(const std::string &amp; msg):</span></a>
+<a name="198"><span class="lineNum">     198 </span><span class="lineCov">          3 :     Exception()</span></a>
+<a name="199"><span class="lineNum">     199 </span>            :   {</a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineCov">          3 :     *this &lt;&lt; msg;</span></a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">          3 :   }</span></a>
+<a name="202"><span class="lineNum">     202 </span>            : </a>
+<a name="203"><span class="lineNum">     203 </span>            : /// Copy constructor.</a>
+<a name="204"><span class="lineNum">     204 </span>            : /// Needed to make sure stream is not copied</a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineNoCov">          0 :   Exception(const Exception &amp; e):</span></a>
+<a name="206"><span class="lineNum">     206 </span>            :     msg(e.msg),</a>
+<a name="207"><span class="lineNum">     207 </span>            :     stackString(e.stackString),</a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :     note(e.note)</span></a>
+<a name="209"><span class="lineNum">     209 </span>            :   {</a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 :   }</span></a>
+<a name="211"><span class="lineNum">     211 </span>            : </a>
+<a name="212"><span class="lineNum">     212 </span>            : /// Assignment.</a>
+<a name="213"><span class="lineNum">     213 </span>            : /// Needed to make sure stream is not copied</a>
+<a name="214"><span class="lineNum">     214 </span>            :   Exception &amp; operator=(const Exception &amp; e) {</a>
+<a name="215"><span class="lineNum">     215 </span>            :     msg=e.msg;</a>
+<a name="216"><span class="lineNum">     216 </span>            :     stackString=e.stackString;</a>
+<a name="217"><span class="lineNum">     217 </span>            :     note=e.note;</a>
+<a name="218"><span class="lineNum">     218 </span>            :     stream.str(&quot;&quot;);</a>
+<a name="219"><span class="lineNum">     219 </span>            :     return *this;</a>
+<a name="220"><span class="lineNum">     220 </span>            :   }</a>
+<a name="221"><span class="lineNum">     221 </span>            : </a>
+<a name="222"><span class="lineNum">     222 </span>            : /// Returns the error message.</a>
+<a name="223"><span class="lineNum">     223 </span>            : /// In case the environment variable PLUMED_STACK_TRACE was defined</a>
+<a name="224"><span class="lineNum">     224 </span>            : /// and equal to `yes` when the exception was raised,</a>
+<a name="225"><span class="lineNum">     225 </span>            : /// the error message will contain the stack trace as well.</a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineNoCov">          0 :   virtual const char* what() const noexcept {return msg.c_str();}</span></a>
+<a name="227"><span class="lineNum">     227 </span>            : </a>
+<a name="228"><span class="lineNum">     228 </span>            : /// Returns the stack trace.</a>
+<a name="229"><span class="lineNum">     229 </span>            : /// Stack trace stored only if the required functions were found at configure time.</a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineNoCov">          0 :   virtual const char* stack() const noexcept {return stackString.c_str();}</span></a>
+<a name="231"><span class="lineNum">     231 </span>            : </a>
+<a name="232"><span class="lineNum">     232 </span>            : /// Destructor should be defined and should not throw other exceptions</a>
+<a name="233"><span class="lineNum">     233 </span><span class="lineCov">         62 :   virtual ~Exception() noexcept {}</span></a>
+<a name="234"><span class="lineNum">     234 </span>            : </a>
+<a name="235"><span class="lineNum">     235 </span>            : /// Insert location.</a>
+<a name="236"><span class="lineNum">     236 </span>            : /// Format the location properly.</a>
+<a name="237"><span class="lineNum">     237 </span>            :   Exception&amp; operator&lt;&lt;(const Location&amp;);</a>
+<a name="238"><span class="lineNum">     238 </span>            : </a>
+<a name="239"><span class="lineNum">     239 </span>            : /// Insert assertion.</a>
+<a name="240"><span class="lineNum">     240 </span>            : /// Format the assertion properly</a>
+<a name="241"><span class="lineNum">     241 </span>            :   Exception&amp; operator&lt;&lt;(const Assertion&amp;);</a>
+<a name="242"><span class="lineNum">     242 </span>            : </a>
+<a name="243"><span class="lineNum">     243 </span>            : /// Insert string.</a>
+<a name="244"><span class="lineNum">     244 </span>            : /// Append this string to the message.</a>
+<a name="245"><span class="lineNum">     245 </span>            :   Exception&amp; operator&lt;&lt;(const std::string&amp;);</a>
+<a name="246"><span class="lineNum">     246 </span>            : </a>
+<a name="247"><span class="lineNum">     247 </span>            : /// Insert anything else.</a>
+<a name="248"><span class="lineNum">     248 </span>            : /// This allows to dump also other types (e.g. double, or even Vector).</a>
+<a name="249"><span class="lineNum">     249 </span>            : /// Anything that can be written on a stream can go here.</a>
+<a name="250"><span class="lineNum">     250 </span>            :   template&lt;typename T&gt;</a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         10 :   Exception&amp; operator&lt;&lt;(const T &amp; x) {</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">         10 :     stream&lt;&lt;x;</span></a>
+<a name="253"><span class="lineNum">     253 </span><span class="lineCov">         20 :     (*this)&lt;&lt;stream.str();</span></a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">         20 :     stream.str(&quot;&quot;);</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">         10 :     return *this;</span></a>
+<a name="256"><span class="lineNum">     256 </span>            :   }</a>
+<a name="257"><span class="lineNum">     257 </span>            : };</a>
+<a name="258"><span class="lineNum">     258 </span>            : </a>
+<a name="259"><span class="lineNum">     259 </span>            : /// Class representing a generic error</a>
+<a name="260"><span class="lineNum">     260 </span><span class="lineCov">         96 : class ExceptionError :</span></a>
+<a name="261"><span class="lineNum">     261 </span>            :   public Exception {</a>
+<a name="262"><span class="lineNum">     262 </span>            : public:</a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineCov">          1 :   using Exception::Exception;</span></a>
+<a name="264"><span class="lineNum">     264 </span>            :   template&lt;typename T&gt;</a>
+<a name="265"><span class="lineNum">     265 </span>            :   ExceptionError&amp; operator&lt;&lt;(const T &amp; x) {</a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineCov">         48 :     *((Exception*) this) &lt;&lt;x;</span></a>
+<a name="267"><span class="lineNum">     267 </span>            :     return *this;</a>
+<a name="268"><span class="lineNum">     268 </span>            :   }</a>
+<a name="269"><span class="lineNum">     269 </span>            : };</a>
+<a name="270"><span class="lineNum">     270 </span>            : </a>
+<a name="271"><span class="lineNum">     271 </span>            : /// Class representing a debug error (can only be thrown when using debug options)</a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">          1 : class ExceptionDebug :</span></a>
+<a name="273"><span class="lineNum">     273 </span>            :   public Exception {</a>
+<a name="274"><span class="lineNum">     274 </span>            : public:</a>
+<a name="275"><span class="lineNum">     275 </span><span class="lineCov">          1 :   using Exception::Exception;</span></a>
+<a name="276"><span class="lineNum">     276 </span>            :   template&lt;typename T&gt;</a>
+<a name="277"><span class="lineNum">     277 </span>            :   ExceptionDebug&amp; operator&lt;&lt;(const T &amp; x) {</a>
+<a name="278"><span class="lineNum">     278 </span>            :     *((Exception*) this) &lt;&lt;x;</a>
+<a name="279"><span class="lineNum">     279 </span>            :     return *this;</a>
+<a name="280"><span class="lineNum">     280 </span>            :   }</a>
+<a name="281"><span class="lineNum">     281 </span>            : };</a>
+<a name="282"><span class="lineNum">     282 </span>            : </a>
+<a name="283"><span class="lineNum">     283 </span>            : #ifdef __GNUG__</a>
+<a name="284"><span class="lineNum">     284 </span>            : // With GNU compiler, we can use __PRETTY_FUNCTION__ to get the function name</a>
+<a name="285"><span class="lineNum">     285 </span>            : #define __PLUMED_FUNCNAME __PRETTY_FUNCTION__</a>
+<a name="286"><span class="lineNum">     286 </span>            : #else</a>
+<a name="287"><span class="lineNum">     287 </span>            : // Otherwise, we use the standard C++11 variable</a>
+<a name="288"><span class="lineNum">     288 </span>            : #define __PLUMED_FUNCNAME __func__</a>
+<a name="289"><span class="lineNum">     289 </span>            : #endif</a>
+<a name="290"><span class="lineNum">     290 </span>            : </a>
+<a name="291"><span class="lineNum">     291 </span>            : /// \relates PLMD::Exception</a>
+<a name="292"><span class="lineNum">     292 </span>            : /// Auxiliary macro that generates a PLMD::Exception::Location object.</a>
+<a name="293"><span class="lineNum">     293 </span>            : /// Might be useful if we want to use derived exceptions that could</a>
+<a name="294"><span class="lineNum">     294 </span>            : /// be thrown using `throw DerivedException()&lt;&lt;plumed_here&lt;&lt;&quot; &quot;&lt;&lt;other stuff&quot;`.</a>
+<a name="295"><span class="lineNum">     295 </span>            : /// It is used in the macros below to throw PLMD::Exception.</a>
+<a name="296"><span class="lineNum">     296 </span>            : #define plumed_here PLMD::Exception::Location(__FILE__,__LINE__,__PLUMED_FUNCNAME)</a>
+<a name="297"><span class="lineNum">     297 </span>            : </a>
+<a name="298"><span class="lineNum">     298 </span>            : /// \relates PLMD::Exception</a>
+<a name="299"><span class="lineNum">     299 </span>            : /// Throw an exception with information about the position in the file.</a>
+<a name="300"><span class="lineNum">     300 </span>            : /// Messages can be inserted with `plumed_error()&lt;&lt;&quot;message&quot;`.</a>
+<a name="301"><span class="lineNum">     301 </span>            : #define plumed_error() throw PLMD::ExceptionError() &lt;&lt; plumed_here</a>
+<a name="302"><span class="lineNum">     302 </span>            : </a>
+<a name="303"><span class="lineNum">     303 </span>            : /// \relates PLMD::Exception</a>
+<a name="304"><span class="lineNum">     304 </span>            : /// Throw an exception with information about the position in the file</a>
+<a name="305"><span class="lineNum">     305 </span>            : /// and a message. Mostly available for backward compatibility</a>
+<a name="306"><span class="lineNum">     306 </span>            : #define plumed_merror(msg) plumed_error() &lt;&lt; msg</a>
+<a name="307"><span class="lineNum">     307 </span>            : </a>
+<a name="308"><span class="lineNum">     308 </span>            : /// \relates PLMD::Exception</a>
+<a name="309"><span class="lineNum">     309 </span>            : /// Launches plumed_merror only if test evaluates to false.</a>
+<a name="310"><span class="lineNum">     310 </span>            : /// The string describing the test is also reported.</a>
+<a name="311"><span class="lineNum">     311 </span>            : /// Further messages can be inserted with `&lt;&lt;`.</a>
+<a name="312"><span class="lineNum">     312 </span>            : #define plumed_assert(test) if(!(test)) plumed_error() &lt;&lt; PLMD::Exception::Assertion(#test)</a>
+<a name="313"><span class="lineNum">     313 </span>            : </a>
+<a name="314"><span class="lineNum">     314 </span>            : /// \relates PLMD::Exception</a>
+<a name="315"><span class="lineNum">     315 </span>            : /// Launches plumed_merror only if test evaluates to false.</a>
+<a name="316"><span class="lineNum">     316 </span>            : /// The string describing the test is also reported, in addition to</a>
+<a name="317"><span class="lineNum">     317 </span>            : /// messages reported in the extra argument. Mostly available for backward compatibility.</a>
+<a name="318"><span class="lineNum">     318 </span>            : #define plumed_massert(test,msg) plumed_assert(test) &lt;&lt; msg</a>
+<a name="319"><span class="lineNum">     319 </span>            : </a>
+<a name="320"><span class="lineNum">     320 </span>            : #ifdef NDEBUG</a>
+<a name="321"><span class="lineNum">     321 </span>            : </a>
+<a name="322"><span class="lineNum">     322 </span>            : // These are the versions used when compiling with NDEBUG flag.</a>
+<a name="323"><span class="lineNum">     323 </span>            : // The condition is always true, so that the rest of the statement</a>
+<a name="324"><span class="lineNum">     324 </span>            : // should be optimized away.</a>
+<a name="325"><span class="lineNum">     325 </span>            : #define plumed_dbg_assert(test) plumed_assert(true)</a>
+<a name="326"><span class="lineNum">     326 </span>            : #define plumed_dbg_massert(test,msg) plumed_massert(true,msg)</a>
+<a name="327"><span class="lineNum">     327 </span>            : </a>
+<a name="328"><span class="lineNum">     328 </span>            : #else</a>
+<a name="329"><span class="lineNum">     329 </span>            : </a>
+<a name="330"><span class="lineNum">     330 </span>            : /// \relates PLMD::Exception</a>
+<a name="331"><span class="lineNum">     331 </span>            : /// Same as \ref plumed_assert, but only evaluates the condition if NDEBUG is not defined.</a>
+<a name="332"><span class="lineNum">     332 </span>            : #define plumed_dbg_assert(test) if(!(test)) throw PLMD::ExceptionDebug() &lt;&lt; plumed_here &lt;&lt; PLMD::Exception::Assertion(#test)</a>
+<a name="333"><span class="lineNum">     333 </span>            : </a>
+<a name="334"><span class="lineNum">     334 </span>            : /// \relates PLMD::Exception</a>
+<a name="335"><span class="lineNum">     335 </span>            : /// Same as \ref plumed_massert, but only evaluates the condition if NDEBUG is not defined.</a>
+<a name="336"><span class="lineNum">     336 </span>            : #define plumed_dbg_massert(test,msg) plumed_dbg_assert(test) &lt;&lt; msg</a>
+<a name="337"><span class="lineNum">     337 </span>            : </a>
+<a name="338"><span class="lineNum">     338 </span>            : #endif</a>
+<a name="339"><span class="lineNum">     339 </span>            : </a>
+<a name="340"><span class="lineNum">     340 </span>            : }</a>
+<a name="341"><span class="lineNum">     341 </span>            : #endif</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

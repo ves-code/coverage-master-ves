@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+<meta name="robots" content="noindex">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - plumed test coverage - generic/DumpAtoms.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">generic</a> - DumpAtoms.cpp<span style="font-size: 80%;"> (source / <a href="DumpAtoms.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">plumed test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">124</td>
+            <td class="headerCovTableEntry">126</td>
+            <td class="headerCovTableEntryHi">98.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-08-13 10:15:31</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryMed">85.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (c) 2011-2019 The plumed team</a>
+<a name="3"><span class="lineNum">       3 </span>            :    (see the PEOPLE file at the root of the distribution for a list of names)</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            :    See http://www.plumed.org for more information.</a>
+<a name="6"><span class="lineNum">       6 </span>            : </a>
+<a name="7"><span class="lineNum">       7 </span>            :    This file is part of plumed, version 2.</a>
+<a name="8"><span class="lineNum">       8 </span>            : </a>
+<a name="9"><span class="lineNum">       9 </span>            :    plumed is free software: you can redistribute it and/or modify</a>
+<a name="10"><span class="lineNum">      10 </span>            :    it under the terms of the GNU Lesser General Public License as published by</a>
+<a name="11"><span class="lineNum">      11 </span>            :    the Free Software Foundation, either version 3 of the License, or</a>
+<a name="12"><span class="lineNum">      12 </span>            :    (at your option) any later version.</a>
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<a name="14"><span class="lineNum">      14 </span>            :    plumed is distributed in the hope that it will be useful,</a>
+<a name="15"><span class="lineNum">      15 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="16"><span class="lineNum">      16 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="17"><span class="lineNum">      17 </span>            :    GNU Lesser General Public License for more details.</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span>            :    You should have received a copy of the GNU Lesser General Public License</a>
+<a name="20"><span class="lineNum">      20 </span>            :    along with plumed.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="21"><span class="lineNum">      21 </span>            : +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */</a>
+<a name="22"><span class="lineNum">      22 </span>            : #include &quot;core/ActionAtomistic.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>            : #include &quot;core/ActionPilot.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>            : #include &quot;core/ActionRegister.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &quot;tools/Pbc.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>            : #include &quot;tools/File.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>            : #include &quot;core/PlumedMain.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>            : #include &quot;core/Atoms.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>            : #include &quot;tools/Units.h&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>            : #include &lt;cstdio&gt;</a>
+<a name="31"><span class="lineNum">      31 </span>            : #include &lt;memory&gt;</a>
+<a name="32"><span class="lineNum">      32 </span>            : #include &quot;core/SetupMolInfo.h&quot;</a>
+<a name="33"><span class="lineNum">      33 </span>            : #include &quot;core/ActionSet.h&quot;</a>
+<a name="34"><span class="lineNum">      34 </span>            : </a>
+<a name="35"><span class="lineNum">      35 </span>            : #if defined(__PLUMED_HAS_XDRFILE)</a>
+<a name="36"><span class="lineNum">      36 </span>            : #include &lt;xdrfile/xdrfile_xtc.h&gt;</a>
+<a name="37"><span class="lineNum">      37 </span>            : #include &lt;xdrfile/xdrfile_trr.h&gt;</a>
+<a name="38"><span class="lineNum">      38 </span>            : #endif</a>
+<a name="39"><span class="lineNum">      39 </span>            : </a>
+<a name="40"><span class="lineNum">      40 </span>            : </a>
+<a name="41"><span class="lineNum">      41 </span>            : using namespace std;</a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<a name="43"><span class="lineNum">      43 </span>            : namespace PLMD</a>
+<a name="44"><span class="lineNum">      44 </span>            : {</a>
+<a name="45"><span class="lineNum">      45 </span>            : namespace generic {</a>
+<a name="46"><span class="lineNum">      46 </span>            : </a>
+<a name="47"><span class="lineNum">      47 </span>            : //+PLUMEDOC PRINTANALYSIS DUMPATOMS</a>
+<a name="48"><span class="lineNum">      48 </span>            : /*</a>
+<a name="49"><span class="lineNum">      49 </span>            : Dump selected atoms on a file.</a>
+<a name="50"><span class="lineNum">      50 </span>            : </a>
+<a name="51"><span class="lineNum">      51 </span>            : This command can be used to output the positions of a particular set of atoms.</a>
+<a name="52"><span class="lineNum">      52 </span>            : The atoms required are output in a xyz or gro formatted file.</a>
+<a name="53"><span class="lineNum">      53 </span>            : If PLUMED has been compiled with xdrfile support, then also xtc and trr files can be written.</a>
+<a name="54"><span class="lineNum">      54 </span>            : To this aim one should install xdrfile library (http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library).</a>
+<a name="55"><span class="lineNum">      55 </span>            : If the xdrfile library is installed properly the PLUMED configure script should be able to</a>
+<a name="56"><span class="lineNum">      56 </span>            : detect it and enable it.</a>
+<a name="57"><span class="lineNum">      57 </span>            : The type of file is automatically detected from the file extension, but can be also</a>
+<a name="58"><span class="lineNum">      58 </span>            : enforced with TYPE.</a>
+<a name="59"><span class="lineNum">      59 </span>            : Importantly, if your</a>
+<a name="60"><span class="lineNum">      60 </span>            : input file contains actions that edit the atoms position (e.g. \ref WHOLEMOLECULES)</a>
+<a name="61"><span class="lineNum">      61 </span>            : and the DUMPATOMS command appears after this instruction, then the edited</a>
+<a name="62"><span class="lineNum">      62 </span>            : atom positions are output.</a>
+<a name="63"><span class="lineNum">      63 </span>            : You can control the buffering of output using the \ref FLUSH keyword on a separate line.</a>
+<a name="64"><span class="lineNum">      64 </span>            : </a>
+<a name="65"><span class="lineNum">      65 </span>            : Units of the printed file can be controlled with the UNITS keyword. By default PLUMED units as</a>
+<a name="66"><span class="lineNum">      66 </span>            : controlled in the \ref UNITS command are used, but one can override it e.g. with UNITS=A.</a>
+<a name="67"><span class="lineNum">      67 </span>            : Notice that gro/xtc/trr files can only contain coordinates in nm.</a>
+<a name="68"><span class="lineNum">      68 </span>            : </a>
+<a name="69"><span class="lineNum">      69 </span>            : \par Examples</a>
+<a name="70"><span class="lineNum">      70 </span>            : </a>
+<a name="71"><span class="lineNum">      71 </span>            : The following input instructs plumed to print out the positions of atoms</a>
+<a name="72"><span class="lineNum">      72 </span>            : 1-10 together with the position of the center of mass of atoms 11-20 every</a>
+<a name="73"><span class="lineNum">      73 </span>            : 10 steps to a file called file.xyz.</a>
+<a name="74"><span class="lineNum">      74 </span>            : \plumedfile</a>
+<a name="75"><span class="lineNum">      75 </span>            : COM ATOMS=11-20 LABEL=c1</a>
+<a name="76"><span class="lineNum">      76 </span>            : DUMPATOMS STRIDE=10 FILE=file.xyz ATOMS=1-10,c1</a>
+<a name="77"><span class="lineNum">      77 </span>            : \endplumedfile</a>
+<a name="78"><span class="lineNum">      78 </span>            : Notice that the coordinates in the xyz file will be expressed in nm, since these</a>
+<a name="79"><span class="lineNum">      79 </span>            : are the defaults units in PLUMED. If you want the xyz file to be expressed in A, you should use the</a>
+<a name="80"><span class="lineNum">      80 </span>            : following input</a>
+<a name="81"><span class="lineNum">      81 </span>            : \plumedfile</a>
+<a name="82"><span class="lineNum">      82 </span>            : COM ATOMS=11-20 LABEL=c1</a>
+<a name="83"><span class="lineNum">      83 </span>            : DUMPATOMS STRIDE=10 FILE=file.xyz ATOMS=1-10,c1 UNITS=A</a>
+<a name="84"><span class="lineNum">      84 </span>            : \endplumedfile</a>
+<a name="85"><span class="lineNum">      85 </span>            : As an alternative, you might want to set all the length used by PLUMED to Angstrom using the \ref UNITS</a>
+<a name="86"><span class="lineNum">      86 </span>            : action. However, this latter choice will affect all your input and output.</a>
+<a name="87"><span class="lineNum">      87 </span>            : </a>
+<a name="88"><span class="lineNum">      88 </span>            : The following input is very similar but dumps a .gro (gromacs) file,</a>
+<a name="89"><span class="lineNum">      89 </span>            : which also contains atom and residue names.</a>
+<a name="90"><span class="lineNum">      90 </span>            : \plumedfile</a>
+<a name="91"><span class="lineNum">      91 </span>            : #SETTINGS MOLFILE=regtest/basic/rt32/helix.pdb</a>
+<a name="92"><span class="lineNum">      92 </span>            : # this is required to have proper atom names:</a>
+<a name="93"><span class="lineNum">      93 </span>            : MOLINFO STRUCTURE=reference.pdb</a>
+<a name="94"><span class="lineNum">      94 </span>            : # if omitted, atoms will have &quot;X&quot; name...</a>
+<a name="95"><span class="lineNum">      95 </span>            : </a>
+<a name="96"><span class="lineNum">      96 </span>            : COM ATOMS=11-20 LABEL=c1</a>
+<a name="97"><span class="lineNum">      97 </span>            : DUMPATOMS STRIDE=10 FILE=file.gro ATOMS=1-10,c1</a>
+<a name="98"><span class="lineNum">      98 </span>            : # notice that last atom is a virtual one and will not have</a>
+<a name="99"><span class="lineNum">      99 </span>            : # a correct name in the resulting gro file</a>
+<a name="100"><span class="lineNum">     100 </span>            : \endplumedfile</a>
+<a name="101"><span class="lineNum">     101 </span>            : </a>
+<a name="102"><span class="lineNum">     102 </span>            : The `file.gro` will contain coordinates expressed in nm, since this is the convention for gro files.</a>
+<a name="103"><span class="lineNum">     103 </span>            : </a>
+<a name="104"><span class="lineNum">     104 </span>            : In case you have compiled PLUMED with `xdrfile` library, you might even write xtc or trr files as follows</a>
+<a name="105"><span class="lineNum">     105 </span>            : \plumedfile</a>
+<a name="106"><span class="lineNum">     106 </span>            : COM ATOMS=11-20 LABEL=c1</a>
+<a name="107"><span class="lineNum">     107 </span>            : DUMPATOMS STRIDE=10 FILE=file.xtc ATOMS=1-10,c1</a>
+<a name="108"><span class="lineNum">     108 </span>            : \endplumedfile</a>
+<a name="109"><span class="lineNum">     109 </span>            : Notice that xtc files are significantly smaller than gro and xyz files.</a>
+<a name="110"><span class="lineNum">     110 </span>            : </a>
+<a name="111"><span class="lineNum">     111 </span>            : Finally, consider that gro and xtc file store coordinates with limited precision set by the</a>
+<a name="112"><span class="lineNum">     112 </span>            : `PRECISION` keyword. Default value is 3, which means &quot;3 digits after dot&quot; in nm (1/1000 of a nm).</a>
+<a name="113"><span class="lineNum">     113 </span>            : The following will write a larger xtc file with high resolution coordinates:</a>
+<a name="114"><span class="lineNum">     114 </span>            : \plumedfile</a>
+<a name="115"><span class="lineNum">     115 </span>            : COM ATOMS=11-20 LABEL=c1</a>
+<a name="116"><span class="lineNum">     116 </span>            : DUMPATOMS STRIDE=10 FILE=file.xtc ATOMS=1-10,c1 PRECISION=7</a>
+<a name="117"><span class="lineNum">     117 </span>            : \endplumedfile</a>
+<a name="118"><span class="lineNum">     118 </span>            : </a>
+<a name="119"><span class="lineNum">     119 </span>            : </a>
+<a name="120"><span class="lineNum">     120 </span>            : </a>
+<a name="121"><span class="lineNum">     121 </span>            : */</a>
+<a name="122"><span class="lineNum">     122 </span>            : //+ENDPLUMEDOC</a>
+<a name="123"><span class="lineNum">     123 </span>            : </a>
+<a name="124"><span class="lineNum">     124 </span>            : class DumpAtoms:</a>
+<a name="125"><span class="lineNum">     125 </span>            :   public ActionAtomistic,</a>
+<a name="126"><span class="lineNum">     126 </span>            :   public ActionPilot</a>
+<a name="127"><span class="lineNum">     127 </span>            : {</a>
+<a name="128"><span class="lineNum">     128 </span>            :   OFile of;</a>
+<a name="129"><span class="lineNum">     129 </span>            :   double lenunit;</a>
+<a name="130"><span class="lineNum">     130 </span>            :   int iprecision;</a>
+<a name="131"><span class="lineNum">     131 </span>            :   std::vector&lt;std::string&gt; names;</a>
+<a name="132"><span class="lineNum">     132 </span>            :   std::vector&lt;unsigned&gt;    residueNumbers;</a>
+<a name="133"><span class="lineNum">     133 </span>            :   std::vector&lt;std::string&gt; residueNames;</a>
+<a name="134"><span class="lineNum">     134 </span>            :   std::string type;</a>
+<a name="135"><span class="lineNum">     135 </span>            :   std::string fmt_gro_pos;</a>
+<a name="136"><span class="lineNum">     136 </span>            :   std::string fmt_gro_box;</a>
+<a name="137"><span class="lineNum">     137 </span>            :   std::string fmt_xyz;</a>
+<a name="138"><span class="lineNum">     138 </span>            : #if defined(__PLUMED_HAS_XDRFILE)</a>
+<a name="139"><span class="lineNum">     139 </span>            :   XDRFILE* xd;</a>
+<a name="140"><span class="lineNum">     140 </span>            : #endif</a>
+<a name="141"><span class="lineNum">     141 </span>            : public:</a>
+<a name="142"><span class="lineNum">     142 </span>            :   explicit DumpAtoms(const ActionOptions&amp;);</a>
+<a name="143"><span class="lineNum">     143 </span>            :   ~DumpAtoms();</a>
+<a name="144"><span class="lineNum">     144 </span>            :   static void registerKeywords( Keywords&amp; keys );</a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">        730 :   void calculate() override {}</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">        730 :   void apply() override {}</span></a>
+<a name="147"><span class="lineNum">     147 </span>            :   void update() override ;</a>
+<a name="148"><span class="lineNum">     148 </span>            : };</a>
+<a name="149"><span class="lineNum">     149 </span>            : </a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">       7984 : PLUMED_REGISTER_ACTION(DumpAtoms,&quot;DUMPATOMS&quot;)</span></a>
+<a name="151"><span class="lineNum">     151 </span>            : </a>
+<a name="152"><span class="lineNum">     152 </span><span class="lineCov">         77 : void DumpAtoms::registerKeywords( Keywords&amp; keys ) {</span></a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">         77 :   Action::registerKeywords( keys );</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         77 :   ActionPilot::registerKeywords( keys );</span></a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">         77 :   ActionAtomistic::registerKeywords( keys );</span></a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">        385 :   keys.add(&quot;compulsory&quot;,&quot;STRIDE&quot;,&quot;1&quot;,&quot;the frequency with which the atoms should be output&quot;);</span></a>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">        308 :   keys.add(&quot;atoms&quot;, &quot;ATOMS&quot;, &quot;the atom indices whose positions you would like to print out&quot;);</span></a>
+<a name="158"><span class="lineNum">     158 </span><span class="lineCov">        308 :   keys.add(&quot;compulsory&quot;, &quot;FILE&quot;, &quot;file on which to output coordinates; extension is automatically detected&quot;);</span></a>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">        385 :   keys.add(&quot;compulsory&quot;, &quot;UNITS&quot;,&quot;PLUMED&quot;,&quot;the units in which to print out the coordinates. PLUMED means internal PLUMED units&quot;);</span></a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">        308 :   keys.add(&quot;optional&quot;, &quot;PRECISION&quot;,&quot;The number of digits in trajectory file&quot;);</span></a>
+<a name="161"><span class="lineNum">     161 </span>            : #if defined(__PLUMED_HAS_XDRFILE)</a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">        308 :   keys.add(&quot;optional&quot;, &quot;TYPE&quot;,&quot;file type, either xyz, gro, xtc, or trr, can override an automatically detected file extension&quot;);</span></a>
+<a name="163"><span class="lineNum">     163 </span>            : #else</a>
+<a name="164"><span class="lineNum">     164 </span>            :   keys.add(&quot;optional&quot;, &quot;TYPE&quot;,&quot;file type, either xyz or gro, can override an automatically detected file extension&quot;);</a>
+<a name="165"><span class="lineNum">     165 </span>            : #endif</a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">        154 :   keys.use(&quot;RESTART&quot;);</span></a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineCov">        154 :   keys.use(&quot;UPDATE_FROM&quot;);</span></a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">        154 :   keys.use(&quot;UPDATE_UNTIL&quot;);</span></a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">         77 : }</span></a>
+<a name="170"><span class="lineNum">     170 </span>            : </a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineCov">         76 : DumpAtoms::DumpAtoms(const ActionOptions&amp;ao):</span></a>
+<a name="172"><span class="lineNum">     172 </span>            :   Action(ao),</a>
+<a name="173"><span class="lineNum">     173 </span>            :   ActionAtomistic(ao),</a>
+<a name="174"><span class="lineNum">     174 </span>            :   ActionPilot(ao),</a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">         76 :   iprecision(3)</span></a>
+<a name="176"><span class="lineNum">     176 </span>            : {</a>
+<a name="177"><span class="lineNum">     177 </span>            :   vector&lt;AtomNumber&gt; atoms;</a>
+<a name="178"><span class="lineNum">     178 </span>            :   string file;</a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">        152 :   parse(&quot;FILE&quot;,file);</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">         76 :   if(file.length()==0) error(&quot;name out output file was not specified&quot;);</span></a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineCov">        152 :   type=Tools::extension(file);</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineCov">         76 :   log&lt;&lt;&quot;  file name &quot;&lt;&lt;file&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="183"><span class="lineNum">     183 </span><span class="lineCov">        164 :   if(type==&quot;gro&quot; || type==&quot;xyz&quot; || type==&quot;xtc&quot; || type==&quot;trr&quot;) {</span></a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineCov">         60 :     log&lt;&lt;&quot;  file extension indicates a &quot;&lt;&lt;type&lt;&lt;&quot; file\n&quot;;</span></a>
+<a name="185"><span class="lineNum">     185 </span>            :   } else {</a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">         16 :     log&lt;&lt;&quot;  file extension not detected, assuming xyz\n&quot;;</span></a>
+<a name="187"><span class="lineNum">     187 </span>            :     type=&quot;xyz&quot;;</a>
+<a name="188"><span class="lineNum">     188 </span>            :   }</a>
+<a name="189"><span class="lineNum">     189 </span>            :   string ntype;</a>
+<a name="190"><span class="lineNum">     190 </span><span class="lineCov">        152 :   parse(&quot;TYPE&quot;,ntype);</span></a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         76 :   if(ntype.length()&gt;0) {</span></a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineCov">          5 :     if(ntype!=&quot;xyz&quot; &amp;&amp; ntype!=&quot;gro&quot; &amp;&amp; ntype!=&quot;xtc&quot; &amp;&amp; ntype!=&quot;trr&quot;</span></a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineNoCov">          0 :       ) error(&quot;TYPE cannot be understood&quot;);</span></a>
+<a name="194"><span class="lineNum">     194 </span><span class="lineCov">          2 :     log&lt;&lt;&quot;  file type enforced to be &quot;&lt;&lt;ntype&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="195"><span class="lineNum">     195 </span>            :     type=ntype;</a>
+<a name="196"><span class="lineNum">     196 </span>            :   }</a>
+<a name="197"><span class="lineNum">     197 </span>            : #ifndef __PLUMED_HAS_XDRFILE</a>
+<a name="198"><span class="lineNum">     198 </span>            :   if(type==&quot;xtc&quot; || type==&quot;trr&quot;) error(&quot;types xtc and trr require PLUMED to be linked with the xdrfile library. Please install it and recompile PLUMED.&quot;);</a>
+<a name="199"><span class="lineNum">     199 </span>            : #endif</a>
+<a name="200"><span class="lineNum">     200 </span>            : </a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">         76 :   fmt_gro_pos=&quot;%8.3f&quot;;</span></a>
+<a name="202"><span class="lineNum">     202 </span><span class="lineCov">         76 :   fmt_gro_box=&quot;%12.7f&quot;;</span></a>
+<a name="203"><span class="lineNum">     203 </span><span class="lineCov">         76 :   fmt_xyz=&quot;%f&quot;;</span></a>
+<a name="204"><span class="lineNum">     204 </span>            : </a>
+<a name="205"><span class="lineNum">     205 </span>            :   string precision;</a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineCov">        152 :   parse(&quot;PRECISION&quot;,precision);</span></a>
+<a name="207"><span class="lineNum">     207 </span><span class="lineCov">         76 :   if(precision.length()&gt;0) {</span></a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineCov">          9 :     Tools::convert(precision,iprecision);</span></a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineCov">          9 :     log&lt;&lt;&quot;  with precision &quot;&lt;&lt;iprecision&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="210"><span class="lineNum">     210 </span>            :     string a,b;</a>
+<a name="211"><span class="lineNum">     211 </span><span class="lineCov">          9 :     Tools::convert(iprecision+5,a);</span></a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">          9 :     Tools::convert(iprecision,b);</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineCov">         45 :     fmt_gro_pos=&quot;%&quot;+a+&quot;.&quot;+b+&quot;f&quot;;</span></a>
+<a name="214"><span class="lineNum">     214 </span>            :     fmt_gro_box=fmt_gro_pos;</a>
+<a name="215"><span class="lineNum">     215 </span>            :     fmt_xyz=fmt_gro_box;</a>
+<a name="216"><span class="lineNum">     216 </span>            :   }</a>
+<a name="217"><span class="lineNum">     217 </span>            : </a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">        152 :   parseAtomList(&quot;ATOMS&quot;,atoms);</span></a>
+<a name="219"><span class="lineNum">     219 </span>            : </a>
+<a name="220"><span class="lineNum">     220 </span><span class="lineCov">        152 :   std::string unitname; parse(&quot;UNITS&quot;,unitname);</span></a>
+<a name="221"><span class="lineNum">     221 </span><span class="lineCov">         76 :   if(unitname!=&quot;PLUMED&quot;) {</span></a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineCov">          4 :     Units myunit; myunit.setLength(unitname);</span></a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">          6 :     if(myunit.getLength()!=1.0 &amp;&amp; type==&quot;gro&quot;) error(&quot;gro files should be in nm&quot;);</span></a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineCov">          6 :     if(myunit.getLength()!=1.0 &amp;&amp; type==&quot;xtc&quot;) error(&quot;xtc files should be in nm&quot;);</span></a>
+<a name="225"><span class="lineNum">     225 </span><span class="lineCov">          6 :     if(myunit.getLength()!=1.0 &amp;&amp; type==&quot;trr&quot;) error(&quot;trr files should be in nm&quot;);</span></a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineCov">          8 :     lenunit=plumed.getAtoms().getUnits().getLength()/myunit.getLength();</span></a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineCov">        187 :   } else if(type==&quot;gro&quot; || type==&quot;xtc&quot; || type==&quot;trr&quot;) lenunit=plumed.getAtoms().getUnits().getLength();</span></a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineCov">         29 :   else lenunit=1.0;</span></a>
+<a name="229"><span class="lineNum">     229 </span>            : </a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineCov">         76 :   checkRead();</span></a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineCov">         76 :   of.link(*this);</span></a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineCov">         76 :   of.open(file);</span></a>
+<a name="233"><span class="lineNum">     233 </span>            :   std::string path=of.getPath();</a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">         76 :   log&lt;&lt;&quot;  Writing on file &quot;&lt;&lt;path&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="235"><span class="lineNum">     235 </span>            : #ifdef __PLUMED_HAS_XDRFILE</a>
+<a name="236"><span class="lineNum">     236 </span>            :   std::string mode=of.getMode();</a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineCov">         76 :   if(type==&quot;xtc&quot;) {</span></a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineCov">          6 :     of.close();</span></a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineCov">          6 :     xd=xdrfile_open(path.c_str(),mode.c_str());</span></a>
+<a name="240"><span class="lineNum">     240 </span><span class="lineCov">         70 :   } else if(type==&quot;trr&quot;) {</span></a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineCov">          4 :     of.close();</span></a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineCov">          4 :     xd=xdrfile_open(path.c_str(),mode.c_str());</span></a>
+<a name="243"><span class="lineNum">     243 </span>            :   }</a>
+<a name="244"><span class="lineNum">     244 </span>            : #endif</a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">         76 :   log.printf(&quot;  printing the following atoms in %s :&quot;, unitname.c_str() );</span></a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">      34890 :   for(unsigned i=0; i&lt;atoms.size(); ++i) log.printf(&quot; %d&quot;,atoms[i].serial() );</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">         76 :   log.printf(&quot;\n&quot;);</span></a>
+<a name="248"><span class="lineNum">     248 </span><span class="lineCov">         76 :   requestAtoms(atoms);</span></a>
+<a name="249"><span class="lineNum">     249 </span><span class="lineCov">        152 :   std::vector&lt;SetupMolInfo*&gt; moldat=plumed.getActionSet().select&lt;SetupMolInfo*&gt;();</span></a>
+<a name="250"><span class="lineNum">     250 </span><span class="lineCov">         76 :   if( moldat.size()==1 ) {</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         41 :     log&lt;&lt;&quot;  MOLINFO DATA found, using proper atom names\n&quot;;</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">         41 :     names.resize(atoms.size());</span></a>
+<a name="253"><span class="lineNum">     253 </span><span class="lineCov">      14297 :     for(unsigned i=0; i&lt;atoms.size(); i++) names[i]=moldat[0]-&gt;getAtomName(atoms[i]);</span></a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">         41 :     residueNumbers.resize(atoms.size());</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">       9545 :     for(unsigned i=0; i&lt;residueNumbers.size(); ++i) residueNumbers[i]=moldat[0]-&gt;getResidueNumber(atoms[i]);</span></a>
+<a name="256"><span class="lineNum">     256 </span><span class="lineCov">         41 :     residueNames.resize(atoms.size());</span></a>
+<a name="257"><span class="lineNum">     257 </span><span class="lineCov">      14297 :     for(unsigned i=0; i&lt;residueNames.size(); ++i) residueNames[i]=moldat[0]-&gt;getResidueName(atoms[i]);</span></a>
+<a name="258"><span class="lineNum">     258 </span>            :   }</a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">         76 : }</span></a>
+<a name="260"><span class="lineNum">     260 </span>            : </a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineCov">        635 : void DumpAtoms::update() {</span></a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineCov">       1270 :   if(type==&quot;xyz&quot;) {</span></a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineCov">        203 :     of.printf(&quot;%d\n&quot;,getNumberOfAtoms());</span></a>
+<a name="264"><span class="lineNum">     264 </span><span class="lineCov">        203 :     const Tensor &amp; t(getPbc().getBox());</span></a>
+<a name="265"><span class="lineNum">     265 </span><span class="lineCov">        203 :     if(getPbc().isOrthorombic()) {</span></a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineCov">       1169 :       of.printf((&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot;\n&quot;).c_str(),lenunit*t(0,0),lenunit*t(1,1),lenunit*t(2,2));</span></a>
+<a name="267"><span class="lineNum">     267 </span>            :     } else {</a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineCov">        648 :       of.printf((&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot;\n&quot;).c_str(),</span></a>
+<a name="269"><span class="lineNum">     269 </span><span class="lineCov">        108 :                 lenunit*t(0,0),lenunit*t(0,1),lenunit*t(0,2),</span></a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineCov">        108 :                 lenunit*t(1,0),lenunit*t(1,1),lenunit*t(1,2),</span></a>
+<a name="271"><span class="lineNum">     271 </span><span class="lineCov">        108 :                 lenunit*t(2,0),lenunit*t(2,1),lenunit*t(2,2)</span></a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">        396 :                );</span></a>
+<a name="273"><span class="lineNum">     273 </span>            :     }</a>
+<a name="274"><span class="lineNum">     274 </span><span class="lineCov">      70107 :     for(unsigned i=0; i&lt;getNumberOfAtoms(); ++i) {</span></a>
+<a name="275"><span class="lineNum">     275 </span>            :       const char* defname=&quot;X&quot;;</a>
+<a name="276"><span class="lineNum">     276 </span>            :       const char* name=defname;</a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">      45262 :       if(names.size()&gt;0) if(names[i].length()&gt;0) name=names[i].c_str();</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">     279616 :       of.printf((&quot;%s &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot; &quot;+fmt_xyz+&quot;\n&quot;).c_str(),name,lenunit*getPosition(i)(0),lenunit*getPosition(i)(1),lenunit*getPosition(i)(2));</span></a>
+<a name="279"><span class="lineNum">     279 </span>            :     }</a>
+<a name="280"><span class="lineNum">     280 </span><span class="lineCov">        432 :   } else if(type==&quot;gro&quot;) {</span></a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineCov">        312 :     const Tensor &amp; t(getPbc().getBox());</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineCov">        624 :     of.printf(&quot;Made with PLUMED t=%f\n&quot;,getTime()/plumed.getAtoms().getUnits().getTime());</span></a>
+<a name="283"><span class="lineNum">     283 </span><span class="lineCov">        312 :     of.printf(&quot;%d\n&quot;,getNumberOfAtoms());</span></a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineCov">      58016 :     for(unsigned i=0; i&lt;getNumberOfAtoms(); ++i) {</span></a>
+<a name="285"><span class="lineNum">     285 </span>            :       const char* defname=&quot;X&quot;;</a>
+<a name="286"><span class="lineNum">     286 </span>            :       const char* name=defname;</a>
+<a name="287"><span class="lineNum">     287 </span>            :       unsigned residueNumber=0;</a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineCov">      56591 :       if(names.size()&gt;0) if(names[i].length()&gt;0) name=names[i].c_str();</span></a>
+<a name="289"><span class="lineNum">     289 </span><span class="lineCov">      56591 :       if(residueNumbers.size()&gt;0) residueNumber=residueNumbers[i];</span></a>
+<a name="290"><span class="lineNum">     290 </span><span class="lineCov">      28696 :       std::string resname=&quot;&quot;;</span></a>
+<a name="291"><span class="lineNum">     291 </span><span class="lineCov">      28696 :       if(residueNames.size()&gt;0) resname=residueNames[i];</span></a>
+<a name="292"><span class="lineNum">     292 </span><span class="lineCov">     114784 :       of.printf((&quot;%5u%-5s%5s%5d&quot;+fmt_gro_pos+fmt_gro_pos+fmt_gro_pos+&quot;\n&quot;).c_str(),</span></a>
+<a name="293"><span class="lineNum">     293 </span>            :                 residueNumber%100000,resname.c_str(),name,getAbsoluteIndex(i).serial()%100000,</a>
+<a name="294"><span class="lineNum">     294 </span><span class="lineCov">     143480 :                 lenunit*getPosition(i)(0),lenunit*getPosition(i)(1),lenunit*getPosition(i)(2));</span></a>
+<a name="295"><span class="lineNum">     295 </span>            :     }</a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineCov">       5304 :     of.printf((fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot; &quot;+fmt_gro_box+&quot;\n&quot;).c_str(),</span></a>
+<a name="297"><span class="lineNum">     297 </span><span class="lineCov">        936 :               lenunit*t(0,0),lenunit*t(1,1),lenunit*t(2,2),</span></a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineCov">        936 :               lenunit*t(0,1),lenunit*t(0,2),lenunit*t(1,0),</span></a>
+<a name="299"><span class="lineNum">     299 </span><span class="lineCov">       2496 :               lenunit*t(1,2),lenunit*t(2,0),lenunit*t(2,1));</span></a>
+<a name="300"><span class="lineNum">     300 </span>            : #if defined(__PLUMED_HAS_XDRFILE)</a>
+<a name="301"><span class="lineNum">     301 </span><span class="lineCov">        168 :   } else if(type==&quot;xtc&quot; || type==&quot;trr&quot;) {</span></a>
+<a name="302"><span class="lineNum">     302 </span>            :     matrix box;</a>
+<a name="303"><span class="lineNum">     303 </span><span class="lineCov">        120 :     const Tensor &amp; t(getPbc().getBox());</span></a>
+<a name="304"><span class="lineNum">     304 </span><span class="lineCov">        120 :     int natoms=getNumberOfAtoms();</span></a>
+<a name="305"><span class="lineNum">     305 </span><span class="lineCov">        120 :     int step=getStep();</span></a>
+<a name="306"><span class="lineNum">     306 </span><span class="lineCov">        240 :     float time=getTime()/plumed.getAtoms().getUnits().getTime();</span></a>
+<a name="307"><span class="lineNum">     307 </span><span class="lineCov">        240 :     float precision=Tools::fastpow(10.0,iprecision);</span></a>
+<a name="308"><span class="lineNum">     308 </span><span class="lineCov">        120 :     for(int i=0; i&lt;3; i++) for(int j=0; j&lt;3; j++) box[i][j]=lenunit*t(i,j);</span></a>
+<a name="309"><span class="lineNum">     309 </span><span class="lineCov">        120 :     std::unique_ptr&lt;rvec[]&gt; pos(new rvec [natoms]);</span></a>
+<a name="310"><span class="lineNum">     310 </span><span class="lineCov">      57024 :     for(int i=0; i&lt;natoms; i++) for(int j=0; j&lt;3; j++) pos[i][j]=lenunit*getPosition(i)(j);</span></a>
+<a name="311"><span class="lineNum">     311 </span><span class="lineCov">        120 :     if(type==&quot;xtc&quot;) {</span></a>
+<a name="312"><span class="lineNum">     312 </span><span class="lineCov">         72 :       write_xtc(xd,natoms,step,time,box,&amp;pos[0],precision);</span></a>
+<a name="313"><span class="lineNum">     313 </span><span class="lineCov">         48 :     } else if(type==&quot;trr&quot;) {</span></a>
+<a name="314"><span class="lineNum">     314 </span><span class="lineCov">         48 :       write_trr(xd,natoms,step,time,0.0,box,&amp;pos[0],NULL,NULL);</span></a>
+<a name="315"><span class="lineNum">     315 </span>            :     }</a>
+<a name="316"><span class="lineNum">     316 </span>            : #endif</a>
+<a name="317"><span class="lineNum">     317 </span><span class="lineNoCov">          0 :   } else plumed_merror(&quot;unknown file type &quot;+type);</span></a>
+<a name="318"><span class="lineNum">     318 </span><span class="lineCov">        635 : }</span></a>
+<a name="319"><span class="lineNum">     319 </span>            : </a>
+<a name="320"><span class="lineNum">     320 </span><span class="lineCov">        380 : DumpAtoms::~DumpAtoms() {</span></a>
+<a name="321"><span class="lineNum">     321 </span>            : #ifdef __PLUMED_HAS_XDRFILE</a>
+<a name="322"><span class="lineNum">     322 </span><span class="lineCov">        152 :   if(type==&quot;xtc&quot;) {</span></a>
+<a name="323"><span class="lineNum">     323 </span><span class="lineCov">          6 :     xdrfile_close(xd);</span></a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineCov">         70 :   } else if(type==&quot;trr&quot;) {</span></a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineCov">          4 :     xdrfile_close(xd);</span></a>
+<a name="326"><span class="lineNum">     326 </span>            :   }</a>
+<a name="327"><span class="lineNum">     327 </span>            : #endif</a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineCov">        152 : }</span></a>
+<a name="329"><span class="lineNum">     329 </span>            : </a>
+<a name="330"><span class="lineNum">     330 </span>            : </a>
+<a name="331"><span class="lineNum">     331 </span>            : }</a>
+<a name="332"><span class="lineNum">     332 </span><span class="lineCov">       5874 : }</span></a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

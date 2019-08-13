@@ -1,0 +1,1054 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+<meta name="robots" content="noindex">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - plumed test coverage - core/PlumedMain.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">core</a> - PlumedMain.cpp<span style="font-size: 80%;"> (source / <a href="PlumedMain.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">plumed test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">456</td>
+            <td class="headerCovTableEntry">521</td>
+            <td class="headerCovTableEntryMed">87.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-08-13 10:15:31</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntry">35</td>
+            <td class="headerCovTableEntryHi">94.3 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (c) 2011-2019 The plumed team</a>
+<a name="3"><span class="lineNum">       3 </span>            :    (see the PEOPLE file at the root of the distribution for a list of names)</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            :    See http://www.plumed.org for more information.</a>
+<a name="6"><span class="lineNum">       6 </span>            : </a>
+<a name="7"><span class="lineNum">       7 </span>            :    This file is part of plumed, version 2.</a>
+<a name="8"><span class="lineNum">       8 </span>            : </a>
+<a name="9"><span class="lineNum">       9 </span>            :    plumed is free software: you can redistribute it and/or modify</a>
+<a name="10"><span class="lineNum">      10 </span>            :    it under the terms of the GNU Lesser General Public License as published by</a>
+<a name="11"><span class="lineNum">      11 </span>            :    the Free Software Foundation, either version 3 of the License, or</a>
+<a name="12"><span class="lineNum">      12 </span>            :    (at your option) any later version.</a>
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<a name="14"><span class="lineNum">      14 </span>            :    plumed is distributed in the hope that it will be useful,</a>
+<a name="15"><span class="lineNum">      15 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="16"><span class="lineNum">      16 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="17"><span class="lineNum">      17 </span>            :    GNU Lesser General Public License for more details.</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span>            :    You should have received a copy of the GNU Lesser General Public License</a>
+<a name="20"><span class="lineNum">      20 </span>            :    along with plumed.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="21"><span class="lineNum">      21 </span>            : +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */</a>
+<a name="22"><span class="lineNum">      22 </span>            : #include &quot;PlumedMain.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>            : #include &quot;ActionAtomistic.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>            : #include &quot;ActionPilot.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &quot;ActionRegister.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>            : #include &quot;ActionSet.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>            : #include &quot;ActionWithValue.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>            : #include &quot;ActionWithVirtualAtom.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>            : #include &quot;Atoms.h&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>            : #include &quot;CLToolMain.h&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>            : #include &quot;ExchangePatterns.h&quot;</a>
+<a name="32"><span class="lineNum">      32 </span>            : #include &quot;GREX.h&quot;</a>
+<a name="33"><span class="lineNum">      33 </span>            : #include &quot;config/Config.h&quot;</a>
+<a name="34"><span class="lineNum">      34 </span>            : #include &quot;tools/Citations.h&quot;</a>
+<a name="35"><span class="lineNum">      35 </span>            : #include &quot;tools/Communicator.h&quot;</a>
+<a name="36"><span class="lineNum">      36 </span>            : #include &quot;tools/DLLoader.h&quot;</a>
+<a name="37"><span class="lineNum">      37 </span>            : #include &quot;tools/Exception.h&quot;</a>
+<a name="38"><span class="lineNum">      38 </span>            : #include &quot;tools/IFile.h&quot;</a>
+<a name="39"><span class="lineNum">      39 </span>            : #include &quot;tools/Log.h&quot;</a>
+<a name="40"><span class="lineNum">      40 </span>            : #include &quot;tools/OpenMP.h&quot;</a>
+<a name="41"><span class="lineNum">      41 </span>            : #include &quot;tools/Tools.h&quot;</a>
+<a name="42"><span class="lineNum">      42 </span>            : #include &quot;tools/Stopwatch.h&quot;</a>
+<a name="43"><span class="lineNum">      43 </span>            : #include &quot;lepton/Exception.h&quot;</a>
+<a name="44"><span class="lineNum">      44 </span>            : #include &quot;DataFetchingObject.h&quot;</a>
+<a name="45"><span class="lineNum">      45 </span>            : #include &lt;cstdlib&gt;</a>
+<a name="46"><span class="lineNum">      46 </span>            : #include &lt;cstring&gt;</a>
+<a name="47"><span class="lineNum">      47 </span>            : #include &lt;set&gt;</a>
+<a name="48"><span class="lineNum">      48 </span>            : #include &lt;unordered_map&gt;</a>
+<a name="49"><span class="lineNum">      49 </span>            : #include &lt;exception&gt;</a>
+<a name="50"><span class="lineNum">      50 </span>            : #include &lt;stdexcept&gt;</a>
+<a name="51"><span class="lineNum">      51 </span>            : #include &lt;ios&gt;</a>
+<a name="52"><span class="lineNum">      52 </span>            : #include &lt;new&gt;</a>
+<a name="53"><span class="lineNum">      53 </span>            : #include &lt;typeinfo&gt;</a>
+<a name="54"><span class="lineNum">      54 </span>            : #ifdef __PLUMED_LIBCXX11</a>
+<a name="55"><span class="lineNum">      55 </span>            : #include &lt;system_error&gt;</a>
+<a name="56"><span class="lineNum">      56 </span>            : #include &lt;future&gt;</a>
+<a name="57"><span class="lineNum">      57 </span>            : #include &lt;memory&gt;</a>
+<a name="58"><span class="lineNum">      58 </span>            : #include &lt;functional&gt;</a>
+<a name="59"><span class="lineNum">      59 </span>            : #endif</a>
+<a name="60"><span class="lineNum">      60 </span>            : </a>
+<a name="61"><span class="lineNum">      61 </span>            : </a>
+<a name="62"><span class="lineNum">      62 </span>            : using namespace std;</a>
+<a name="63"><span class="lineNum">      63 </span>            : </a>
+<a name="64"><span class="lineNum">      64 </span>            : namespace PLMD {</a>
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<a name="66"><span class="lineNum">      66 </span>            : /// Small utility just used in this file to throw arbitrary exceptions</a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">         18 : static void testThrow(const char* what) {</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">         36 :   auto words=Tools::getWords(what);</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">         18 :   plumed_assert(words.size()&gt;0);</span></a>
+<a name="70"><span class="lineNum">      70 </span>            : #define __PLUMED_THROW_NOMSG(type) if(words[0]==#type) throw type()</a>
+<a name="71"><span class="lineNum">      71 </span>            : #define __PLUMED_THROW_MSG(type) if(words[0]==#type) throw type(what)</a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">         19 :   __PLUMED_THROW_MSG(PLMD::ExceptionError);</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         18 :   __PLUMED_THROW_MSG(PLMD::ExceptionDebug);</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">         17 :   __PLUMED_THROW_MSG(PLMD::Exception);</span></a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">         16 :   __PLUMED_THROW_MSG(PLMD::lepton::Exception);</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">         14 :   __PLUMED_THROW_NOMSG(std::bad_exception);</span></a>
+<a name="77"><span class="lineNum">      77 </span>            : #ifdef __PLUMED_LIBCXX11</a>
+<a name="78"><span class="lineNum">      78 </span>            :   __PLUMED_THROW_NOMSG(std::bad_array_new_length);</a>
+<a name="79"><span class="lineNum">      79 </span>            : #endif</a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineCov">         14 :   __PLUMED_THROW_NOMSG(std::bad_alloc);</span></a>
+<a name="81"><span class="lineNum">      81 </span>            : #ifdef __PLUMED_LIBCXX11</a>
+<a name="82"><span class="lineNum">      82 </span>            :   __PLUMED_THROW_NOMSG(std::bad_function_call);</a>
+<a name="83"><span class="lineNum">      83 </span>            :   __PLUMED_THROW_NOMSG(std::bad_weak_ptr);</a>
+<a name="84"><span class="lineNum">      84 </span>            : #endif</a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">         13 :   __PLUMED_THROW_NOMSG(std::bad_cast);</span></a>
+<a name="86"><span class="lineNum">      86 </span><span class="lineCov">         12 :   __PLUMED_THROW_NOMSG(std::bad_typeid);</span></a>
+<a name="87"><span class="lineNum">      87 </span><span class="lineCov">         11 :   __PLUMED_THROW_MSG(std::underflow_error);</span></a>
+<a name="88"><span class="lineNum">      88 </span><span class="lineCov">         10 :   __PLUMED_THROW_MSG(std::overflow_error);</span></a>
+<a name="89"><span class="lineNum">      89 </span><span class="lineCov">          9 :   __PLUMED_THROW_MSG(std::range_error);</span></a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">          8 :   __PLUMED_THROW_MSG(std::runtime_error);</span></a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">          7 :   __PLUMED_THROW_MSG(std::out_of_range);</span></a>
+<a name="92"><span class="lineNum">      92 </span><span class="lineCov">          6 :   __PLUMED_THROW_MSG(std::length_error);</span></a>
+<a name="93"><span class="lineNum">      93 </span><span class="lineCov">          5 :   __PLUMED_THROW_MSG(std::domain_error);</span></a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">          4 :   __PLUMED_THROW_MSG(std::invalid_argument);</span></a>
+<a name="95"><span class="lineNum">      95 </span><span class="lineCov">          3 :   __PLUMED_THROW_MSG(std::logic_error);</span></a>
+<a name="96"><span class="lineNum">      96 </span>            : </a>
+<a name="97"><span class="lineNum">      97 </span>            : #ifdef __PLUMED_LIBCXX11</a>
+<a name="98"><span class="lineNum">      98 </span>            :   if(words[0]==&quot;std::system_error&quot;) {</a>
+<a name="99"><span class="lineNum">      99 </span>            :     plumed_assert(words.size()&gt;2);</a>
+<a name="100"><span class="lineNum">     100 </span>            :     int error_code;</a>
+<a name="101"><span class="lineNum">     101 </span>            :     Tools::convert(words[2],error_code);</a>
+<a name="102"><span class="lineNum">     102 </span>            :     if(words[1]==&quot;std::generic_category&quot;) throw std::system_error(error_code,std::generic_category(),what);</a>
+<a name="103"><span class="lineNum">     103 </span>            :     if(words[1]==&quot;std::system_category&quot;) throw std::system_error(error_code,std::system_category(),what);</a>
+<a name="104"><span class="lineNum">     104 </span>            :     if(words[1]==&quot;std::iostream_category&quot;) throw std::system_error(error_code,std::iostream_category(),what);</a>
+<a name="105"><span class="lineNum">     105 </span>            :     if(words[1]==&quot;std::future_category&quot;) throw std::system_error(error_code,std::future_category(),what);</a>
+<a name="106"><span class="lineNum">     106 </span>            :   }</a>
+<a name="107"><span class="lineNum">     107 </span>            : #endif</a>
+<a name="108"><span class="lineNum">     108 </span>            : </a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">          1 :   if(words[0]==&quot;std::ios_base::failure&quot;) {</span></a>
+<a name="110"><span class="lineNum">     110 </span>            : #ifdef __PLUMED_LIBCXX11</a>
+<a name="111"><span class="lineNum">     111 </span>            :     int error_code=0;</a>
+<a name="112"><span class="lineNum">     112 </span>            :     if(words.size()&gt;2) Tools::convert(words[2],error_code);</a>
+<a name="113"><span class="lineNum">     113 </span>            :     if(words.size()&gt;1 &amp;&amp; words[1]==&quot;std::generic_category&quot;) throw std::ios_base::failure(what,std::error_code(error_code,std::generic_category()));</a>
+<a name="114"><span class="lineNum">     114 </span>            :     if(words.size()&gt;1 &amp;&amp; words[1]==&quot;std::system_category&quot;) throw std::ios_base::failure(what,std::error_code(error_code,std::system_category()));</a>
+<a name="115"><span class="lineNum">     115 </span>            :     if(words.size()&gt;1 &amp;&amp; words[1]==&quot;std::iostream_category&quot;) throw std::ios_base::failure(what,std::error_code(error_code,std::iostream_category()));</a>
+<a name="116"><span class="lineNum">     116 </span>            :     if(words.size()&gt;1 &amp;&amp; words[1]==&quot;std::future_category&quot;) throw std::ios_base::failure(what,std::error_code(error_code,std::future_category()));</a>
+<a name="117"><span class="lineNum">     117 </span>            : #endif</a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">          2 :     throw std::ios_base::failure(what);</span></a>
+<a name="119"><span class="lineNum">     119 </span>            :   }</a>
+<a name="120"><span class="lineNum">     120 </span>            : </a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :   plumed_error() &lt;&lt; &quot;unknown exception &quot; &lt;&lt; what;</span></a>
+<a name="122"><span class="lineNum">     122 </span>            : }</a>
+<a name="123"><span class="lineNum">     123 </span>            : </a>
+<a name="124"><span class="lineNum">     124 </span><span class="lineCov">       2726 : PlumedMain::PlumedMain():</span></a>
+<a name="125"><span class="lineNum">     125 </span>            :   initialized(false),</a>
+<a name="126"><span class="lineNum">     126 </span>            : // automatically write on log in destructor</a>
+<a name="127"><span class="lineNum">     127 </span>            :   stopwatch_fwd(log),</a>
+<a name="128"><span class="lineNum">     128 </span>            :   step(0),</a>
+<a name="129"><span class="lineNum">     129 </span>            :   active(false),</a>
+<a name="130"><span class="lineNum">     130 </span>            :   mydatafetcher(DataFetchingObject::create(sizeof(double),*this)),</a>
+<a name="131"><span class="lineNum">     131 </span>            :   endPlumed(false),</a>
+<a name="132"><span class="lineNum">     132 </span>            :   atoms_fwd(*this),</a>
+<a name="133"><span class="lineNum">     133 </span>            :   actionSet_fwd(*this),</a>
+<a name="134"><span class="lineNum">     134 </span>            :   bias(0.0),</a>
+<a name="135"><span class="lineNum">     135 </span>            :   work(0.0),</a>
+<a name="136"><span class="lineNum">     136 </span>            :   exchangeStep(false),</a>
+<a name="137"><span class="lineNum">     137 </span>            :   restart(false),</a>
+<a name="138"><span class="lineNum">     138 </span>            :   doCheckPoint(false),</a>
+<a name="139"><span class="lineNum">     139 </span>            :   stopFlag(NULL),</a>
+<a name="140"><span class="lineNum">     140 </span>            :   stopNow(false),</a>
+<a name="141"><span class="lineNum">     141 </span>            :   novirial(false),</a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">      40890 :   detailedTimers(false)</span></a>
+<a name="143"><span class="lineNum">     143 </span>            : {</a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">       2726 :   log.link(comm);</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">       5452 :   log.setLinePrefix(&quot;PLUMED: &quot;);</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">       2726 : }</span></a>
+<a name="147"><span class="lineNum">     147 </span>            : </a>
+<a name="148"><span class="lineNum">     148 </span>            : // destructor needed to delete forward declarated objects</a>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">       4830 : PlumedMain::~PlumedMain() {</span></a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">       4830 : }</span></a>
+<a name="151"><span class="lineNum">     151 </span>            : </a>
+<a name="152"><span class="lineNum">     152 </span>            : /////////////////////////////////////////////////////////////</a>
+<a name="153"><span class="lineNum">     153 </span>            : //  MAIN INTERPRETER</a>
+<a name="154"><span class="lineNum">     154 </span>            : </a>
+<a name="155"><span class="lineNum">     155 </span>            : #define CHECK_INIT(ini,word) plumed_massert(ini,&quot;cmd(\&quot;&quot; + word +&quot;\&quot;) should be only used after plumed initialization&quot;)</a>
+<a name="156"><span class="lineNum">     156 </span>            : #define CHECK_NOTINIT(ini,word) plumed_massert(!(ini),&quot;cmd(\&quot;&quot; + word +&quot;\&quot;) should be only used before plumed initialization&quot;)</a>
+<a name="157"><span class="lineNum">     157 </span>            : #define CHECK_NOTNULL(val,word) plumed_massert(val,&quot;NULL pointer received in cmd(\&quot;&quot; + word + &quot;\&quot;)&quot;);</a>
+<a name="158"><span class="lineNum">     158 </span>            : </a>
+<a name="159"><span class="lineNum">     159 </span>            : </a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">     517989 : void PlumedMain::cmd(const std::string &amp; word,void*val) {</span></a>
+<a name="161"><span class="lineNum">     161 </span>            : </a>
+<a name="162"><span class="lineNum">     162 </span>            : // Enumerate all possible commands:</a>
+<a name="163"><span class="lineNum">     163 </span>            :   enum {</a>
+<a name="164"><span class="lineNum">     164 </span>            : #include &quot;PlumedMainEnum.inc&quot;</a>
+<a name="165"><span class="lineNum">     165 </span>            :   };</a>
+<a name="166"><span class="lineNum">     166 </span>            : </a>
+<a name="167"><span class="lineNum">     167 </span>            : // Static object (initialized once) containing the map of commands:</a>
+<a name="168"><span class="lineNum">     168 </span>            :   const static std::unordered_map&lt;std::string, int&gt; word_map = {</a>
+<a name="169"><span class="lineNum">     169 </span>            : #include &quot;PlumedMainMap.inc&quot;</a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">     521883 :   };</span></a>
+<a name="171"><span class="lineNum">     171 </span>            : </a>
+<a name="172"><span class="lineNum">     172 </span>            :   try {</a>
+<a name="173"><span class="lineNum">     173 </span>            : </a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">     517989 :     auto ss=stopwatch.startPause();</span></a>
+<a name="175"><span class="lineNum">     175 </span>            : </a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">    1035978 :     std::vector&lt;std::string&gt; words=Tools::getWords(word);</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">     517989 :     unsigned nw=words.size();</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">     517989 :     if(nw==0) {</span></a>
+<a name="179"><span class="lineNum">     179 </span>            :       // do nothing</a>
+<a name="180"><span class="lineNum">     180 </span>            :     } else {</a>
+<a name="181"><span class="lineNum">     181 </span>            :       int iword=-1;</a>
+<a name="182"><span class="lineNum">     182 </span>            :       double d;</a>
+<a name="183"><span class="lineNum">     183 </span>            :       const auto it=word_map.find(words[0]);</a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineCov">     517989 :       if(it!=word_map.end()) iword=it-&gt;second;</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">     517989 :       switch(iword) {</span></a>
+<a name="186"><span class="lineNum">     186 </span>            :       case cmd_setBox:</a>
+<a name="187"><span class="lineNum">     187 </span><span class="lineCov">      38493 :         CHECK_INIT(initialized,word);</span></a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">      38493 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="189"><span class="lineNum">     189 </span><span class="lineCov">      38493 :         atoms.setBox(val);</span></a>
+<a name="190"><span class="lineNum">     190 </span>            :         break;</a>
+<a name="191"><span class="lineNum">     191 </span>            :       case cmd_setPositions:</a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineCov">      42333 :         CHECK_INIT(initialized,word);</span></a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineCov">      42333 :         atoms.setPositions(val);</span></a>
+<a name="194"><span class="lineNum">     194 </span>            :         break;</a>
+<a name="195"><span class="lineNum">     195 </span>            :       case cmd_setMasses:</a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineCov">      42336 :         CHECK_INIT(initialized,word);</span></a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">      42336 :         atoms.setMasses(val);</span></a>
+<a name="198"><span class="lineNum">     198 </span>            :         break;</a>
+<a name="199"><span class="lineNum">     199 </span>            :       case cmd_setCharges:</a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineCov">      32740 :         CHECK_INIT(initialized,word);</span></a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">      32740 :         atoms.setCharges(val);</span></a>
+<a name="202"><span class="lineNum">     202 </span>            :         break;</a>
+<a name="203"><span class="lineNum">     203 </span>            :       case cmd_setPositionsX:</a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineNoCov">          0 :         atoms.setPositions(val,0);</span></a>
+<a name="206"><span class="lineNum">     206 </span>            :         break;</a>
+<a name="207"><span class="lineNum">     207 </span>            :       case cmd_setPositionsY:</a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 :         atoms.setPositions(val,1);</span></a>
+<a name="210"><span class="lineNum">     210 </span>            :         break;</a>
+<a name="211"><span class="lineNum">     211 </span>            :       case cmd_setPositionsZ:</a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineNoCov">          0 :         atoms.setPositions(val,2);</span></a>
+<a name="214"><span class="lineNum">     214 </span>            :         break;</a>
+<a name="215"><span class="lineNum">     215 </span>            :       case cmd_setVirial:</a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineCov">      32835 :         CHECK_INIT(initialized,word);</span></a>
+<a name="217"><span class="lineNum">     217 </span><span class="lineCov">      32835 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">      32835 :         atoms.setVirial(val);</span></a>
+<a name="219"><span class="lineNum">     219 </span>            :         break;</a>
+<a name="220"><span class="lineNum">     220 </span>            :       case cmd_setEnergy:</a>
+<a name="221"><span class="lineNum">     221 </span><span class="lineCov">       9488 :         CHECK_INIT(initialized,word);</span></a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineCov">       9488 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">       9488 :         atoms.setEnergy(val);</span></a>
+<a name="224"><span class="lineNum">     224 </span>            :         break;</a>
+<a name="225"><span class="lineNum">     225 </span>            :       case cmd_setForces:</a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineCov">      42333 :         CHECK_INIT(initialized,word);</span></a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineCov">      42333 :         atoms.setForces(val);</span></a>
+<a name="228"><span class="lineNum">     228 </span>            :         break;</a>
+<a name="229"><span class="lineNum">     229 </span>            :       case cmd_setForcesX:</a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineNoCov">          0 :         atoms.setForces(val,0);</span></a>
+<a name="232"><span class="lineNum">     232 </span>            :         break;</a>
+<a name="233"><span class="lineNum">     233 </span>            :       case cmd_setForcesY:</a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="235"><span class="lineNum">     235 </span><span class="lineNoCov">          0 :         atoms.setForces(val,1);</span></a>
+<a name="236"><span class="lineNum">     236 </span>            :         break;</a>
+<a name="237"><span class="lineNum">     237 </span>            :       case cmd_setForcesZ:</a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineNoCov">          0 :         atoms.setForces(val,2);</span></a>
+<a name="240"><span class="lineNum">     240 </span>            :         break;</a>
+<a name="241"><span class="lineNum">     241 </span>            :       case cmd_calc:</a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineCov">      83583 :         CHECK_INIT(initialized,word);</span></a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">      83583 :         calc();</span></a>
+<a name="244"><span class="lineNum">     244 </span>            :         break;</a>
+<a name="245"><span class="lineNum">     245 </span>            :       case cmd_prepareDependencies:</a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">         87 :         CHECK_INIT(initialized,word);</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">         87 :         prepareDependencies();</span></a>
+<a name="248"><span class="lineNum">     248 </span>            :         break;</a>
+<a name="249"><span class="lineNum">     249 </span>            :       case cmd_shareData:</a>
+<a name="250"><span class="lineNum">     250 </span><span class="lineCov">         72 :         CHECK_INIT(initialized,word);</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         72 :         shareData();</span></a>
+<a name="252"><span class="lineNum">     252 </span>            :         break;</a>
+<a name="253"><span class="lineNum">     253 </span>            :       case cmd_prepareCalc:</a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">       2060 :         CHECK_INIT(initialized,word);</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">       2060 :         prepareCalc();</span></a>
+<a name="256"><span class="lineNum">     256 </span>            :         break;</a>
+<a name="257"><span class="lineNum">     257 </span>            :       case cmd_performCalc:</a>
+<a name="258"><span class="lineNum">     258 </span><span class="lineCov">         10 :         CHECK_INIT(initialized,word);</span></a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">         10 :         performCalc();</span></a>
+<a name="260"><span class="lineNum">     260 </span>            :         break;</a>
+<a name="261"><span class="lineNum">     261 </span>            :       case cmd_performCalcNoUpdate:</a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineCov">       2122 :         CHECK_INIT(initialized,word);</span></a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineCov">       2122 :         performCalcNoUpdate();</span></a>
+<a name="264"><span class="lineNum">     264 </span>            :         break;</a>
+<a name="265"><span class="lineNum">     265 </span>            :       case cmd_update:</a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineCov">         67 :         CHECK_INIT(initialized,word);</span></a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineCov">         67 :         update();</span></a>
+<a name="268"><span class="lineNum">     268 </span>            :         break;</a>
+<a name="269"><span class="lineNum">     269 </span>            :       case cmd_setStep:</a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineCov">       9693 :         CHECK_INIT(initialized,word);</span></a>
+<a name="271"><span class="lineNum">     271 </span><span class="lineCov">       9705 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">       9690 :         step=(*static_cast&lt;int*&gt;(val));</span></a>
+<a name="273"><span class="lineNum">     273 </span><span class="lineCov">       9690 :         atoms.startStep();</span></a>
+<a name="274"><span class="lineNum">     274 </span>            :         break;</a>
+<a name="275"><span class="lineNum">     275 </span>            :       case cmd_setStepLong:</a>
+<a name="276"><span class="lineNum">     276 </span><span class="lineCov">      75995 :         CHECK_INIT(initialized,word);</span></a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">      75995 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">      75995 :         step=(*static_cast&lt;long int*&gt;(val));</span></a>
+<a name="279"><span class="lineNum">     279 </span><span class="lineCov">      75995 :         atoms.startStep();</span></a>
+<a name="280"><span class="lineNum">     280 </span>            :         break;</a>
+<a name="281"><span class="lineNum">     281 </span>            :       // words used less frequently:</a>
+<a name="282"><span class="lineNum">     282 </span>            :       case cmd_setAtomsNlocal:</a>
+<a name="283"><span class="lineNum">     283 </span><span class="lineCov">       1128 :         CHECK_INIT(initialized,word);</span></a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineCov">       1128 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="285"><span class="lineNum">     285 </span><span class="lineCov">       1128 :         atoms.setAtomsNlocal(*static_cast&lt;int*&gt;(val));</span></a>
+<a name="286"><span class="lineNum">     286 </span>            :         break;</a>
+<a name="287"><span class="lineNum">     287 </span>            :       case cmd_setAtomsGatindex:</a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineCov">        976 :         CHECK_INIT(initialized,word);</span></a>
+<a name="289"><span class="lineNum">     289 </span><span class="lineCov">        976 :         atoms.setAtomsGatindex(static_cast&lt;int*&gt;(val),false);</span></a>
+<a name="290"><span class="lineNum">     290 </span>            :         break;</a>
+<a name="291"><span class="lineNum">     291 </span>            :       case cmd_setAtomsFGatindex:</a>
+<a name="292"><span class="lineNum">     292 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="293"><span class="lineNum">     293 </span><span class="lineNoCov">          0 :         atoms.setAtomsGatindex(static_cast&lt;int*&gt;(val),true);</span></a>
+<a name="294"><span class="lineNum">     294 </span>            :         break;</a>
+<a name="295"><span class="lineNum">     295 </span>            :       case cmd_setAtomsContiguous:</a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineCov">        152 :         CHECK_INIT(initialized,word);</span></a>
+<a name="297"><span class="lineNum">     297 </span><span class="lineCov">        152 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineCov">        152 :         atoms.setAtomsContiguous(*static_cast&lt;int*&gt;(val));</span></a>
+<a name="299"><span class="lineNum">     299 </span>            :         break;</a>
+<a name="300"><span class="lineNum">     300 </span>            :       case cmd_createFullList:</a>
+<a name="301"><span class="lineNum">     301 </span><span class="lineCov">        104 :         CHECK_INIT(initialized,word);</span></a>
+<a name="302"><span class="lineNum">     302 </span><span class="lineCov">        104 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="303"><span class="lineNum">     303 </span><span class="lineCov">        104 :         atoms.createFullList(static_cast&lt;int*&gt;(val));</span></a>
+<a name="304"><span class="lineNum">     304 </span>            :         break;</a>
+<a name="305"><span class="lineNum">     305 </span>            :       case cmd_getFullList:</a>
+<a name="306"><span class="lineNum">     306 </span><span class="lineCov">        104 :         CHECK_INIT(initialized,word);</span></a>
+<a name="307"><span class="lineNum">     307 </span><span class="lineCov">        104 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="308"><span class="lineNum">     308 </span><span class="lineCov">        104 :         atoms.getFullList(static_cast&lt;int**&gt;(val));</span></a>
+<a name="309"><span class="lineNum">     309 </span>            :         break;</a>
+<a name="310"><span class="lineNum">     310 </span>            :       case cmd_clearFullList:</a>
+<a name="311"><span class="lineNum">     311 </span><span class="lineCov">        104 :         CHECK_INIT(initialized,word);</span></a>
+<a name="312"><span class="lineNum">     312 </span><span class="lineCov">        104 :         atoms.clearFullList();</span></a>
+<a name="313"><span class="lineNum">     313 </span>            :         break;</a>
+<a name="314"><span class="lineNum">     314 </span>            :       /* ADDED WITH API==6 */</a>
+<a name="315"><span class="lineNum">     315 </span>            :       case cmd_getDataRank:</a>
+<a name="316"><span class="lineNum">     316 </span><span class="lineCov">         32 :         CHECK_INIT(initialized,words[0]); plumed_assert(nw==2 || nw==3);</span></a>
+<a name="317"><span class="lineNum">     317 </span><span class="lineCov">        162 :         if( nw==2 ) DataFetchingObject::get_rank( actionSet, words[1], &quot;&quot;, static_cast&lt;long*&gt;(val) );</span></a>
+<a name="318"><span class="lineNum">     318 </span><span class="lineNoCov">          0 :         else DataFetchingObject::get_rank( actionSet, words[1], words[2], static_cast&lt;long*&gt;(val) );</span></a>
+<a name="319"><span class="lineNum">     319 </span>            :         break;</a>
+<a name="320"><span class="lineNum">     320 </span>            :       /* ADDED WITH API==6 */</a>
+<a name="321"><span class="lineNum">     321 </span>            :       case cmd_getDataShape:</a>
+<a name="322"><span class="lineNum">     322 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,words[0]); plumed_assert(nw==2 || nw==3);</span></a>
+<a name="323"><span class="lineNum">     323 </span><span class="lineCov">         66 :         if( nw==2 ) DataFetchingObject::get_shape( actionSet, words[1], &quot;&quot;, static_cast&lt;long*&gt;(val) );</span></a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineNoCov">          0 :         else DataFetchingObject::get_shape( actionSet, words[1], words[2], static_cast&lt;long*&gt;(val) );</span></a>
+<a name="325"><span class="lineNum">     325 </span>            :         break;</a>
+<a name="326"><span class="lineNum">     326 </span>            :       /* ADDED WITH API==6 */</a>
+<a name="327"><span class="lineNum">     327 </span>            :       case cmd_setMemoryForData:</a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineCov">         32 :         CHECK_INIT(initialized,words[0]); plumed_assert(nw==2 || nw==3);</span></a>
+<a name="329"><span class="lineNum">     329 </span><span class="lineCov">        194 :         if( nw==2 ) mydatafetcher-&gt;setData( words[1], &quot;&quot;, val );</span></a>
+<a name="330"><span class="lineNum">     330 </span><span class="lineNoCov">          0 :         else mydatafetcher-&gt;setData( words[1], words[2], val );</span></a>
+<a name="331"><span class="lineNum">     331 </span>            :         break;</a>
+<a name="332"><span class="lineNum">     332 </span>            :       /* ADDED WITH API==6 */</a>
+<a name="333"><span class="lineNum">     333 </span>            :       case cmd_setErrorHandler:</a>
+<a name="334"><span class="lineNum">     334 </span>            :       {</a>
+<a name="335"><span class="lineNum">     335 </span><span class="lineNoCov">          0 :         if(val) error_handler=*static_cast&lt;plumed_error_handler*&gt;(val);</span></a>
+<a name="336"><span class="lineNum">     336 </span><span class="lineNoCov">          0 :         else error_handler.handler=NULL;</span></a>
+<a name="337"><span class="lineNum">     337 </span>            :       }</a>
+<a name="338"><span class="lineNum">     338 </span>            :       break;</a>
+<a name="339"><span class="lineNum">     339 </span>            :       case cmd_read:</a>
+<a name="340"><span class="lineNum">     340 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="341"><span class="lineNum">     341 </span><span class="lineCov">         66 :         if(val)readInputFile(static_cast&lt;char*&gt;(val));</span></a>
+<a name="342"><span class="lineNum">     342 </span><span class="lineCov">         66 :         else   readInputFile(&quot;plumed.dat&quot;);</span></a>
+<a name="343"><span class="lineNum">     343 </span>            :         break;</a>
+<a name="344"><span class="lineNum">     344 </span>            :       case cmd_readInputLine:</a>
+<a name="345"><span class="lineNum">     345 </span><span class="lineCov">        197 :         CHECK_INIT(initialized,word);</span></a>
+<a name="346"><span class="lineNum">     346 </span><span class="lineCov">        197 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="347"><span class="lineNum">     347 </span><span class="lineCov">        460 :         readInputLine(static_cast&lt;char*&gt;(val));</span></a>
+<a name="348"><span class="lineNum">     348 </span><span class="lineCov">        157 :         break;</span></a>
+<a name="349"><span class="lineNum">     349 </span>            :       case cmd_clear:</a>
+<a name="350"><span class="lineNum">     350 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="351"><span class="lineNum">     351 </span><span class="lineNoCov">          0 :         actionSet.clearDelete();</span></a>
+<a name="352"><span class="lineNum">     352 </span>            :         break;</a>
+<a name="353"><span class="lineNum">     353 </span>            :       case cmd_getApiVersion:</a>
+<a name="354"><span class="lineNum">     354 </span><span class="lineCov">         20 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="355"><span class="lineNum">     355 </span><span class="lineCov">         20 :         *(static_cast&lt;int*&gt;(val))=6;</span></a>
+<a name="356"><span class="lineNum">     356 </span><span class="lineCov">         20 :         break;</span></a>
+<a name="357"><span class="lineNum">     357 </span>            :       // commands which can be used only before initialization:</a>
+<a name="358"><span class="lineNum">     358 </span>            :       case cmd_init:</a>
+<a name="359"><span class="lineNum">     359 </span><span class="lineCov">        771 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="360"><span class="lineNum">     360 </span><span class="lineCov">        771 :         init();</span></a>
+<a name="361"><span class="lineNum">     361 </span>            :         break;</a>
+<a name="362"><span class="lineNum">     362 </span>            :       case cmd_setRealPrecision:</a>
+<a name="363"><span class="lineNum">     363 </span><span class="lineCov">        664 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="364"><span class="lineNum">     364 </span><span class="lineCov">        664 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="365"><span class="lineNum">     365 </span><span class="lineCov">        664 :         atoms.setRealPrecision(*static_cast&lt;int*&gt;(val));</span></a>
+<a name="366"><span class="lineNum">     366 </span><span class="lineCov">       1326 :         mydatafetcher=DataFetchingObject::create(*static_cast&lt;int*&gt;(val),*this);</span></a>
+<a name="367"><span class="lineNum">     367 </span><span class="lineCov">        663 :         break;</span></a>
+<a name="368"><span class="lineNum">     368 </span>            :       case cmd_setMDLengthUnits:</a>
+<a name="369"><span class="lineNum">     369 </span><span class="lineCov">        620 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="370"><span class="lineNum">     370 </span><span class="lineCov">        620 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="371"><span class="lineNum">     371 </span><span class="lineCov">        620 :         atoms.MD2double(val,d);</span></a>
+<a name="372"><span class="lineNum">     372 </span><span class="lineCov">        620 :         atoms.setMDLengthUnits(d);</span></a>
+<a name="373"><span class="lineNum">     373 </span>            :         break;</a>
+<a name="374"><span class="lineNum">     374 </span>            :       case cmd_setMDChargeUnits:</a>
+<a name="375"><span class="lineNum">     375 </span><span class="lineCov">        620 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="376"><span class="lineNum">     376 </span><span class="lineCov">        620 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="377"><span class="lineNum">     377 </span><span class="lineCov">        620 :         atoms.MD2double(val,d);</span></a>
+<a name="378"><span class="lineNum">     378 </span><span class="lineCov">        620 :         atoms.setMDChargeUnits(d);</span></a>
+<a name="379"><span class="lineNum">     379 </span>            :         break;</a>
+<a name="380"><span class="lineNum">     380 </span>            :       case cmd_setMDMassUnits:</a>
+<a name="381"><span class="lineNum">     381 </span><span class="lineCov">        620 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="382"><span class="lineNum">     382 </span><span class="lineCov">        620 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="383"><span class="lineNum">     383 </span><span class="lineCov">        620 :         atoms.MD2double(val,d);</span></a>
+<a name="384"><span class="lineNum">     384 </span><span class="lineCov">        620 :         atoms.setMDMassUnits(d);</span></a>
+<a name="385"><span class="lineNum">     385 </span>            :         break;</a>
+<a name="386"><span class="lineNum">     386 </span>            :       case cmd_setMDEnergyUnits:</a>
+<a name="387"><span class="lineNum">     387 </span><span class="lineCov">         42 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="388"><span class="lineNum">     388 </span><span class="lineCov">         42 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="389"><span class="lineNum">     389 </span><span class="lineCov">         42 :         atoms.MD2double(val,d);</span></a>
+<a name="390"><span class="lineNum">     390 </span><span class="lineCov">         42 :         atoms.setMDEnergyUnits(d);</span></a>
+<a name="391"><span class="lineNum">     391 </span>            :         break;</a>
+<a name="392"><span class="lineNum">     392 </span>            :       case cmd_setMDTimeUnits:</a>
+<a name="393"><span class="lineNum">     393 </span><span class="lineCov">          5 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="394"><span class="lineNum">     394 </span><span class="lineCov">          5 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="395"><span class="lineNum">     395 </span><span class="lineCov">          5 :         atoms.MD2double(val,d);</span></a>
+<a name="396"><span class="lineNum">     396 </span><span class="lineCov">          5 :         atoms.setMDTimeUnits(d);</span></a>
+<a name="397"><span class="lineNum">     397 </span>            :         break;</a>
+<a name="398"><span class="lineNum">     398 </span>            :       case cmd_setNaturalUnits:</a>
+<a name="399"><span class="lineNum">     399 </span>            :         // set the boltzman constant for MD in natural units (kb=1)</a>
+<a name="400"><span class="lineNum">     400 </span>            :         // only needed in LJ codes if the MD is passing temperatures to plumed (so, not yet...)</a>
+<a name="401"><span class="lineNum">     401 </span>            :         // use as cmd(&quot;setNaturalUnits&quot;)</a>
+<a name="402"><span class="lineNum">     402 </span><span class="lineNoCov">          0 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="403"><span class="lineNum">     403 </span><span class="lineNoCov">          0 :         atoms.setMDNaturalUnits(true);</span></a>
+<a name="404"><span class="lineNum">     404 </span>            :         break;</a>
+<a name="405"><span class="lineNum">     405 </span>            :       case cmd_setNoVirial:</a>
+<a name="406"><span class="lineNum">     406 </span><span class="lineCov">         48 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="407"><span class="lineNum">     407 </span><span class="lineCov">         48 :         novirial=true;</span></a>
+<a name="408"><span class="lineNum">     408 </span><span class="lineCov">         48 :         break;</span></a>
+<a name="409"><span class="lineNum">     409 </span>            :       case cmd_setPlumedDat:</a>
+<a name="410"><span class="lineNum">     410 </span><span class="lineCov">        671 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="411"><span class="lineNum">     411 </span><span class="lineCov">        671 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="412"><span class="lineNum">     412 </span><span class="lineCov">        671 :         plumedDat=static_cast&lt;char*&gt;(val);</span></a>
+<a name="413"><span class="lineNum">     413 </span>            :         break;</a>
+<a name="414"><span class="lineNum">     414 </span>            :       case cmd_setMPIComm:</a>
+<a name="415"><span class="lineNum">     415 </span><span class="lineCov">        293 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="416"><span class="lineNum">     416 </span><span class="lineCov">        293 :         comm.Set_comm(val);</span></a>
+<a name="417"><span class="lineNum">     417 </span><span class="lineCov">        293 :         atoms.setDomainDecomposition(comm);</span></a>
+<a name="418"><span class="lineNum">     418 </span>            :         break;</a>
+<a name="419"><span class="lineNum">     419 </span>            :       case cmd_setMPIFComm:</a>
+<a name="420"><span class="lineNum">     420 </span><span class="lineNoCov">          0 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="421"><span class="lineNum">     421 </span><span class="lineNoCov">          0 :         comm.Set_fcomm(val);</span></a>
+<a name="422"><span class="lineNum">     422 </span><span class="lineNoCov">          0 :         atoms.setDomainDecomposition(comm);</span></a>
+<a name="423"><span class="lineNum">     423 </span>            :         break;</a>
+<a name="424"><span class="lineNum">     424 </span>            :       case cmd_setMPImultiSimComm:</a>
+<a name="425"><span class="lineNum">     425 </span><span class="lineNoCov">          0 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="426"><span class="lineNum">     426 </span><span class="lineNoCov">          0 :         multi_sim_comm.Set_comm(val);</span></a>
+<a name="427"><span class="lineNum">     427 </span>            :         break;</a>
+<a name="428"><span class="lineNum">     428 </span>            :       case cmd_setNatoms:</a>
+<a name="429"><span class="lineNum">     429 </span><span class="lineCov">        771 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="430"><span class="lineNum">     430 </span><span class="lineCov">        771 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="431"><span class="lineNum">     431 </span><span class="lineCov">        771 :         atoms.setNatoms(*static_cast&lt;int*&gt;(val));</span></a>
+<a name="432"><span class="lineNum">     432 </span>            :         break;</a>
+<a name="433"><span class="lineNum">     433 </span>            :       case cmd_setTimestep:</a>
+<a name="434"><span class="lineNum">     434 </span><span class="lineCov">        671 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="435"><span class="lineNum">     435 </span><span class="lineCov">        671 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="436"><span class="lineNum">     436 </span><span class="lineCov">        671 :         atoms.setTimeStep(val);</span></a>
+<a name="437"><span class="lineNum">     437 </span>            :         break;</a>
+<a name="438"><span class="lineNum">     438 </span>            :       /* ADDED WITH API==2 */</a>
+<a name="439"><span class="lineNum">     439 </span>            :       case cmd_setKbT:</a>
+<a name="440"><span class="lineNum">     440 </span><span class="lineCov">         53 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="441"><span class="lineNum">     441 </span><span class="lineCov">         53 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="442"><span class="lineNum">     442 </span><span class="lineCov">         53 :         atoms.setKbT(val);</span></a>
+<a name="443"><span class="lineNum">     443 </span>            :         break;</a>
+<a name="444"><span class="lineNum">     444 </span>            :       /* ADDED WITH API==3 */</a>
+<a name="445"><span class="lineNum">     445 </span>            :       case cmd_setRestart:</a>
+<a name="446"><span class="lineNum">     446 </span><span class="lineCov">          5 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="447"><span class="lineNum">     447 </span><span class="lineCov">          5 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="448"><span class="lineNum">     448 </span><span class="lineCov">          5 :         if(*static_cast&lt;int*&gt;(val)!=0) restart=true;</span></a>
+<a name="449"><span class="lineNum">     449 </span>            :         break;</a>
+<a name="450"><span class="lineNum">     450 </span>            :       /* ADDED WITH API==4 */</a>
+<a name="451"><span class="lineNum">     451 </span>            :       case cmd_doCheckPoint:</a>
+<a name="452"><span class="lineNum">     452 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="453"><span class="lineNum">     453 </span><span class="lineNoCov">          0 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="454"><span class="lineNum">     454 </span><span class="lineNoCov">          0 :         doCheckPoint = false;</span></a>
+<a name="455"><span class="lineNum">     455 </span><span class="lineNoCov">          0 :         if(*static_cast&lt;int*&gt;(val)!=0) doCheckPoint = true;</span></a>
+<a name="456"><span class="lineNum">     456 </span>            :         break;</a>
+<a name="457"><span class="lineNum">     457 </span>            :       /* ADDED WITH API==6 */</a>
+<a name="458"><span class="lineNum">     458 </span>            :       case cmd_setNumOMPthreads:</a>
+<a name="459"><span class="lineNum">     459 </span><span class="lineNoCov">          0 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="460"><span class="lineNum">     460 </span><span class="lineNoCov">          0 :         OpenMP::setNumThreads(*static_cast&lt;int*&gt;(val)&gt;0?*static_cast&lt;int*&gt;(val):1);</span></a>
+<a name="461"><span class="lineNum">     461 </span>            :         break;</a>
+<a name="462"><span class="lineNum">     462 </span>            :       /* ADDED WITH API==6 */</a>
+<a name="463"><span class="lineNum">     463 </span>            :       /* only used for testing */</a>
+<a name="464"><span class="lineNum">     464 </span>            :       case cmd_throw:</a>
+<a name="465"><span class="lineNum">     465 </span><span class="lineCov">         18 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="466"><span class="lineNum">     466 </span><span class="lineCov">         18 :         testThrow((const char*) val);</span></a>
+<a name="467"><span class="lineNum">     467 </span>            :       /* STOP API */</a>
+<a name="468"><span class="lineNum">     468 </span>            :       case cmd_setMDEngine:</a>
+<a name="469"><span class="lineNum">     469 </span><span class="lineCov">        668 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="470"><span class="lineNum">     470 </span><span class="lineCov">        668 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="471"><span class="lineNum">     471 </span><span class="lineCov">        668 :         MDEngine=static_cast&lt;char*&gt;(val);</span></a>
+<a name="472"><span class="lineNum">     472 </span>            :         break;</a>
+<a name="473"><span class="lineNum">     473 </span>            :       case cmd_setLog:</a>
+<a name="474"><span class="lineNum">     474 </span><span class="lineCov">        657 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="475"><span class="lineNum">     475 </span><span class="lineCov">        657 :         log.link(static_cast&lt;FILE*&gt;(val));</span></a>
+<a name="476"><span class="lineNum">     476 </span>            :         break;</a>
+<a name="477"><span class="lineNum">     477 </span>            :       case cmd_setLogFile:</a>
+<a name="478"><span class="lineNum">     478 </span><span class="lineCov">         45 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="479"><span class="lineNum">     479 </span><span class="lineCov">         45 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="480"><span class="lineNum">     480 </span><span class="lineCov">        156 :         log.open(static_cast&lt;char*&gt;(val));</span></a>
+<a name="481"><span class="lineNum">     481 </span><span class="lineCov">         45 :         break;</span></a>
+<a name="482"><span class="lineNum">     482 </span>            :       // other commands that should be used after initialization:</a>
+<a name="483"><span class="lineNum">     483 </span>            :       case cmd_setStopFlag:</a>
+<a name="484"><span class="lineNum">     484 </span><span class="lineCov">      83512 :         CHECK_INIT(initialized,word);</span></a>
+<a name="485"><span class="lineNum">     485 </span><span class="lineCov">      83512 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="486"><span class="lineNum">     486 </span><span class="lineCov">      83512 :         stopFlag=static_cast&lt;int*&gt;(val);</span></a>
+<a name="487"><span class="lineNum">     487 </span><span class="lineCov">      83512 :         break;</span></a>
+<a name="488"><span class="lineNum">     488 </span>            :       case cmd_getExchangesFlag:</a>
+<a name="489"><span class="lineNum">     489 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="490"><span class="lineNum">     490 </span><span class="lineNoCov">          0 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="491"><span class="lineNum">     491 </span><span class="lineNoCov">          0 :         exchangePatterns.getFlag((*static_cast&lt;int*&gt;(val)));</span></a>
+<a name="492"><span class="lineNum">     492 </span>            :         break;</a>
+<a name="493"><span class="lineNum">     493 </span>            :       case cmd_setExchangesSeed:</a>
+<a name="494"><span class="lineNum">     494 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="495"><span class="lineNum">     495 </span><span class="lineNoCov">          0 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="496"><span class="lineNum">     496 </span><span class="lineNoCov">          0 :         exchangePatterns.setSeed((*static_cast&lt;int*&gt;(val)));</span></a>
+<a name="497"><span class="lineNum">     497 </span>            :         break;</a>
+<a name="498"><span class="lineNum">     498 </span>            :       case cmd_setNumberOfReplicas:</a>
+<a name="499"><span class="lineNum">     499 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="500"><span class="lineNum">     500 </span><span class="lineNoCov">          0 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="501"><span class="lineNum">     501 </span><span class="lineNoCov">          0 :         exchangePatterns.setNofR((*static_cast&lt;int*&gt;(val)));</span></a>
+<a name="502"><span class="lineNum">     502 </span>            :         break;</a>
+<a name="503"><span class="lineNum">     503 </span>            :       case cmd_getExchangesList:</a>
+<a name="504"><span class="lineNum">     504 </span><span class="lineNoCov">          0 :         CHECK_INIT(initialized,word);</span></a>
+<a name="505"><span class="lineNum">     505 </span><span class="lineNoCov">          0 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="506"><span class="lineNum">     506 </span><span class="lineNoCov">          0 :         exchangePatterns.getList((static_cast&lt;int*&gt;(val)));</span></a>
+<a name="507"><span class="lineNum">     507 </span>            :         break;</a>
+<a name="508"><span class="lineNum">     508 </span>            :       case cmd_runFinalJobs:</a>
+<a name="509"><span class="lineNum">     509 </span><span class="lineCov">        624 :         CHECK_INIT(initialized,word);</span></a>
+<a name="510"><span class="lineNum">     510 </span><span class="lineCov">        624 :         runJobsAtEndOfCalculation();</span></a>
+<a name="511"><span class="lineNum">     511 </span>            :         break;</a>
+<a name="512"><span class="lineNum">     512 </span>            :       case cmd_isEnergyNeeded:</a>
+<a name="513"><span class="lineNum">     513 </span><span class="lineCov">         77 :         CHECK_INIT(initialized,word);</span></a>
+<a name="514"><span class="lineNum">     514 </span><span class="lineCov">         77 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="515"><span class="lineNum">     515 </span><span class="lineCov">        154 :         if(atoms.isEnergyNeeded()) *(static_cast&lt;int*&gt;(val))=1;</span></a>
+<a name="516"><span class="lineNum">     516 </span><span class="lineCov">         77 :         else                       *(static_cast&lt;int*&gt;(val))=0;</span></a>
+<a name="517"><span class="lineNum">     517 </span>            :         break;</a>
+<a name="518"><span class="lineNum">     518 </span>            :       case cmd_getBias:</a>
+<a name="519"><span class="lineNum">     519 </span><span class="lineCov">       2132 :         CHECK_INIT(initialized,word);</span></a>
+<a name="520"><span class="lineNum">     520 </span><span class="lineCov">       2132 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="521"><span class="lineNum">     521 </span><span class="lineCov">       2198 :         atoms.double2MD(getBias()/(atoms.getMDUnits().getEnergy()/atoms.getUnits().getEnergy()),val);</span></a>
+<a name="522"><span class="lineNum">     522 </span><span class="lineCov">       2132 :         break;</span></a>
+<a name="523"><span class="lineNum">     523 </span>            :       case cmd_checkAction:</a>
+<a name="524"><span class="lineNum">     524 </span><span class="lineNoCov">          0 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="525"><span class="lineNum">     525 </span><span class="lineNoCov">          0 :         plumed_assert(nw==2);</span></a>
+<a name="526"><span class="lineNum">     526 </span><span class="lineNoCov">          0 :         *(static_cast&lt;int*&gt;(val))=(actionRegister().check(words[1]) ? 1:0);</span></a>
+<a name="527"><span class="lineNum">     527 </span><span class="lineNoCov">          0 :         break;</span></a>
+<a name="528"><span class="lineNum">     528 </span>            :       case cmd_setExtraCV:</a>
+<a name="529"><span class="lineNum">     529 </span><span class="lineCov">         20 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="530"><span class="lineNum">     530 </span><span class="lineCov">         20 :         plumed_assert(nw==2);</span></a>
+<a name="531"><span class="lineNum">     531 </span><span class="lineCov">         20 :         atoms.setExtraCV(words[1],val);</span></a>
+<a name="532"><span class="lineNum">     532 </span>            :         break;</a>
+<a name="533"><span class="lineNum">     533 </span>            :       case cmd_setExtraCVForce:</a>
+<a name="534"><span class="lineNum">     534 </span><span class="lineCov">         20 :         CHECK_NOTNULL(val,word);</span></a>
+<a name="535"><span class="lineNum">     535 </span><span class="lineCov">         20 :         plumed_assert(nw==2);</span></a>
+<a name="536"><span class="lineNum">     536 </span><span class="lineCov">         20 :         atoms.setExtraCVForce(words[1],val);</span></a>
+<a name="537"><span class="lineNum">     537 </span>            :         break;</a>
+<a name="538"><span class="lineNum">     538 </span>            :       case cmd_GREX:</a>
+<a name="539"><span class="lineNum">     539 </span><span class="lineCov">       1023 :         if(!grex) grex.reset(new GREX(*this));</span></a>
+<a name="540"><span class="lineNum">     540 </span><span class="lineCov">       1023 :         plumed_massert(grex,&quot;error allocating grex&quot;);</span></a>
+<a name="541"><span class="lineNum">     541 </span>            :         {</a>
+<a name="542"><span class="lineNum">     542 </span><span class="lineCov">       1023 :           std::string kk=words[1];</span></a>
+<a name="543"><span class="lineNum">     543 </span><span class="lineCov">       1536 :           for(unsigned i=2; i&lt;words.size(); i++) kk+=&quot; &quot;+words[i];</span></a>
+<a name="544"><span class="lineNum">     544 </span><span class="lineCov">       3069 :           grex-&gt;cmd(kk.c_str(),val);</span></a>
+<a name="545"><span class="lineNum">     545 </span>            :         }</a>
+<a name="546"><span class="lineNum">     546 </span><span class="lineCov">       1023 :         break;</span></a>
+<a name="547"><span class="lineNum">     547 </span>            :       case cmd_CLTool:</a>
+<a name="548"><span class="lineNum">     548 </span><span class="lineCov">       6242 :         CHECK_NOTINIT(initialized,word);</span></a>
+<a name="549"><span class="lineNum">     549 </span><span class="lineCov">       6242 :         if(!cltool) cltool.reset(new CLToolMain);</span></a>
+<a name="550"><span class="lineNum">     550 </span>            :         {</a>
+<a name="551"><span class="lineNum">     551 </span><span class="lineCov">       6242 :           std::string kk=words[1];</span></a>
+<a name="552"><span class="lineNum">     552 </span><span class="lineCov">       6242 :           for(unsigned i=2; i&lt;words.size(); i++) kk+=&quot; &quot;+words[i];</span></a>
+<a name="553"><span class="lineNum">     553 </span><span class="lineCov">      18726 :           cltool-&gt;cmd(kk.c_str(),val);</span></a>
+<a name="554"><span class="lineNum">     554 </span>            :         }</a>
+<a name="555"><span class="lineNum">     555 </span><span class="lineCov">       6242 :         break;</span></a>
+<a name="556"><span class="lineNum">     556 </span>            :       case cmd_convert:</a>
+<a name="557"><span class="lineNum">     557 </span>            :       {</a>
+<a name="558"><span class="lineNum">     558 </span>            :         double v;</a>
+<a name="559"><span class="lineNum">     559 </span><span class="lineNoCov">          0 :         plumed_assert(words.size()==2);</span></a>
+<a name="560"><span class="lineNum">     560 </span><span class="lineNoCov">          0 :         if(Tools::convert(words[1],v)) atoms.double2MD(v,val);</span></a>
+<a name="561"><span class="lineNum">     561 </span>            :       }</a>
+<a name="562"><span class="lineNum">     562 </span><span class="lineNoCov">          0 :       break;</span></a>
+<a name="563"><span class="lineNum">     563 </span>            :       default:</a>
+<a name="564"><span class="lineNum">     564 </span><span class="lineCov">          5 :         plumed_merror(&quot;cannot interpret cmd(\&quot;&quot; + word + &quot;\&quot;). check plumed developers manual to see the available commands.&quot;);</span></a>
+<a name="565"><span class="lineNum">     565 </span>            :         break;</a>
+<a name="566"><span class="lineNum">     566 </span>            :       }</a>
+<a name="567"><span class="lineNum">     567 </span><span class="lineCov">     517989 :     }</span></a>
+<a name="568"><span class="lineNum">     568 </span>            : </a>
+<a name="569"><span class="lineNum">     569 </span><span class="lineCov">         66 :   } catch (std::exception &amp;e) {</span></a>
+<a name="570"><span class="lineNum">     570 </span><span class="lineCov">         66 :     if(log.isOpen()) {</span></a>
+<a name="571"><span class="lineNum">     571 </span><span class="lineCov">         47 :       log&lt;&lt;&quot;\n\n################################################################################\n\n&quot;;</span></a>
+<a name="572"><span class="lineNum">     572 </span><span class="lineCov">        113 :       log&lt;&lt;e.what();</span></a>
+<a name="573"><span class="lineNum">     573 </span><span class="lineCov">         47 :       log&lt;&lt;&quot;\n\n################################################################################\n\n&quot;;</span></a>
+<a name="574"><span class="lineNum">     574 </span><span class="lineCov">         47 :       log.flush();</span></a>
+<a name="575"><span class="lineNum">     575 </span>            :     }</a>
+<a name="576"><span class="lineNum">     576 </span><span class="lineCov">         66 :     throw;</span></a>
+<a name="577"><span class="lineNum">     577 </span>            :   }</a>
+<a name="578"><span class="lineNum">     578 </span><span class="lineCov">     517923 : }</span></a>
+<a name="579"><span class="lineNum">     579 </span>            : </a>
+<a name="580"><span class="lineNum">     580 </span>            : ////////////////////////////////////////////////////////////////////////</a>
+<a name="581"><span class="lineNum">     581 </span>            : </a>
+<a name="582"><span class="lineNum">     582 </span><span class="lineCov">        771 : void PlumedMain::init() {</span></a>
+<a name="583"><span class="lineNum">     583 </span>            : // check that initialization just happens once</a>
+<a name="584"><span class="lineNum">     584 </span><span class="lineCov">        771 :   initialized=true;</span></a>
+<a name="585"><span class="lineNum">     585 </span><span class="lineCov">        771 :   atoms.init();</span></a>
+<a name="586"><span class="lineNum">     586 </span><span class="lineCov">        771 :   if(!log.isOpen()) log.link(stdout);</span></a>
+<a name="587"><span class="lineNum">     587 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;PLUMED is starting\n&quot;;</span></a>
+<a name="588"><span class="lineNum">     588 </span><span class="lineCov">       2313 :   log&lt;&lt;&quot;Version: &quot;&lt;&lt;config::getVersionLong()&lt;&lt;&quot; (git: &quot;&lt;&lt;config::getVersionGit()&lt;&lt;&quot;) &quot;</span></a>
+<a name="589"><span class="lineNum">     589 </span><span class="lineCov">       3084 :      &lt;&lt;&quot;compiled on &quot; &lt;&lt;config::getCompilationDate() &lt;&lt; &quot; at &quot; &lt;&lt; config::getCompilationTime() &lt;&lt; &quot;\n&quot;;</span></a>
+<a name="590"><span class="lineNum">     590 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;Please cite this paper when using PLUMED &quot;;</span></a>
+<a name="591"><span class="lineNum">     591 </span><span class="lineCov">       2313 :   log&lt;&lt;cite(&quot;Tribello, Bonomi, Branduardi, Camilloni, and Bussi, Comput. Phys. Commun. 185, 604 (2014)&quot;);</span></a>
+<a name="592"><span class="lineNum">     592 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="593"><span class="lineNum">     593 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;For further information see the PLUMED web page at http://www.plumed.org\n&quot;;</span></a>
+<a name="594"><span class="lineNum">     594 </span><span class="lineCov">       1542 :   log&lt;&lt;&quot;Root: &quot;&lt;&lt;config::getPlumedRoot()&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="595"><span class="lineNum">     595 </span><span class="lineCov">       3084 :   log&lt;&lt;&quot;For installed feature, see &quot;&lt;&lt;config::getPlumedRoot() + &quot;/src/config/config.txt\n&quot;;</span></a>
+<a name="596"><span class="lineNum">     596 </span><span class="lineCov">        771 :   log.printf(&quot;Molecular dynamics engine: %s\n&quot;,MDEngine.c_str());</span></a>
+<a name="597"><span class="lineNum">     597 </span><span class="lineCov">        771 :   log.printf(&quot;Precision of reals: %d\n&quot;,atoms.getRealPrecision());</span></a>
+<a name="598"><span class="lineNum">     598 </span><span class="lineCov">        771 :   log.printf(&quot;Running over %d %s\n&quot;,comm.Get_size(),(comm.Get_size()&gt;1?&quot;nodes&quot;:&quot;node&quot;));</span></a>
+<a name="599"><span class="lineNum">     599 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;Number of threads: &quot;&lt;&lt;OpenMP::getNumThreads()&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="600"><span class="lineNum">     600 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;Cache line size: &quot;&lt;&lt;OpenMP::getCachelineSize()&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="601"><span class="lineNum">     601 </span><span class="lineCov">       1542 :   log.printf(&quot;Number of atoms: %d\n&quot;,atoms.getNatoms());</span></a>
+<a name="602"><span class="lineNum">     602 </span><span class="lineCov">        771 :   if(grex) log.printf(&quot;GROMACS-like replica exchange is on\n&quot;);</span></a>
+<a name="603"><span class="lineNum">     603 </span><span class="lineCov">        771 :   log.printf(&quot;File suffix: %s\n&quot;,getSuffix().c_str());</span></a>
+<a name="604"><span class="lineNum">     604 </span><span class="lineCov">        771 :   if(plumedDat.length()&gt;0) {</span></a>
+<a name="605"><span class="lineNum">     605 </span><span class="lineCov">       1342 :     readInputFile(plumedDat);</span></a>
+<a name="606"><span class="lineNum">     606 </span>            :     plumedDat=&quot;&quot;;</a>
+<a name="607"><span class="lineNum">     607 </span>            :   }</a>
+<a name="608"><span class="lineNum">     608 </span><span class="lineCov">        771 :   atoms.updateUnits();</span></a>
+<a name="609"><span class="lineNum">     609 </span><span class="lineCov">        771 :   log.printf(&quot;Timestep: %f\n&quot;,atoms.getTimeStep());</span></a>
+<a name="610"><span class="lineNum">     610 </span><span class="lineCov">        771 :   if(atoms.getKbT()&gt;0.0)</span></a>
+<a name="611"><span class="lineNum">     611 </span><span class="lineCov">         48 :     log.printf(&quot;KbT: %f\n&quot;,atoms.getKbT());</span></a>
+<a name="612"><span class="lineNum">     612 </span>            :   else {</a>
+<a name="613"><span class="lineNum">     613 </span><span class="lineCov">        723 :     log.printf(&quot;KbT has not been set by the MD engine\n&quot;);</span></a>
+<a name="614"><span class="lineNum">     614 </span><span class="lineCov">        723 :     log.printf(&quot;It should be set by hand where needed\n&quot;);</span></a>
+<a name="615"><span class="lineNum">     615 </span>            :   }</a>
+<a name="616"><span class="lineNum">     616 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;Relevant bibliography:\n&quot;;</span></a>
+<a name="617"><span class="lineNum">     617 </span><span class="lineCov">        771 :   log&lt;&lt;citations;</span></a>
+<a name="618"><span class="lineNum">     618 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;Please read and cite where appropriate!\n&quot;;</span></a>
+<a name="619"><span class="lineNum">     619 </span><span class="lineCov">        771 :   log&lt;&lt;&quot;Finished setup\n&quot;;</span></a>
+<a name="620"><span class="lineNum">     620 </span><span class="lineCov">        771 : }</span></a>
+<a name="621"><span class="lineNum">     621 </span>            : </a>
+<a name="622"><span class="lineNum">     622 </span><span class="lineCov">        685 : void PlumedMain::readInputFile(std::string str) {</span></a>
+<a name="623"><span class="lineNum">     623 </span><span class="lineCov">        685 :   plumed_assert(initialized);</span></a>
+<a name="624"><span class="lineNum">     624 </span><span class="lineCov">        685 :   log.printf(&quot;FILE: %s\n&quot;,str.c_str());</span></a>
+<a name="625"><span class="lineNum">     625 </span><span class="lineCov">        685 :   IFile ifile;</span></a>
+<a name="626"><span class="lineNum">     626 </span><span class="lineCov">        685 :   ifile.link(*this);</span></a>
+<a name="627"><span class="lineNum">     627 </span><span class="lineCov">        685 :   ifile.open(str);</span></a>
+<a name="628"><span class="lineNum">     628 </span><span class="lineCov">        685 :   ifile.allowNoEOL();</span></a>
+<a name="629"><span class="lineNum">     629 </span><span class="lineCov">        685 :   std::vector&lt;std::string&gt; words;</span></a>
+<a name="630"><span class="lineNum">     630 </span><span class="lineCov">       5934 :   while(Tools::getParsedLine(ifile,words) &amp;&amp; !endPlumed) readInputWords(words);</span></a>
+<a name="631"><span class="lineNum">     631 </span><span class="lineCov">        685 :   endPlumed=false;</span></a>
+<a name="632"><span class="lineNum">     632 </span><span class="lineCov">        685 :   log.printf(&quot;END FILE: %s\n&quot;,str.c_str());</span></a>
+<a name="633"><span class="lineNum">     633 </span><span class="lineCov">        685 :   log.flush();</span></a>
+<a name="634"><span class="lineNum">     634 </span>            : </a>
+<a name="635"><span class="lineNum">     635 </span><span class="lineCov">       2055 :   pilots=actionSet.select&lt;ActionPilot*&gt;();</span></a>
+<a name="636"><span class="lineNum">     636 </span><span class="lineCov">        685 : }</span></a>
+<a name="637"><span class="lineNum">     637 </span>            : </a>
+<a name="638"><span class="lineNum">     638 </span><span class="lineCov">        276 : void PlumedMain::readInputLine(const std::string &amp; str) {</span></a>
+<a name="639"><span class="lineNum">     639 </span><span class="lineCov">        276 :   plumed_assert(initialized);</span></a>
+<a name="640"><span class="lineNum">     640 </span><span class="lineCov">        276 :   if(str.empty()) return;</span></a>
+<a name="641"><span class="lineNum">     641 </span><span class="lineCov">        276 :   std::vector&lt;std::string&gt; words=Tools::getWords(str);</span></a>
+<a name="642"><span class="lineNum">     642 </span><span class="lineCov">        276 :   citations.clear();</span></a>
+<a name="643"><span class="lineNum">     643 </span><span class="lineCov">        276 :   readInputWords(words);</span></a>
+<a name="644"><span class="lineNum">     644 </span><span class="lineCov">        236 :   if(!citations.empty()) {</span></a>
+<a name="645"><span class="lineNum">     645 </span><span class="lineCov">          4 :     log&lt;&lt;&quot;Relevant bibliography:\n&quot;;</span></a>
+<a name="646"><span class="lineNum">     646 </span><span class="lineCov">          4 :     log&lt;&lt;citations;</span></a>
+<a name="647"><span class="lineNum">     647 </span><span class="lineCov">          4 :     log&lt;&lt;&quot;Please read and cite where appropriate!\n&quot;;</span></a>
+<a name="648"><span class="lineNum">     648 </span><span class="lineCov">        276 :   }</span></a>
+<a name="649"><span class="lineNum">     649 </span>            : }</a>
+<a name="650"><span class="lineNum">     650 </span>            : </a>
+<a name="651"><span class="lineNum">     651 </span><span class="lineCov">       6231 : void PlumedMain::readInputWords(const std::vector&lt;std::string&gt; &amp; words) {</span></a>
+<a name="652"><span class="lineNum">     652 </span><span class="lineCov">       6231 :   plumed_assert(initialized);</span></a>
+<a name="653"><span class="lineNum">     653 </span><span class="lineCov">      12422 :   if(words.empty())return;</span></a>
+<a name="654"><span class="lineNum">     654 </span><span class="lineCov">       6231 :   else if(words[0]==&quot;_SET_SUFFIX&quot;) {</span></a>
+<a name="655"><span class="lineNum">     655 </span><span class="lineCov">          3 :     plumed_assert(words.size()==2);</span></a>
+<a name="656"><span class="lineNum">     656 </span><span class="lineCov">          3 :     setSuffix(words[1]);</span></a>
+<a name="657"><span class="lineNum">     657 </span>            :   } else {</a>
+<a name="658"><span class="lineNum">     658 </span><span class="lineCov">       6228 :     std::vector&lt;std::string&gt; interpreted(words);</span></a>
+<a name="659"><span class="lineNum">     659 </span><span class="lineCov">       6228 :     Tools::interpretLabel(interpreted);</span></a>
+<a name="660"><span class="lineNum">     660 </span><span class="lineCov">      12456 :     auto action=actionRegister().create(ActionOptions(*this,interpreted));</span></a>
+<a name="661"><span class="lineNum">     661 </span><span class="lineCov">       6190 :     if(!action) {</span></a>
+<a name="662"><span class="lineNum">     662 </span>            :       std::string msg;</a>
+<a name="663"><span class="lineNum">     663 </span>            :       msg =&quot;ERROR\nI cannot understand line:&quot;;</a>
+<a name="664"><span class="lineNum">     664 </span><span class="lineCov">         20 :       for(unsigned i=0; i&lt;interpreted.size(); ++i) msg+=&quot; &quot;+interpreted[i];</span></a>
+<a name="665"><span class="lineNum">     665 </span>            :       msg+=&quot;\nMaybe a missing space or a typo?&quot;;</a>
+<a name="666"><span class="lineNum">     666 </span><span class="lineCov">          2 :       log &lt;&lt; msg;</span></a>
+<a name="667"><span class="lineNum">     667 </span><span class="lineCov">          2 :       log.flush();</span></a>
+<a name="668"><span class="lineNum">     668 </span><span class="lineCov">          6 :       plumed_merror(msg);</span></a>
+<a name="669"><span class="lineNum">     669 </span>            :     };</a>
+<a name="670"><span class="lineNum">     670 </span><span class="lineCov">       6188 :     action-&gt;checkRead();</span></a>
+<a name="671"><span class="lineNum">     671 </span><span class="lineCov">      12416 :     actionSet.emplace_back(std::move(action));</span></a>
+<a name="672"><span class="lineNum">     672 </span>            :   };</a>
+<a name="673"><span class="lineNum">     673 </span>            : </a>
+<a name="674"><span class="lineNum">     674 </span><span class="lineCov">      12382 :   pilots=actionSet.select&lt;ActionPilot*&gt;();</span></a>
+<a name="675"><span class="lineNum">     675 </span>            : }</a>
+<a name="676"><span class="lineNum">     676 </span>            : </a>
+<a name="677"><span class="lineNum">     677 </span>            : ////////////////////////////////////////////////////////////////////////</a>
+<a name="678"><span class="lineNum">     678 </span>            : </a>
+<a name="679"><span class="lineNum">     679 </span><span class="lineNoCov">          0 : void PlumedMain::exit(int c) {</span></a>
+<a name="680"><span class="lineNum">     680 </span><span class="lineNoCov">          0 :   comm.Abort(c);</span></a>
+<a name="681"><span class="lineNum">     681 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="682"><span class="lineNum">     682 </span>            : </a>
+<a name="683"><span class="lineNum">     683 </span><span class="lineCov">       6226 : Log&amp; PlumedMain::getLog() {</span></a>
+<a name="684"><span class="lineNum">     684 </span><span class="lineCov">       6226 :   return log;</span></a>
+<a name="685"><span class="lineNum">     685 </span>            : }</a>
+<a name="686"><span class="lineNum">     686 </span>            : </a>
+<a name="687"><span class="lineNum">     687 </span><span class="lineCov">      83583 : void PlumedMain::calc() {</span></a>
+<a name="688"><span class="lineNum">     688 </span><span class="lineCov">      83583 :   prepareCalc();</span></a>
+<a name="689"><span class="lineNum">     689 </span><span class="lineCov">      83583 :   performCalc();</span></a>
+<a name="690"><span class="lineNum">     690 </span><span class="lineCov">      83583 : }</span></a>
+<a name="691"><span class="lineNum">     691 </span>            : </a>
+<a name="692"><span class="lineNum">     692 </span><span class="lineCov">      85643 : void PlumedMain::prepareCalc() {</span></a>
+<a name="693"><span class="lineNum">     693 </span><span class="lineCov">      85643 :   prepareDependencies();</span></a>
+<a name="694"><span class="lineNum">     694 </span><span class="lineCov">      85643 :   shareData();</span></a>
+<a name="695"><span class="lineNum">     695 </span><span class="lineCov">      85643 : }</span></a>
+<a name="696"><span class="lineNum">     696 </span>            : </a>
+<a name="697"><span class="lineNum">     697 </span>            : //////////////////////////////////////////////////////////////////////////////////////////////////////////////////</a>
+<a name="698"><span class="lineNum">     698 </span>            : // here we have the main steps in &quot;calc()&quot;</a>
+<a name="699"><span class="lineNum">     699 </span>            : // they can be called individually, but the standard thing is to</a>
+<a name="700"><span class="lineNum">     700 </span>            : // traverse them in this order:</a>
+<a name="701"><span class="lineNum">     701 </span><span class="lineCov">      85958 : void PlumedMain::prepareDependencies() {</span></a>
+<a name="702"><span class="lineNum">     702 </span>            : </a>
+<a name="703"><span class="lineNum">     703 </span>            : // Stopwatch is stopped when sw goes out of scope</a>
+<a name="704"><span class="lineNum">     704 </span><span class="lineCov">     171916 :   auto sw=stopwatch.startStop(&quot;1 Prepare dependencies&quot;);</span></a>
+<a name="705"><span class="lineNum">     705 </span>            : </a>
+<a name="706"><span class="lineNum">     706 </span>            : // activate all the actions which are on step</a>
+<a name="707"><span class="lineNum">     707 </span>            : // activation is recursive and enables also the dependencies</a>
+<a name="708"><span class="lineNum">     708 </span>            : // before doing that, the prepare() method is called to see if there is some</a>
+<a name="709"><span class="lineNum">     709 </span>            : // new/changed dependency (up to now, only useful for dependences on virtual atoms,</a>
+<a name="710"><span class="lineNum">     710 </span>            : // which can be dynamically changed).</a>
+<a name="711"><span class="lineNum">     711 </span>            : </a>
+<a name="712"><span class="lineNum">     712 </span>            : // First switch off all actions</a>
+<a name="713"><span class="lineNum">     713 </span><span class="lineCov">     966762 :   for(const auto &amp; p : actionSet) {</span></a>
+<a name="714"><span class="lineNum">     714 </span><span class="lineCov">     708888 :     p-&gt;deactivate();</span></a>
+<a name="715"><span class="lineNum">     715 </span>            :   }</a>
+<a name="716"><span class="lineNum">     716 </span>            : </a>
+<a name="717"><span class="lineNum">     717 </span>            : // for optimization, an &quot;active&quot; flag remains false if no action at all is active</a>
+<a name="718"><span class="lineNum">     718 </span><span class="lineCov">      85958 :   active=mydatafetcher-&gt;activate();</span></a>
+<a name="719"><span class="lineNum">     719 </span><span class="lineCov">     924120 :   for(unsigned i=0; i&lt;pilots.size(); ++i) {</span></a>
+<a name="720"><span class="lineNum">     720 </span><span class="lineCov">     376102 :     if(pilots[i]-&gt;onStep()) {</span></a>
+<a name="721"><span class="lineNum">     721 </span><span class="lineCov">     292721 :       pilots[i]-&gt;activate();</span></a>
+<a name="722"><span class="lineNum">     722 </span><span class="lineCov">     292721 :       active=true;</span></a>
+<a name="723"><span class="lineNum">     723 </span>            :     }</a>
+<a name="724"><span class="lineNum">     724 </span>            :   };</a>
+<a name="725"><span class="lineNum">     725 </span>            : </a>
+<a name="726"><span class="lineNum">     726 </span>            : // also, if one of them is the total energy, tell to atoms that energy should be collected</a>
+<a name="727"><span class="lineNum">     727 </span><span class="lineCov">     966762 :   for(const auto &amp; p : actionSet) {</span></a>
+<a name="728"><span class="lineNum">     728 </span><span class="lineCov">     708888 :     if(p-&gt;isActive()) {</span></a>
+<a name="729"><span class="lineNum">     729 </span><span class="lineCov">     456492 :       if(p-&gt;checkNeedsGradients()) p-&gt;setOption(&quot;GRADIENTS&quot;);</span></a>
+<a name="730"><span class="lineNum">     730 </span>            :     }</a>
+<a name="731"><span class="lineNum">     731 </span><span class="lineCov">      85958 :   }</span></a>
+<a name="732"><span class="lineNum">     732 </span>            : </a>
+<a name="733"><span class="lineNum">     733 </span><span class="lineCov">      85958 : }</span></a>
+<a name="734"><span class="lineNum">     734 </span>            : </a>
+<a name="735"><span class="lineNum">     735 </span><span class="lineCov">      85715 : void PlumedMain::shareData() {</span></a>
+<a name="736"><span class="lineNum">     736 </span>            : // atom positions are shared (but only if there is something to do)</a>
+<a name="737"><span class="lineNum">     737 </span><span class="lineCov">      87203 :   if(!active)return;</span></a>
+<a name="738"><span class="lineNum">     738 </span>            : // Stopwatch is stopped when sw goes out of scope</a>
+<a name="739"><span class="lineNum">     739 </span><span class="lineCov">     168454 :   auto sw=stopwatch.startStop(&quot;2 Sharing data&quot;);</span></a>
+<a name="740"><span class="lineNum">     740 </span><span class="lineCov">     168454 :   if(atoms.getNatoms()&gt;0) atoms.share();</span></a>
+<a name="741"><span class="lineNum">     741 </span>            : }</a>
+<a name="742"><span class="lineNum">     742 </span>            : </a>
+<a name="743"><span class="lineNum">     743 </span><span class="lineCov">       2122 : void PlumedMain::performCalcNoUpdate() {</span></a>
+<a name="744"><span class="lineNum">     744 </span><span class="lineCov">       2122 :   waitData();</span></a>
+<a name="745"><span class="lineNum">     745 </span><span class="lineCov">       2122 :   justCalculate();</span></a>
+<a name="746"><span class="lineNum">     746 </span><span class="lineCov">       2122 :   backwardPropagate();</span></a>
+<a name="747"><span class="lineNum">     747 </span><span class="lineCov">       2122 : }</span></a>
+<a name="748"><span class="lineNum">     748 </span>            : </a>
+<a name="749"><span class="lineNum">     749 </span><span class="lineCov">      83593 : void PlumedMain::performCalc() {</span></a>
+<a name="750"><span class="lineNum">     750 </span><span class="lineCov">      83593 :   waitData();</span></a>
+<a name="751"><span class="lineNum">     751 </span><span class="lineCov">      83593 :   justCalculate();</span></a>
+<a name="752"><span class="lineNum">     752 </span><span class="lineCov">      83593 :   backwardPropagate();</span></a>
+<a name="753"><span class="lineNum">     753 </span><span class="lineCov">      83593 :   update();</span></a>
+<a name="754"><span class="lineNum">     754 </span><span class="lineCov">      83593 :   mydatafetcher-&gt;finishDataGrab();</span></a>
+<a name="755"><span class="lineNum">     755 </span><span class="lineCov">      83593 : }</span></a>
+<a name="756"><span class="lineNum">     756 </span>            : </a>
+<a name="757"><span class="lineNum">     757 </span><span class="lineCov">      85829 : void PlumedMain::waitData() {</span></a>
+<a name="758"><span class="lineNum">     758 </span><span class="lineCov">      87317 :   if(!active)return;</span></a>
+<a name="759"><span class="lineNum">     759 </span>            : // Stopwatch is stopped when sw goes out of scope</a>
+<a name="760"><span class="lineNum">     760 </span><span class="lineCov">     168682 :   auto sw=stopwatch.startStop(&quot;3 Waiting for data&quot;);</span></a>
+<a name="761"><span class="lineNum">     761 </span><span class="lineCov">     168682 :   if(atoms.getNatoms()&gt;0) atoms.wait();</span></a>
+<a name="762"><span class="lineNum">     762 </span>            : }</a>
+<a name="763"><span class="lineNum">     763 </span>            : </a>
+<a name="764"><span class="lineNum">     764 </span><span class="lineCov">      85829 : void PlumedMain::justCalculate() {</span></a>
+<a name="765"><span class="lineNum">     765 </span><span class="lineCov">      87317 :   if(!active)return;</span></a>
+<a name="766"><span class="lineNum">     766 </span>            : // Stopwatch is stopped when sw goes out of scope</a>
+<a name="767"><span class="lineNum">     767 </span><span class="lineCov">     168682 :   auto sw=stopwatch.startStop(&quot;4 Calculating (forward loop)&quot;);</span></a>
+<a name="768"><span class="lineNum">     768 </span><span class="lineCov">      84341 :   bias=0.0;</span></a>
+<a name="769"><span class="lineNum">     769 </span><span class="lineCov">      84341 :   work=0.0;</span></a>
+<a name="770"><span class="lineNum">     770 </span>            : </a>
+<a name="771"><span class="lineNum">     771 </span>            :   int iaction=0;</a>
+<a name="772"><span class="lineNum">     772 </span>            : // calculate the active actions in order (assuming *backward* dependence)</a>
+<a name="773"><span class="lineNum">     773 </span><span class="lineCov">     952467 :   for(const auto &amp; pp : actionSet) {</span></a>
+<a name="774"><span class="lineNum">     774 </span>            :     Action* p(pp.get());</a>
+<a name="775"><span class="lineNum">     775 </span><span class="lineCov">     699444 :     if(p-&gt;isActive()) {</span></a>
+<a name="776"><span class="lineNum">     776 </span>            : // Stopwatch is stopped when sw goes out of scope.</a>
+<a name="777"><span class="lineNum">     777 </span>            : // We explicitly declare a Stopwatch::Handler here to allow for conditional initialization.</a>
+<a name="778"><span class="lineNum">     778 </span><span class="lineCov">     455250 :       Stopwatch::Handler sw;</span></a>
+<a name="779"><span class="lineNum">     779 </span><span class="lineCov">     455250 :       if(detailedTimers) {</span></a>
+<a name="780"><span class="lineNum">     780 </span>            :         std::string actionNumberLabel;</a>
+<a name="781"><span class="lineNum">     781 </span><span class="lineCov">       1690 :         Tools::convert(iaction,actionNumberLabel);</span></a>
+<a name="782"><span class="lineNum">     782 </span><span class="lineCov">       3380 :         const unsigned m=actionSet.size();</span></a>
+<a name="783"><span class="lineNum">     783 </span><span class="lineCov">       1690 :         unsigned k=0; unsigned n=1; while(n&lt;m) { n*=10; k++; }</span></a>
+<a name="784"><span class="lineNum">     784 </span><span class="lineCov">       1690 :         const int pad=k-actionNumberLabel.length();</span></a>
+<a name="785"><span class="lineNum">     785 </span><span class="lineCov">       2820 :         for(int i=0; i&lt;pad; i++) actionNumberLabel=&quot; &quot;+actionNumberLabel;</span></a>
+<a name="786"><span class="lineNum">     786 </span><span class="lineCov">       8450 :         sw=stopwatch.startStop(&quot;4A &quot;+actionNumberLabel+&quot; &quot;+p-&gt;getLabel());</span></a>
+<a name="787"><span class="lineNum">     787 </span>            :       }</a>
+<a name="788"><span class="lineNum">     788 </span><span class="lineCov">     455250 :       ActionWithValue*av=dynamic_cast&lt;ActionWithValue*&gt;(p);</span></a>
+<a name="789"><span class="lineNum">     789 </span><span class="lineCov">     455250 :       ActionAtomistic*aa=dynamic_cast&lt;ActionAtomistic*&gt;(p);</span></a>
+<a name="790"><span class="lineNum">     790 </span>            :       {</a>
+<a name="791"><span class="lineNum">     791 </span><span class="lineCov">     455250 :         if(av) av-&gt;clearInputForces();</span></a>
+<a name="792"><span class="lineNum">     792 </span><span class="lineCov">     455250 :         if(av) av-&gt;clearDerivatives();</span></a>
+<a name="793"><span class="lineNum">     793 </span>            :       }</a>
+<a name="794"><span class="lineNum">     794 </span>            :       {</a>
+<a name="795"><span class="lineNum">     795 </span><span class="lineCov">     455250 :         if(aa) aa-&gt;clearOutputForces();</span></a>
+<a name="796"><span class="lineNum">     796 </span><span class="lineCov">     595399 :         if(aa) if(aa-&gt;isActive()) aa-&gt;retrieveAtoms();</span></a>
+<a name="797"><span class="lineNum">     797 </span>            :       }</a>
+<a name="798"><span class="lineNum">     798 </span><span class="lineCov">     455250 :       if(p-&gt;checkNumericalDerivatives()) p-&gt;calculateNumericalDerivatives();</span></a>
+<a name="799"><span class="lineNum">     799 </span><span class="lineCov">     454703 :       else p-&gt;calculate();</span></a>
+<a name="800"><span class="lineNum">     800 </span>            :       // This retrieves components called bias</a>
+<a name="801"><span class="lineNum">     801 </span><span class="lineCov">     844876 :       if(av) bias+=av-&gt;getOutputQuantity(&quot;bias&quot;);</span></a>
+<a name="802"><span class="lineNum">     802 </span><span class="lineCov">     844876 :       if(av) work+=av-&gt;getOutputQuantity(&quot;work&quot;);</span></a>
+<a name="803"><span class="lineNum">     803 </span><span class="lineCov">     455250 :       if(av)av-&gt;setGradientsIfNeeded();</span></a>
+<a name="804"><span class="lineNum">     804 </span><span class="lineCov">     455250 :       ActionWithVirtualAtom*avv=dynamic_cast&lt;ActionWithVirtualAtom*&gt;(p);</span></a>
+<a name="805"><span class="lineNum">     805 </span><span class="lineCov">     455250 :       if(avv)avv-&gt;setGradientsIfNeeded();</span></a>
+<a name="806"><span class="lineNum">     806 </span>            :     }</a>
+<a name="807"><span class="lineNum">     807 </span><span class="lineCov">     699444 :     iaction++;</span></a>
+<a name="808"><span class="lineNum">     808 </span><span class="lineCov">      84341 :   }</span></a>
+<a name="809"><span class="lineNum">     809 </span>            : }</a>
+<a name="810"><span class="lineNum">     810 </span>            : </a>
+<a name="811"><span class="lineNum">     811 </span><span class="lineNoCov">          0 : void PlumedMain::justApply() {</span></a>
+<a name="812"><span class="lineNum">     812 </span><span class="lineNoCov">          0 :   backwardPropagate();</span></a>
+<a name="813"><span class="lineNum">     813 </span><span class="lineNoCov">          0 :   update();</span></a>
+<a name="814"><span class="lineNum">     814 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="815"><span class="lineNum">     815 </span>            : </a>
+<a name="816"><span class="lineNum">     816 </span><span class="lineCov">      85715 : void PlumedMain::backwardPropagate() {</span></a>
+<a name="817"><span class="lineNum">     817 </span><span class="lineCov">      87203 :   if(!active)return;</span></a>
+<a name="818"><span class="lineNum">     818 </span>            :   int iaction=0;</a>
+<a name="819"><span class="lineNum">     819 </span>            : // Stopwatch is stopped when sw goes out of scope</a>
+<a name="820"><span class="lineNum">     820 </span><span class="lineCov">     168454 :   auto sw=stopwatch.startStop(&quot;5 Applying (backward loop)&quot;);</span></a>
+<a name="821"><span class="lineNum">     821 </span>            : // apply them in reverse order</a>
+<a name="822"><span class="lineNum">     822 </span><span class="lineCov">    1649865 :   for(auto pp=actionSet.rbegin(); pp!=actionSet.rend(); ++pp) {</span></a>
+<a name="823"><span class="lineNum">     823 </span><span class="lineCov">     698592 :     const auto &amp; p(pp-&gt;get());</span></a>
+<a name="824"><span class="lineNum">     824 </span><span class="lineCov">     698592 :     if(p-&gt;isActive()) {</span></a>
+<a name="825"><span class="lineNum">     825 </span>            : </a>
+<a name="826"><span class="lineNum">     826 </span>            : // Stopwatch is stopped when sw goes out of scope.</a>
+<a name="827"><span class="lineNum">     827 </span>            : // We explicitly declare a Stopwatch::Handler here to allow for conditional initialization.</a>
+<a name="828"><span class="lineNum">     828 </span><span class="lineCov">     454578 :       Stopwatch::Handler sw;</span></a>
+<a name="829"><span class="lineNum">     829 </span><span class="lineCov">     454578 :       if(detailedTimers) {</span></a>
+<a name="830"><span class="lineNum">     830 </span>            :         std::string actionNumberLabel;</a>
+<a name="831"><span class="lineNum">     831 </span><span class="lineCov">       1690 :         Tools::convert(iaction,actionNumberLabel);</span></a>
+<a name="832"><span class="lineNum">     832 </span><span class="lineCov">       3380 :         const unsigned m=actionSet.size();</span></a>
+<a name="833"><span class="lineNum">     833 </span><span class="lineCov">       1690 :         unsigned k=0; unsigned n=1; while(n&lt;m) { n*=10; k++; }</span></a>
+<a name="834"><span class="lineNum">     834 </span><span class="lineCov">       1690 :         const int pad=k-actionNumberLabel.length();</span></a>
+<a name="835"><span class="lineNum">     835 </span><span class="lineCov">       2815 :         for(int i=0; i&lt;pad; i++) actionNumberLabel=&quot; &quot;+actionNumberLabel;</span></a>
+<a name="836"><span class="lineNum">     836 </span><span class="lineCov">       8450 :         sw=stopwatch.startStop(&quot;5A &quot;+actionNumberLabel+&quot; &quot;+p-&gt;getLabel());</span></a>
+<a name="837"><span class="lineNum">     837 </span>            :       }</a>
+<a name="838"><span class="lineNum">     838 </span>            : </a>
+<a name="839"><span class="lineNum">     839 </span><span class="lineCov">     454578 :       p-&gt;apply();</span></a>
+<a name="840"><span class="lineNum">     840 </span><span class="lineCov">     454578 :       ActionAtomistic*a=dynamic_cast&lt;ActionAtomistic*&gt;(p);</span></a>
+<a name="841"><span class="lineNum">     841 </span>            : // still ActionAtomistic has a special treatment, since they may need to add forces on atoms</a>
+<a name="842"><span class="lineNum">     842 </span><span class="lineCov">     454578 :       if(a) a-&gt;applyForces();</span></a>
+<a name="843"><span class="lineNum">     843 </span>            : </a>
+<a name="844"><span class="lineNum">     844 </span>            :     }</a>
+<a name="845"><span class="lineNum">     845 </span><span class="lineCov">     698592 :     iaction++;</span></a>
+<a name="846"><span class="lineNum">     846 </span>            :   }</a>
+<a name="847"><span class="lineNum">     847 </span>            : </a>
+<a name="848"><span class="lineNum">     848 </span>            : // Stopwatch is stopped when sw goes out of scope.</a>
+<a name="849"><span class="lineNum">     849 </span>            : // We explicitly declare a Stopwatch::Handler here to allow for conditional initialization.</a>
+<a name="850"><span class="lineNum">     850 </span><span class="lineCov">     168454 :   Stopwatch::Handler sw1;</span></a>
+<a name="851"><span class="lineNum">     851 </span><span class="lineCov">      84340 :   if(detailedTimers) sw1=stopwatch.startStop(&quot;5B Update forces&quot;);</span></a>
+<a name="852"><span class="lineNum">     852 </span>            : // this is updating the MD copy of the forces</a>
+<a name="853"><span class="lineNum">     853 </span><span class="lineCov">     252681 :   if(atoms.getNatoms()&gt;0) atoms.updateForces();</span></a>
+<a name="854"><span class="lineNum">     854 </span>            : }</a>
+<a name="855"><span class="lineNum">     855 </span>            : </a>
+<a name="856"><span class="lineNum">     856 </span><span class="lineCov">      83660 : void PlumedMain::update() {</span></a>
+<a name="857"><span class="lineNum">     857 </span><span class="lineCov">      85148 :   if(!active)return;</span></a>
+<a name="858"><span class="lineNum">     858 </span>            : </a>
+<a name="859"><span class="lineNum">     859 </span>            : // Stopwatch is stopped when sw goes out of scope</a>
+<a name="860"><span class="lineNum">     860 </span><span class="lineCov">     164344 :   auto sw=stopwatch.startStop(&quot;6 Update&quot;);</span></a>
+<a name="861"><span class="lineNum">     861 </span>            : </a>
+<a name="862"><span class="lineNum">     862 </span>            : // update step (for statistics, etc)</a>
+<a name="863"><span class="lineNum">     863 </span><span class="lineCov">     164344 :   updateFlags.push(true);</span></a>
+<a name="864"><span class="lineNum">     864 </span><span class="lineCov">     938641 :   for(const auto &amp; p : actionSet) {</span></a>
+<a name="865"><span class="lineNum">     865 </span><span class="lineCov">     692125 :     p-&gt;beforeUpdate();</span></a>
+<a name="866"><span class="lineNum">     866 </span><span class="lineCov">    1587587 :     if(p-&gt;isActive() &amp;&amp; p-&gt;checkUpdate() &amp;&amp; updateFlagsTop()) p-&gt;update();</span></a>
+<a name="867"><span class="lineNum">     867 </span>            :   }</a>
+<a name="868"><span class="lineNum">     868 </span><span class="lineCov">     164348 :   while(!updateFlags.empty()) updateFlags.pop();</span></a>
+<a name="869"><span class="lineNum">     869 </span><span class="lineCov">      82172 :   if(!updateFlags.empty()) plumed_merror(&quot;non matching changes in the update flags&quot;);</span></a>
+<a name="870"><span class="lineNum">     870 </span>            : // Check that no action has told the calculation to stop</a>
+<a name="871"><span class="lineNum">     871 </span><span class="lineCov">      82172 :   if(stopNow) {</span></a>
+<a name="872"><span class="lineNum">     872 </span><span class="lineCov">         55 :     if(stopFlag) (*stopFlag)=1;</span></a>
+<a name="873"><span class="lineNum">     873 </span><span class="lineNoCov">          0 :     else plumed_merror(&quot;your md code cannot handle plumed stop events - add a call to plumed.comm(stopFlag,stopCondition)&quot;);</span></a>
+<a name="874"><span class="lineNum">     874 </span>            :   }</a>
+<a name="875"><span class="lineNum">     875 </span>            : </a>
+<a name="876"><span class="lineNum">     876 </span>            : // flush by default every 10000 steps</a>
+<a name="877"><span class="lineNum">     877 </span>            : // hopefully will not affect performance</a>
+<a name="878"><span class="lineNum">     878 </span>            : // also if receive checkpointing signal</a>
+<a name="879"><span class="lineNum">     879 </span><span class="lineCov">      82172 :   if(step%10000==0||doCheckPoint) {</span></a>
+<a name="880"><span class="lineNum">     880 </span><span class="lineCov">        767 :     fflush();</span></a>
+<a name="881"><span class="lineNum">     881 </span><span class="lineCov">        767 :     log.flush();</span></a>
+<a name="882"><span class="lineNum">     882 </span><span class="lineCov">      15413 :     for(const auto &amp; p : actionSet) p-&gt;fflush();</span></a>
+<a name="883"><span class="lineNum">     883 </span><span class="lineCov">      82172 :   }</span></a>
+<a name="884"><span class="lineNum">     884 </span>            : }</a>
+<a name="885"><span class="lineNum">     885 </span>            : </a>
+<a name="886"><span class="lineNum">     886 </span><span class="lineCov">          2 : void PlumedMain::load(const std::string&amp; ss) {</span></a>
+<a name="887"><span class="lineNum">     887 </span><span class="lineCov">          2 :   if(DLLoader::installed()) {</span></a>
+<a name="888"><span class="lineNum">     888 </span><span class="lineCov">          2 :     std::string s=ss;</span></a>
+<a name="889"><span class="lineNum">     889 </span><span class="lineCov">          2 :     size_t n=s.find_last_of(&quot;.&quot;);</span></a>
+<a name="890"><span class="lineNum">     890 </span><span class="lineCov">          3 :     std::string extension=&quot;&quot;;</span></a>
+<a name="891"><span class="lineNum">     891 </span><span class="lineCov">          2 :     std::string base=s;</span></a>
+<a name="892"><span class="lineNum">     892 </span><span class="lineCov">          6 :     if(n!=std::string::npos &amp;&amp; n&lt;s.length()-1) extension=s.substr(n+1);</span></a>
+<a name="893"><span class="lineNum">     893 </span><span class="lineCov">          6 :     if(n!=std::string::npos &amp;&amp; n&lt;s.length())   base=s.substr(0,n);</span></a>
+<a name="894"><span class="lineNum">     894 </span><span class="lineCov">          2 :     if(extension==&quot;cpp&quot;) {</span></a>
+<a name="895"><span class="lineNum">     895 </span>            : // full path command, including environment setup</a>
+<a name="896"><span class="lineNum">     896 </span>            : // this will work even if plumed is not in the execution path or if it has been</a>
+<a name="897"><span class="lineNum">     897 </span>            : // installed with a name different from &quot;plumed&quot;</a>
+<a name="898"><span class="lineNum">     898 </span><span class="lineCov">         14 :       std::string cmd=config::getEnvCommand()+&quot; \&quot;&quot;+config::getPlumedRoot()+&quot;\&quot;/scripts/mklib.sh &quot;+s;</span></a>
+<a name="899"><span class="lineNum">     899 </span><span class="lineCov">          2 :       log&lt;&lt;&quot;Executing: &quot;&lt;&lt;cmd;</span></a>
+<a name="900"><span class="lineNum">     900 </span><span class="lineCov">          2 :       if(comm.Get_size()&gt;0) log&lt;&lt;&quot; (only on master node)&quot;;</span></a>
+<a name="901"><span class="lineNum">     901 </span><span class="lineCov">          2 :       log&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="902"><span class="lineNum">     902 </span><span class="lineCov">          4 :       if(comm.Get_rank()==0) system(cmd.c_str());</span></a>
+<a name="903"><span class="lineNum">     903 </span><span class="lineCov">          2 :       comm.Barrier();</span></a>
+<a name="904"><span class="lineNum">     904 </span><span class="lineCov">          4 :       base=&quot;./&quot;+base;</span></a>
+<a name="905"><span class="lineNum">     905 </span>            :     }</a>
+<a name="906"><span class="lineNum">     906 </span><span class="lineCov">          8 :     s=base+&quot;.&quot;+config::getSoExt();</span></a>
+<a name="907"><span class="lineNum">     907 </span><span class="lineCov">          2 :     void *p=dlloader.load(s);</span></a>
+<a name="908"><span class="lineNum">     908 </span><span class="lineCov">          2 :     if(!p) {</span></a>
+<a name="909"><span class="lineNum">     909 </span><span class="lineCov">          3 :       const std::string error_msg=&quot;I cannot load library &quot; + ss + &quot; &quot; + dlloader.error();</span></a>
+<a name="910"><span class="lineNum">     910 </span><span class="lineCov">          1 :       log&lt;&lt;&quot;ERROR\n&quot;;</span></a>
+<a name="911"><span class="lineNum">     911 </span><span class="lineCov">          1 :       log&lt;&lt;error_msg&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="912"><span class="lineNum">     912 </span><span class="lineCov">          3 :       plumed_merror(error_msg);</span></a>
+<a name="913"><span class="lineNum">     913 </span>            :     }</a>
+<a name="914"><span class="lineNum">     914 </span><span class="lineCov">          2 :     log&lt;&lt;&quot;Loading shared library &quot;&lt;&lt;s.c_str()&lt;&lt;&quot;\n&quot;;</span></a>
+<a name="915"><span class="lineNum">     915 </span><span class="lineCov">          1 :     log&lt;&lt;&quot;Here is the new list of available actions\n&quot;;</span></a>
+<a name="916"><span class="lineNum">     916 </span><span class="lineCov">          1 :     log&lt;&lt;actionRegister();</span></a>
+<a name="917"><span class="lineNum">     917 </span><span class="lineNoCov">          0 :   } else plumed_merror(&quot;loading not enabled, please recompile with -D__PLUMED_HAS_DLOPEN&quot;);</span></a>
+<a name="918"><span class="lineNum">     918 </span><span class="lineCov">          1 : }</span></a>
+<a name="919"><span class="lineNum">     919 </span>            : </a>
+<a name="920"><span class="lineNum">     920 </span><span class="lineCov">       2765 : double PlumedMain::getBias() const {</span></a>
+<a name="921"><span class="lineNum">     921 </span><span class="lineCov">       2765 :   return bias;</span></a>
+<a name="922"><span class="lineNum">     922 </span>            : }</a>
+<a name="923"><span class="lineNum">     923 </span>            : </a>
+<a name="924"><span class="lineNum">     924 </span><span class="lineCov">        450 : double PlumedMain::getWork() const {</span></a>
+<a name="925"><span class="lineNum">     925 </span><span class="lineCov">        450 :   return work;</span></a>
+<a name="926"><span class="lineNum">     926 </span>            : }</a>
+<a name="927"><span class="lineNum">     927 </span>            : </a>
+<a name="928"><span class="lineNum">     928 </span><span class="lineCov">         73 : FILE* PlumedMain::fopen(const char *path, const char *mode) {</span></a>
+<a name="929"><span class="lineNum">     929 </span><span class="lineCov">         73 :   std::string mmode(mode);</span></a>
+<a name="930"><span class="lineNum">     930 </span><span class="lineCov">         73 :   std::string ppath(path);</span></a>
+<a name="931"><span class="lineNum">     931 </span><span class="lineCov">         73 :   std::string suffix(getSuffix());</span></a>
+<a name="932"><span class="lineNum">     932 </span><span class="lineCov">         73 :   std::string ppathsuf=ppath+suffix;</span></a>
+<a name="933"><span class="lineNum">     933 </span><span class="lineCov">         73 :   FILE*fp=std::fopen(const_cast&lt;char*&gt;(ppathsuf.c_str()),const_cast&lt;char*&gt;(mmode.c_str()));</span></a>
+<a name="934"><span class="lineNum">     934 </span><span class="lineCov">         73 :   if(!fp) fp=std::fopen(const_cast&lt;char*&gt;(ppath.c_str()),const_cast&lt;char*&gt;(mmode.c_str()));</span></a>
+<a name="935"><span class="lineNum">     935 </span><span class="lineCov">         73 :   plumed_massert(fp,&quot;file &quot; + ppath + &quot; cannot be found&quot;);</span></a>
+<a name="936"><span class="lineNum">     936 </span><span class="lineCov">         73 :   return fp;</span></a>
+<a name="937"><span class="lineNum">     937 </span>            : }</a>
+<a name="938"><span class="lineNum">     938 </span>            : </a>
+<a name="939"><span class="lineNum">     939 </span><span class="lineCov">         91 : int PlumedMain::fclose(FILE*fp) {</span></a>
+<a name="940"><span class="lineNum">     940 </span><span class="lineCov">         91 :   return std::fclose(fp);</span></a>
+<a name="941"><span class="lineNum">     941 </span>            : }</a>
+<a name="942"><span class="lineNum">     942 </span>            : </a>
+<a name="943"><span class="lineNum">     943 </span><span class="lineCov">       2289 : std::string PlumedMain::cite(const std::string&amp;item) {</span></a>
+<a name="944"><span class="lineNum">     944 </span><span class="lineCov">       2289 :   return citations.cite(item);</span></a>
+<a name="945"><span class="lineNum">     945 </span>            : }</a>
+<a name="946"><span class="lineNum">     946 </span>            : </a>
+<a name="947"><span class="lineNum">     947 </span><span class="lineCov">       1328 : void PlumedMain::fflush() {</span></a>
+<a name="948"><span class="lineNum">     948 </span><span class="lineCov">       5519 :   for(const auto  &amp; p : files) {</span></a>
+<a name="949"><span class="lineNum">     949 </span><span class="lineCov">       2863 :     p-&gt;flush();</span></a>
+<a name="950"><span class="lineNum">     950 </span>            :   }</a>
+<a name="951"><span class="lineNum">     951 </span><span class="lineCov">       1328 : }</span></a>
+<a name="952"><span class="lineNum">     952 </span>            : </a>
+<a name="953"><span class="lineNum">     953 </span><span class="lineCov">       3985 : void PlumedMain::insertFile(FileBase&amp;f) {</span></a>
+<a name="954"><span class="lineNum">     954 </span><span class="lineCov">       7970 :   files.insert(&amp;f);</span></a>
+<a name="955"><span class="lineNum">     955 </span><span class="lineCov">       3985 : }</span></a>
+<a name="956"><span class="lineNum">     956 </span>            : </a>
+<a name="957"><span class="lineNum">     957 </span><span class="lineCov">       4259 : void PlumedMain::eraseFile(FileBase&amp;f) {</span></a>
+<a name="958"><span class="lineNum">     958 </span><span class="lineCov">       8518 :   files.erase(&amp;f);</span></a>
+<a name="959"><span class="lineNum">     959 </span><span class="lineCov">       4259 : }</span></a>
+<a name="960"><span class="lineNum">     960 </span>            : </a>
+<a name="961"><span class="lineNum">     961 </span><span class="lineCov">         55 : void PlumedMain::stop() {</span></a>
+<a name="962"><span class="lineNum">     962 </span><span class="lineCov">         55 :   stopNow=true;</span></a>
+<a name="963"><span class="lineNum">     963 </span><span class="lineCov">         55 : }</span></a>
+<a name="964"><span class="lineNum">     964 </span>            : </a>
+<a name="965"><span class="lineNum">     965 </span><span class="lineCov">        624 : void PlumedMain::runJobsAtEndOfCalculation() {</span></a>
+<a name="966"><span class="lineNum">     966 </span><span class="lineCov">       7650 :   for(const auto &amp; p : actionSet) {</span></a>
+<a name="967"><span class="lineNum">     967 </span><span class="lineCov">       5778 :     p-&gt;runFinalJobs();</span></a>
+<a name="968"><span class="lineNum">     968 </span>            :   }</a>
+<a name="969"><span class="lineNum">     969 </span><span class="lineCov">        624 : }</span></a>
+<a name="970"><span class="lineNum">     970 </span>            : </a>
+<a name="971"><span class="lineNum">     971 </span>            : #ifdef __PLUMED_HAS_PYTHON</a>
+<a name="972"><span class="lineNum">     972 </span>            : // This is here to stop cppcheck throwing an error</a>
+<a name="973"><span class="lineNum">     973 </span>            : #endif</a>
+<a name="974"><span class="lineNum">     974 </span>            : </a>
+<a name="975"><span class="lineNum">     975 </span><span class="lineCov">       5874 : }</span></a>
+<a name="976"><span class="lineNum">     976 </span>            : </a>
+<a name="977"><span class="lineNum">     977 </span>            : //////////////////////////////////////////////////////////////////////////////////////////////////////////////////</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

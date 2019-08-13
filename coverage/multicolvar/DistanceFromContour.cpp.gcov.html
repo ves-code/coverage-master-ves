@@ -1,0 +1,419 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+<meta name="robots" content="noindex">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - plumed test coverage - multicolvar/DistanceFromContour.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">multicolvar</a> - DistanceFromContour.cpp<span style="font-size: 80%;"> (source / <a href="DistanceFromContour.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">plumed test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">126</td>
+            <td class="headerCovTableEntry">147</td>
+            <td class="headerCovTableEntryMed">85.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-08-13 10:15:31</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntryMed">88.2 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (c) 2016-2019 The plumed team</a>
+<a name="3"><span class="lineNum">       3 </span>            :    (see the PEOPLE file at the root of the distribution for a list of names)</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            :    See http://www.plumed.org for more information.</a>
+<a name="6"><span class="lineNum">       6 </span>            : </a>
+<a name="7"><span class="lineNum">       7 </span>            :    This file is part of plumed, version 2.</a>
+<a name="8"><span class="lineNum">       8 </span>            : </a>
+<a name="9"><span class="lineNum">       9 </span>            :    plumed is free software: you can redistribute it and/or modify</a>
+<a name="10"><span class="lineNum">      10 </span>            :    it under the terms of the GNU Lesser General Public License as published by</a>
+<a name="11"><span class="lineNum">      11 </span>            :    the Free Software Foundation, either version 3 of the License, or</a>
+<a name="12"><span class="lineNum">      12 </span>            :    (at your option) any later version.</a>
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<a name="14"><span class="lineNum">      14 </span>            :    plumed is distributed in the hope that it will be useful,</a>
+<a name="15"><span class="lineNum">      15 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="16"><span class="lineNum">      16 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="17"><span class="lineNum">      17 </span>            :    GNU Lesser General Public License for more details.</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span>            :    You should have received a copy of the GNU Lesser General Public License</a>
+<a name="20"><span class="lineNum">      20 </span>            :    along with plumed.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="21"><span class="lineNum">      21 </span>            : +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */</a>
+<a name="22"><span class="lineNum">      22 </span>            : #include &quot;MultiColvarBase.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>            : #include &quot;AtomValuePack.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>            : #include &quot;core/ActionRegister.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &quot;tools/KernelFunctions.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>            : #include &quot;tools/RootFindingBase.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>            : #include &quot;vesselbase/ValueVessel.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>            : </a>
+<a name="29"><span class="lineNum">      29 </span>            : //+PLUMEDOC COLVAR DISTANCE_FROM_CONTOUR</a>
+<a name="30"><span class="lineNum">      30 </span>            : /*</a>
+<a name="31"><span class="lineNum">      31 </span>            : Calculate the perpendicular distance from a Willard-Chandler dividing surface.</a>
+<a name="32"><span class="lineNum">      32 </span>            : </a>
+<a name="33"><span class="lineNum">      33 </span>            : Suppose that you have calculated a multicolvar.  By doing so you have calculated a</a>
+<a name="34"><span class="lineNum">      34 </span>            : set of colvars, \f$s_i\f$, and each of these colvars has a well defined position in</a>
+<a name="35"><span class="lineNum">      35 </span>            : space \f$(x_i,y_i,z_i)\f$.  You can use this information to calculate a phase-field</a>
+<a name="36"><span class="lineNum">      36 </span>            : model of the colvar density using:</a>
+<a name="37"><span class="lineNum">      37 </span>            : </a>
+<a name="38"><span class="lineNum">      38 </span>            : \f[</a>
+<a name="39"><span class="lineNum">      39 </span>            : p(x,y,x) = \sum_{i} s_i K\left[\frac{x-x_i}{\sigma_x},\frac{y-y_i}{\sigma_y},\frac{z-z_i}{\sigma_z} \right]</a>
+<a name="40"><span class="lineNum">      40 </span>            : \f]</a>
+<a name="41"><span class="lineNum">      41 </span>            : </a>
+<a name="42"><span class="lineNum">      42 </span>            : In this expression \f$\sigma_x, \sigma_y\f$ and \f$\sigma_z\f$ are bandwidth parameters and</a>
+<a name="43"><span class="lineNum">      43 </span>            : \f$K\f$ is one of the \ref kernelfunctions.  This is what is done within \ref MULTICOLVARDENS</a>
+<a name="44"><span class="lineNum">      44 </span>            : </a>
+<a name="45"><span class="lineNum">      45 </span>            : The Willard-Chandler surface is a surface of constant density in the above phase field \f$p(x,y,z)\f$.</a>
+<a name="46"><span class="lineNum">      46 </span>            : In other words, it is a set of points, \f$(x',y',z')\f$, in your box which have:</a>
+<a name="47"><span class="lineNum">      47 </span>            : </a>
+<a name="48"><span class="lineNum">      48 </span>            : \f[</a>
+<a name="49"><span class="lineNum">      49 </span>            : p(x',y',z') = \rho</a>
+<a name="50"><span class="lineNum">      50 </span>            : \f]</a>
+<a name="51"><span class="lineNum">      51 </span>            : </a>
+<a name="52"><span class="lineNum">      52 </span>            : where \f$\rho\f$ is some target density.  This action calculates the distance projected on the \f$x, y\f$ or</a>
+<a name="53"><span class="lineNum">      53 </span>            : \f$z\f$ axis between the position of some test particle and this surface of constant field density.</a>
+<a name="54"><span class="lineNum">      54 </span>            : </a>
+<a name="55"><span class="lineNum">      55 </span>            : \par Examples</a>
+<a name="56"><span class="lineNum">      56 </span>            : </a>
+<a name="57"><span class="lineNum">      57 </span>            : In this example atoms 2-100 are assumed to be concentrated along some part of the \f$z\f$ axis so that you</a>
+<a name="58"><span class="lineNum">      58 </span>            : an interface between a liquid/solid and the vapor.  The quantity dc measures the distance between the</a>
+<a name="59"><span class="lineNum">      59 </span>            : surface at which the density of 2-100 atoms is equal to 0.2 and the position of the test particle atom 1.</a>
+<a name="60"><span class="lineNum">      60 </span>            : </a>
+<a name="61"><span class="lineNum">      61 </span>            : \plumedfile</a>
+<a name="62"><span class="lineNum">      62 </span>            : dens: DENSITY SPECIES=2-100</a>
+<a name="63"><span class="lineNum">      63 </span>            : dc: DISTANCE_FROM_CONTOUR DATA=dens ATOM=1 BANDWIDTH=0.5,0.5,0.5 DIR=z CONTOUR=0.2</a>
+<a name="64"><span class="lineNum">      64 </span>            : \endplumedfile</a>
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<a name="66"><span class="lineNum">      66 </span>            : */</a>
+<a name="67"><span class="lineNum">      67 </span>            : //+ENDPLUMEDOC</a>
+<a name="68"><span class="lineNum">      68 </span>            : </a>
+<a name="69"><span class="lineNum">      69 </span>            : namespace PLMD {</a>
+<a name="70"><span class="lineNum">      70 </span>            : namespace multicolvar {</a>
+<a name="71"><span class="lineNum">      71 </span>            : </a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          4 : class DistanceFromContour : public MultiColvarBase {</span></a>
+<a name="73"><span class="lineNum">      73 </span>            : private:</a>
+<a name="74"><span class="lineNum">      74 </span>            :   unsigned dir;</a>
+<a name="75"><span class="lineNum">      75 </span>            :   bool derivTime;</a>
+<a name="76"><span class="lineNum">      76 </span>            :   double rcut2;</a>
+<a name="77"><span class="lineNum">      77 </span>            :   double contour;</a>
+<a name="78"><span class="lineNum">      78 </span>            :   double pbc_param;</a>
+<a name="79"><span class="lineNum">      79 </span>            :   std::string kerneltype;</a>
+<a name="80"><span class="lineNum">      80 </span>            :   std::vector&lt;std::unique_ptr&lt;Value&gt;&gt; pval;</a>
+<a name="81"><span class="lineNum">      81 </span>            :   std::vector&lt;double&gt; bw, pos1, pos2, dirv, dirv2;</a>
+<a name="82"><span class="lineNum">      82 </span>            :   std::vector&lt;double&gt; forces;</a>
+<a name="83"><span class="lineNum">      83 </span>            :   std::vector&lt;unsigned&gt; perp_dirs;</a>
+<a name="84"><span class="lineNum">      84 </span>            :   vesselbase::ValueVessel* myvalue_vessel;</a>
+<a name="85"><span class="lineNum">      85 </span>            :   vesselbase::ValueVessel* myderiv_vessel;</a>
+<a name="86"><span class="lineNum">      86 </span>            :   RootFindingBase&lt;DistanceFromContour&gt; mymin;</a>
+<a name="87"><span class="lineNum">      87 </span>            : public:</a>
+<a name="88"><span class="lineNum">      88 </span>            :   static void registerKeywords( Keywords&amp; keys );</a>
+<a name="89"><span class="lineNum">      89 </span>            :   explicit DistanceFromContour( const ActionOptions&amp; );</a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">       3115 :   bool isDensity() const override { return true; }</span></a>
+<a name="91"><span class="lineNum">      91 </span>            :   void calculate() override;</a>
+<a name="92"><span class="lineNum">      92 </span>            :   unsigned getNumberOfQuantities() const override;</a>
+<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 :   bool isPeriodic() override { return false; }</span></a>
+<a name="94"><span class="lineNum">      94 </span>            :   double compute( const unsigned&amp; tindex, AtomValuePack&amp; myatoms ) const override;</a>
+<a name="95"><span class="lineNum">      95 </span>            :   double getDifferenceFromContour( const std::vector&lt;double&gt;&amp; x, std::vector&lt;double&gt;&amp; der );</a>
+<a name="96"><span class="lineNum">      96 </span>            : // We need an apply action as we are using an independent value</a>
+<a name="97"><span class="lineNum">      97 </span>            :   void apply() override;</a>
+<a name="98"><span class="lineNum">      98 </span>            : };</a>
+<a name="99"><span class="lineNum">      99 </span>            : </a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">       7834 : PLUMED_REGISTER_ACTION(DistanceFromContour,&quot;DISTANCE_FROM_CONTOUR&quot;)</span></a>
+<a name="101"><span class="lineNum">     101 </span>            : </a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">          2 : void DistanceFromContour::registerKeywords( Keywords&amp; keys ) {</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">          2 :   MultiColvarBase::registerKeywords( keys );</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">          8 :   keys.addOutputComponent(&quot;dist1&quot;,&quot;default&quot;,&quot;the distance between the reference atom and the nearest contour&quot;);</span></a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">          8 :   keys.addOutputComponent(&quot;dist2&quot;,&quot;default&quot;,&quot;the distance between the reference atom and the other contour&quot;);</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">          8 :   keys.addOutputComponent(&quot;qdist&quot;,&quot;default&quot;,&quot;the differentiable (squared) distance between the two contours (see above)&quot;);</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">          8 :   keys.addOutputComponent(&quot;thickness&quot;,&quot;default&quot;,&quot;the distance between the two contours on the line from the reference atom&quot;);</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">          8 :   keys.add(&quot;compulsory&quot;,&quot;DATA&quot;,&quot;The input base multicolvar which is being used to calculate the contour&quot;);</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">          8 :   keys.add(&quot;atoms&quot;,&quot;ATOM&quot;,&quot;The atom whose perpendicular distance we are calculating from the contour&quot;);</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">          8 :   keys.add(&quot;compulsory&quot;,&quot;BANDWIDTH&quot;,&quot;the bandwidths for kernel density estimation&quot;);</span></a>
+<a name="111"><span class="lineNum">     111 </span>            :   keys.add(&quot;compulsory&quot;,&quot;KERNEL&quot;,&quot;gaussian&quot;,&quot;the kernel function you are using.  More details on  the kernels available &quot;</a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">         10 :            &quot;in plumed plumed can be found in \\ref kernelfunctions.&quot;);</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">          8 :   keys.add(&quot;compulsory&quot;,&quot;DIR&quot;,&quot;the direction perpendicular to the contour that you are looking for&quot;);</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">          8 :   keys.add(&quot;compulsory&quot;,&quot;CONTOUR&quot;,&quot;the value we would like for the contour&quot;);</span></a>
+<a name="115"><span class="lineNum">     115 </span>            :   keys.add(&quot;compulsory&quot;,&quot;TOLERANCE&quot;,&quot;0.1&quot;,&quot;this parameter is used to manage periodic boundary conditions.  The problem &quot;</a>
+<a name="116"><span class="lineNum">     116 </span>            :            &quot;here is that we can be between contours even when we are not within the membrane &quot;</a>
+<a name="117"><span class="lineNum">     117 </span>            :            &quot;because of periodic boundary conditions.  When we are in the contour, however, we &quot;</a>
+<a name="118"><span class="lineNum">     118 </span>            :            &quot;should have it so that the sums of the absolute values of the distances to the two &quot;</a>
+<a name="119"><span class="lineNum">     119 </span>            :            &quot;contours is approximately the distance between the two contours.  There can be numerical errors in these calculations, however, so &quot;</a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">         10 :            &quot;we specify a small tolerance here&quot;);</span></a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineCov">          2 : }</span></a>
+<a name="122"><span class="lineNum">     122 </span>            : </a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineCov">          1 : DistanceFromContour::DistanceFromContour( const ActionOptions&amp; ao ):</span></a>
+<a name="124"><span class="lineNum">     124 </span>            :   Action(ao),</a>
+<a name="125"><span class="lineNum">     125 </span>            :   MultiColvarBase(ao),</a>
+<a name="126"><span class="lineNum">     126 </span>            :   derivTime(false),</a>
+<a name="127"><span class="lineNum">     127 </span>            :   bw(3),</a>
+<a name="128"><span class="lineNum">     128 </span>            :   pos1(3,0.0),</a>
+<a name="129"><span class="lineNum">     129 </span>            :   pos2(3,0.0),</a>
+<a name="130"><span class="lineNum">     130 </span>            :   dirv(3,0.0),</a>
+<a name="131"><span class="lineNum">     131 </span>            :   dirv2(3,0.0),</a>
+<a name="132"><span class="lineNum">     132 </span>            :   perp_dirs(2),</a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">          3 :   mymin(this)</span></a>
+<a name="134"><span class="lineNum">     134 </span>            : {</a>
+<a name="135"><span class="lineNum">     135 </span>            :   // Read in the multicolvar/atoms</a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          2 :   std::vector&lt;AtomNumber&gt; all_atoms; parse(&quot;TOLERANCE&quot;,pbc_param);</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          2 :   bool read2 = parseMultiColvarAtomList(&quot;DATA&quot;, -1, all_atoms);</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">          1 :   if( !read2 ) error(&quot;missing DATA keyword&quot;);</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">          2 :   bool read1 = parseMultiColvarAtomList(&quot;ATOM&quot;, -1, all_atoms);</span></a>
+<a name="140"><span class="lineNum">     140 </span><span class="lineCov">          1 :   if( !read1 ) error(&quot;missing ATOM keyword&quot;);</span></a>
+<a name="141"><span class="lineNum">     141 </span><span class="lineCov">          1 :   if( all_atoms.size()!=1 ) error(&quot;should only be one atom specified&quot;);</span></a>
+<a name="142"><span class="lineNum">     142 </span>            :   // Read in the center of the binding object</a>
+<a name="143"><span class="lineNum">     143 </span><span class="lineCov">          1 :   log.printf(&quot;  computing distance of atom %d from contour \n&quot;,all_atoms[0].serial() );</span></a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">          2 :   setupMultiColvarBase( all_atoms ); forces.resize( 3*getNumberOfAtoms() + 9 );</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">          1 :   if( getNumberOfBaseMultiColvars()!=1 ) error(&quot;should only be one input multicolvar&quot;);</span></a>
+<a name="146"><span class="lineNum">     146 </span>            : </a>
+<a name="147"><span class="lineNum">     147 </span>            :   // Get the direction</a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">          2 :   std::string ldir; parse(&quot;DIR&quot;,ldir );</span></a>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">          1 :   if( ldir==&quot;x&quot; ) { dir=0; perp_dirs[0]=1; perp_dirs[1]=2; dirv[0]=1; dirv2[0]=-1; }</span></a>
+<a name="150"><span class="lineNum">     150 </span><span class="lineCov">          1 :   else if( ldir==&quot;y&quot; ) { dir=1; perp_dirs[0]=0; perp_dirs[1]=2; dirv[1]=1; dirv2[1]=-1; }</span></a>
+<a name="151"><span class="lineNum">     151 </span><span class="lineCov">          5 :   else if( ldir==&quot;z&quot; ) { dir=2; perp_dirs[0]=0; perp_dirs[1]=1; dirv[2]=1; dirv2[2]=-1; }</span></a>
+<a name="152"><span class="lineNum">     152 </span><span class="lineNoCov">          0 :   else error(ldir + &quot; is not a valid direction use x, y or z&quot;);</span></a>
+<a name="153"><span class="lineNum">     153 </span>            : </a>
+<a name="154"><span class="lineNum">     154 </span>            :   // Read in details of phase field construction</a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">          4 :   parseVector(&quot;BANDWIDTH&quot;,bw); parse(&quot;KERNEL&quot;,kerneltype); parse(&quot;CONTOUR&quot;,contour);</span></a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">          3 :   log.printf(&quot;  searching for contour in %s direction at %f in phase field for multicolvar %s \n&quot;,ldir.c_str(), contour, mybasemulticolvars[0]-&gt;getLabel().c_str() );</span></a>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">          2 :   log.printf(&quot;  constructing phase field using %s kernels with bandwidth (%f, %f, %f) \n&quot;,kerneltype.c_str(), bw[0], bw[1], bw[2] );</span></a>
+<a name="158"><span class="lineNum">     158 </span>            : </a>
+<a name="159"><span class="lineNum">     159 </span>            :   // Now create a task list</a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">          5 :   for(unsigned i=0; i&lt;mybasemulticolvars[0]-&gt;getFullNumberOfTasks(); ++i) addTaskToList(i);</span></a>
+<a name="161"><span class="lineNum">     161 </span>            :   // And a cutoff</a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          2 :   std::vector&lt;double&gt; pp( bw.size(),0 );</span></a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          3 :   KernelFunctions kernel( pp, bw, kerneltype, &quot;DIAGONAL&quot;, 1.0 );</span></a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">          1 :   double rcut = kernel.getCutoff( bw[0] );</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          5 :   for(unsigned j=1; j&lt;bw.size(); ++j) {</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">          2 :     if( kernel.getCutoff(bw[j])&gt;rcut ) rcut=kernel.getCutoff(bw[j]);</span></a>
+<a name="167"><span class="lineNum">     167 </span>            :   }</a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">          1 :   rcut2=rcut*rcut;</span></a>
+<a name="169"><span class="lineNum">     169 </span>            :   // Create the values</a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          3 :   addComponent(&quot;thickness&quot;); componentIsNotPeriodic(&quot;thickness&quot;);</span></a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineCov">          3 :   addComponent(&quot;dist1&quot;); componentIsNotPeriodic(&quot;dist1&quot;);</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          3 :   addComponent(&quot;dist2&quot;); componentIsNotPeriodic(&quot;dist2&quot;);</span></a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">          3 :   addComponentWithDerivatives(&quot;qdist&quot;); componentIsNotPeriodic(&quot;qdist&quot;);</span></a>
+<a name="174"><span class="lineNum">     174 </span>            :   // Create sum vessels</a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">          1 :   std::string fake_input; std::string deriv_input=&quot;COMPONENT=2&quot;;</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">          1 :   if( mybasemulticolvars[0]-&gt;isDensity() ) {</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          3 :     addVessel( &quot;SUM&quot;, fake_input, -1 ); addVessel( &quot;SUM&quot;, deriv_input, -1 );</span></a>
+<a name="178"><span class="lineNum">     178 </span>            :   } else {</a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 :     addVessel( &quot;MEAN&quot;, fake_input, -1 ); addVessel( &quot;MEAN&quot;, deriv_input, -1 );</span></a>
+<a name="180"><span class="lineNum">     180 </span>            :   }</a>
+<a name="181"><span class="lineNum">     181 </span>            :   // And convert to a value vessel so we can get the final value</a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineCov">          1 :   myvalue_vessel = dynamic_cast&lt;vesselbase::ValueVessel*&gt;( getPntrToVessel(0) );</span></a>
+<a name="183"><span class="lineNum">     183 </span><span class="lineCov">          1 :   myderiv_vessel = dynamic_cast&lt;vesselbase::ValueVessel*&gt;( getPntrToVessel(1) );</span></a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineCov">          1 :   plumed_assert( myvalue_vessel &amp;&amp; myderiv_vessel ); resizeFunctions();</span></a>
+<a name="185"><span class="lineNum">     185 </span>            : </a>
+<a name="186"><span class="lineNum">     186 </span>            :   // Create the vector of values that holds the position</a>
+<a name="187"><span class="lineNum">     187 </span><span class="lineCov">          3 :   for(unsigned i=0; i&lt;3; ++i) pval.emplace_back( new Value() );</span></a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">          1 : }</span></a>
+<a name="189"><span class="lineNum">     189 </span>            : </a>
+<a name="190"><span class="lineNum">     190 </span><span class="lineCov">       6230 : unsigned DistanceFromContour::getNumberOfQuantities() const {</span></a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">       6230 :   return 3;</span></a>
+<a name="192"><span class="lineNum">     192 </span>            : }</a>
+<a name="193"><span class="lineNum">     193 </span>            : </a>
+<a name="194"><span class="lineNum">     194 </span><span class="lineCov">        137 : void DistanceFromContour::calculate() {</span></a>
+<a name="195"><span class="lineNum">     195 </span>            :   // Check box is orthorhombic</a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineCov">        137 :   if( !getPbc().isOrthorombic() ) error(&quot;cell box must be orthorhombic&quot;);</span></a>
+<a name="197"><span class="lineNum">     197 </span>            : </a>
+<a name="198"><span class="lineNum">     198 </span>            :   // The nanoparticle is at the origin of our coordinate system</a>
+<a name="199"><span class="lineNum">     199 </span><span class="lineCov">        274 :   pos1[0]=pos1[1]=pos1[2]=0.0; pos2[0]=pos2[1]=pos2[2]=0.0;</span></a>
+<a name="200"><span class="lineNum">     200 </span>            : </a>
+<a name="201"><span class="lineNum">     201 </span>            :   // Set bracket as center of mass of membrane in active region</a>
+<a name="202"><span class="lineNum">     202 </span><span class="lineCov">        137 :   deactivateAllTasks();</span></a>
+<a name="203"><span class="lineNum">     203 </span><span class="lineCov">        411 :   Vector myvec = getSeparation( getPosition(getNumberOfAtoms()-1), getPosition(0) ); pos2[dir]=myvec[dir];</span></a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineCov">        137 :   taskFlags[0]=1; double mindist = myvec.modulo2();</span></a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineCov">        274 :   for(unsigned j=1; j&lt;getNumberOfAtoms()-1; ++j) {</span></a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineNoCov">          0 :     Vector distance=getSeparation( getPosition(getNumberOfAtoms()-1), getPosition(j) );</span></a>
+<a name="207"><span class="lineNum">     207 </span>            :     double d2;</a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :     if( (d2=distance[perp_dirs[0]]*distance[perp_dirs[0]])&lt;rcut2 &amp;&amp;</span></a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 :         (d2+=distance[perp_dirs[1]]*distance[perp_dirs[1]])&lt;rcut2 ) {</span></a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 :       d2+=distance[dir]*distance[dir];</span></a>
+<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 :       if( d2&lt;mindist &amp;&amp; fabs(distance[dir])&gt;epsilon ) { pos2[dir]=distance[dir]; mindist = d2; }</span></a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :       taskFlags[j]=1;</span></a>
+<a name="213"><span class="lineNum">     213 </span>            :     }</a>
+<a name="214"><span class="lineNum">     214 </span>            :   }</a>
+<a name="215"><span class="lineNum">     215 </span><span class="lineCov">        137 :   lockContributors(); derivTime=false;</span></a>
+<a name="216"><span class="lineNum">     216 </span>            :   // pos1 position of the nanoparticle, in the first time</a>
+<a name="217"><span class="lineNum">     217 </span>            :   // pos2 is the position of the closer atom in the membrane with respect the nanoparticle</a>
+<a name="218"><span class="lineNum">     218 </span>            :   // fa = distance between pos1 and the contour</a>
+<a name="219"><span class="lineNum">     219 </span>            :   // fb = distance between pos2 and the contour</a>
+<a name="220"><span class="lineNum">     220 </span><span class="lineCov">        137 :   std::vector&lt;double&gt; faked(3);</span></a>
+<a name="221"><span class="lineNum">     221 </span><span class="lineCov">        137 :   double fa = getDifferenceFromContour( pos1, faked );</span></a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineCov">        137 :   double fb = getDifferenceFromContour( pos2, faked );</span></a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">        137 :   if( fa*fb&gt;0 ) {</span></a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineNoCov">          0 :     unsigned maxtries = std::floor( ( getBox()(dir,dir) ) / bw[dir] );</span></a>
+<a name="225"><span class="lineNum">     225 </span><span class="lineNoCov">          0 :     for(unsigned i=0; i&lt;maxtries; ++i) {</span></a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineNoCov">          0 :       double sign=(pos2[dir]&gt;0)? -1 : +1; // If the nanoparticle is inside the membrane push it out</span></a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineNoCov">          0 :       pos1[dir] += sign*bw[dir]; fa = getDifferenceFromContour( pos1, faked );</span></a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineNoCov">          0 :       if( fa*fb&lt;0 ) break;</span></a>
+<a name="229"><span class="lineNum">     229 </span>            :       // if fa*fb is less than zero the new pos 1 is outside the contour</a>
+<a name="230"><span class="lineNum">     230 </span>            :     }</a>
+<a name="231"><span class="lineNum">     231 </span>            :   }</a>
+<a name="232"><span class="lineNum">     232 </span>            :   // Set direction for contour search</a>
+<a name="233"><span class="lineNum">     233 </span><span class="lineCov">        411 :   dirv[dir] = pos2[dir] - pos1[dir];</span></a>
+<a name="234"><span class="lineNum">     234 </span>            :   // Bracket for second root starts in center of membrane</a>
+<a name="235"><span class="lineNum">     235 </span><span class="lineCov">        137 :   double fc = getDifferenceFromContour( pos2, faked );</span></a>
+<a name="236"><span class="lineNum">     236 </span><span class="lineCov">        137 :   if( fc*fb&gt;0 ) {</span></a>
+<a name="237"><span class="lineNum">     237 </span>            :     // first time is true, because fc=fb</a>
+<a name="238"><span class="lineNum">     238 </span>            :     // push pos2 from its initial position inside the membrane towards the second contourn</a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineCov">        411 :     unsigned maxtries = std::floor( ( getBox()(dir,dir) ) / bw[dir] );</span></a>
+<a name="240"><span class="lineNum">     240 </span><span class="lineCov">        230 :     for(unsigned i=0; i&lt;maxtries; ++i) {</span></a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineCov">        460 :       double sign=(dirv[dir]&gt;0)? +1 : -1;</span></a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineCov">        460 :       pos2[dir] += sign*bw[dir]; fc = getDifferenceFromContour( pos2, faked );</span></a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">        230 :       if( fc*fb&lt;0 ) break;</span></a>
+<a name="244"><span class="lineNum">     244 </span>            :     }</a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">        548 :     dirv2[dir] = ( pos1[dir] + dirv[dir] ) - pos2[dir];</span></a>
+<a name="246"><span class="lineNum">     246 </span>            :   }</a>
+<a name="247"><span class="lineNum">     247 </span>            : </a>
+<a name="248"><span class="lineNum">     248 </span>            :   // Now do a search for the two contours</a>
+<a name="249"><span class="lineNum">     249 </span><span class="lineCov">        137 :   mymin.lsearch( dirv, pos1, &amp;DistanceFromContour::getDifferenceFromContour );</span></a>
+<a name="250"><span class="lineNum">     250 </span>            :   // Save the first value</a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">        274 :   Vector root1; root1.zero(); root1[dir] = pval[dir]-&gt;get();</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">        137 :   mymin.lsearch( dirv2, pos2, &amp;DistanceFromContour::getDifferenceFromContour );</span></a>
+<a name="253"><span class="lineNum">     253 </span>            :   // Calculate the separation between the two roots using PBC</a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">        274 :   Vector root2; root2.zero(); root2[dir]=pval[dir]-&gt;get();</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">        137 :   Vector sep = getSeparation( root1, root2 ); double spacing = fabs( sep[dir] ); plumed_assert( spacing&gt;epsilon );</span></a>
+<a name="256"><span class="lineNum">     256 </span><span class="lineCov">        274 :   getPntrToComponent(&quot;thickness&quot;)-&gt;set( spacing );</span></a>
+<a name="257"><span class="lineNum">     257 </span>            : </a>
+<a name="258"><span class="lineNum">     258 </span>            :   // Make sure the sign is right</a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">        137 :   double predir=(root1[dir]*root2[dir]&lt;0)? -1 : 1;</span></a>
+<a name="260"><span class="lineNum">     260 </span>            :   // This deals with periodic boundary conditions - if we are inside the membrane the sum of the absolute</a>
+<a name="261"><span class="lineNum">     261 </span>            :   // distances from the contours should add up to the spacing.  When this is not the case we must be outside</a>
+<a name="262"><span class="lineNum">     262 </span>            :   // the contour</a>
+<a name="263"><span class="lineNum">     263 </span>            :   // if( predir==-1 &amp;&amp; (fabs(root1[dir])+fabs(root2[dir]))&gt;(spacing+pbc_param) ) predir=1;</a>
+<a name="264"><span class="lineNum">     264 </span>            :   // Set the final value to root that is closest to the &quot;origin&quot; = position of atom</a>
+<a name="265"><span class="lineNum">     265 </span><span class="lineCov">        137 :   if( fabs(root1[dir])&lt;fabs(root2[dir]) ) {</span></a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineCov">        274 :     getPntrToComponent(&quot;dist1&quot;)-&gt;set( predir*fabs(root1[dir]) );</span></a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineCov">        274 :     getPntrToComponent(&quot;dist2&quot;)-&gt;set( fabs(root2[dir]) );</span></a>
+<a name="268"><span class="lineNum">     268 </span>            :   } else {</a>
+<a name="269"><span class="lineNum">     269 </span><span class="lineNoCov">          0 :     getPntrToComponent(&quot;dist1&quot;)-&gt;set( predir*fabs(root2[dir]) );</span></a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineNoCov">          0 :     getPntrToComponent(&quot;dist2&quot;)-&gt;set( fabs(root1[dir]) );</span></a>
+<a name="271"><span class="lineNum">     271 </span>            :   }</a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">        274 :   getPntrToComponent(&quot;qdist&quot;)-&gt;set( root2[dir]*root1[dir] );</span></a>
+<a name="273"><span class="lineNum">     273 </span>            : </a>
+<a name="274"><span class="lineNum">     274 </span>            :   // Now calculate the derivatives</a>
+<a name="275"><span class="lineNum">     275 </span><span class="lineCov">        137 :   if( !doNotCalculateDerivatives() ) {</span></a>
+<a name="276"><span class="lineNum">     276 </span><span class="lineCov">        137 :     Value* ival=myvalue_vessel-&gt;getFinalValue(); ival-&gt;clearDerivatives();</span></a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">        548 :     std::vector&lt;double&gt; root1v(3); for(unsigned i=0; i&lt;3; ++i) root1v[i]=root1[i];</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">        137 :     derivTime=true; std::vector&lt;double&gt; der(3); getDifferenceFromContour( root1v, der ); double prefactor;</span></a>
+<a name="279"><span class="lineNum">     279 </span><span class="lineCov">        274 :     if( mybasemulticolvars[0]-&gt;isDensity() ) prefactor = root2[dir] / myderiv_vessel-&gt;getOutputValue();</span></a>
+<a name="280"><span class="lineNum">     280 </span><span class="lineNoCov">          0 :     else plumed_error();</span></a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineCov">        411 :     Value* val=getPntrToComponent(&quot;qdist&quot;);</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineCov">       4247 :     for(unsigned i=0; i&lt;val-&gt;getNumberOfDerivatives(); ++i) val-&gt;setDerivative( i, -prefactor*ival-&gt;getDerivative(i) );</span></a>
+<a name="283"><span class="lineNum">     283 </span>            :     ival-&gt;clearDerivatives();</a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineCov">        548 :     std::vector&lt;double&gt; root2v(3); for(unsigned i=0; i&lt;3; ++i) root2v[i]=root2[i];</span></a>
+<a name="285"><span class="lineNum">     285 </span><span class="lineCov">        137 :     getDifferenceFromContour( root2v, der );</span></a>
+<a name="286"><span class="lineNum">     286 </span><span class="lineCov">        274 :     if( mybasemulticolvars[0]-&gt;isDensity() ) prefactor = root1[dir] / myderiv_vessel-&gt;getOutputValue();</span></a>
+<a name="287"><span class="lineNum">     287 </span><span class="lineNoCov">          0 :     else plumed_error();</span></a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineCov">       6302 :     for(unsigned i=0; i&lt;val-&gt;getNumberOfDerivatives(); ++i) val-&gt;addDerivative( i, -prefactor*ival-&gt;getDerivative(i) );</span></a>
+<a name="289"><span class="lineNum">     289 </span>            :   }</a>
+<a name="290"><span class="lineNum">     290 </span><span class="lineCov">        137 : }</span></a>
+<a name="291"><span class="lineNum">     291 </span>            : </a>
+<a name="292"><span class="lineNum">     292 </span><span class="lineCov">       3115 : double DistanceFromContour::getDifferenceFromContour( const std::vector&lt;double&gt;&amp; x, std::vector&lt;double&gt;&amp; der ) {</span></a>
+<a name="293"><span class="lineNum">     293 </span>            :   std::string min, max;</a>
+<a name="294"><span class="lineNum">     294 </span><span class="lineCov">      12460 :   for(unsigned j=0; j&lt;3; ++j) {</span></a>
+<a name="295"><span class="lineNum">     295 </span><span class="lineCov">       9345 :     Tools::convert( -0.5*getBox()(j,j), min );</span></a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineCov">       9345 :     Tools::convert( +0.5*getBox()(j,j), max );</span></a>
+<a name="297"><span class="lineNum">     297 </span><span class="lineCov">      28035 :     pval[j]-&gt;setDomain( min, max ); pval[j]-&gt;set( x[j] );</span></a>
+<a name="298"><span class="lineNum">     298 </span>            :   }</a>
+<a name="299"><span class="lineNum">     299 </span><span class="lineCov">       3115 :   runAllTasks();</span></a>
+<a name="300"><span class="lineNum">     300 </span><span class="lineCov">       9345 :   return myvalue_vessel-&gt;getOutputValue() - contour;</span></a>
+<a name="301"><span class="lineNum">     301 </span>            : }</a>
+<a name="302"><span class="lineNum">     302 </span>            : </a>
+<a name="303"><span class="lineNum">     303 </span><span class="lineCov">       3115 : double DistanceFromContour::compute( const unsigned&amp; tindex, AtomValuePack&amp; myatoms ) const {</span></a>
+<a name="304"><span class="lineNum">     304 </span><span class="lineCov">       6230 :   Vector distance = getSeparation( getPosition(getNumberOfAtoms()-1), myatoms.getPosition(0) );</span></a>
+<a name="305"><span class="lineNum">     305 </span><span class="lineCov">      12460 :   std::vector&lt;double&gt; pp(3), der(3,0); for(unsigned j=0; j&lt;3; ++j) pp[j] = distance[j];</span></a>
+<a name="306"><span class="lineNum">     306 </span>            : </a>
+<a name="307"><span class="lineNum">     307 </span>            :   // convert the pointer once</a>
+<a name="308"><span class="lineNum">     308 </span><span class="lineCov">       3115 :   auto pval_ptr=Tools::unique2raw(pval);</span></a>
+<a name="309"><span class="lineNum">     309 </span>            : </a>
+<a name="310"><span class="lineNum">     310 </span>            :   // Now create the kernel and evaluate</a>
+<a name="311"><span class="lineNum">     311 </span><span class="lineCov">       9345 :   KernelFunctions kernel( pp, bw, kerneltype, &quot;DIAGONAL&quot;, 1.0 );</span></a>
+<a name="312"><span class="lineNum">     312 </span><span class="lineCov">       3115 :   kernel.normalize( pval_ptr ); double newval = kernel.evaluate( pval_ptr, der, true );</span></a>
+<a name="313"><span class="lineNum">     313 </span>            : </a>
+<a name="314"><span class="lineNum">     314 </span><span class="lineCov">       3115 :   if( mybasemulticolvars[0]-&gt;isDensity() ) {</span></a>
+<a name="315"><span class="lineNum">     315 </span><span class="lineCov">       3115 :     if( !doNotCalculateDerivatives() &amp;&amp; derivTime ) {</span></a>
+<a name="316"><span class="lineNum">     316 </span>            :       MultiValue&amp; myvals=myatoms.getUnderlyingMultiValue();</a>
+<a name="317"><span class="lineNum">     317 </span><span class="lineCov">        548 :       Vector vder; unsigned basen=myvals.getNumberOfDerivatives() - 12;</span></a>
+<a name="318"><span class="lineNum">     318 </span><span class="lineCov">       1096 :       for(unsigned i=0; i&lt;3; ++i) {</span></a>
+<a name="319"><span class="lineNum">     319 </span><span class="lineCov">       1644 :         vder[i]=der[i]; myvals.addDerivative( 1, basen+i, vder[i] );</span></a>
+<a name="320"><span class="lineNum">     320 </span>            :       }</a>
+<a name="321"><span class="lineNum">     321 </span><span class="lineCov">        274 :       myatoms.setValue( 2, der[dir] );</span></a>
+<a name="322"><span class="lineNum">     322 </span><span class="lineCov">        274 :       addAtomDerivatives( 1, 0, -vder, myatoms );</span></a>
+<a name="323"><span class="lineNum">     323 </span><span class="lineCov">        274 :       myatoms.addBoxDerivatives( 1, Tensor(vder,distance) );</span></a>
+<a name="324"><span class="lineNum">     324 </span>            :     }</a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineCov">       3115 :     myatoms.setValue( 0, 1.0 ); return newval;</span></a>
+<a name="326"><span class="lineNum">     326 </span>            :   }</a>
+<a name="327"><span class="lineNum">     327 </span>            : </a>
+<a name="328"><span class="lineNum">     328 </span>            :   // This does the stuff for averaging</a>
+<a name="329"><span class="lineNum">     329 </span>            :   myatoms.setValue( 0, newval );</a>
+<a name="330"><span class="lineNum">     330 </span>            : </a>
+<a name="331"><span class="lineNum">     331 </span>            :   // This gets the average if we are using a phase field</a>
+<a name="332"><span class="lineNum">     332 </span><span class="lineNoCov">          0 :   std::vector&lt;double&gt; cvals( mybasemulticolvars[0]-&gt;getNumberOfQuantities() );</span></a>
+<a name="333"><span class="lineNum">     333 </span><span class="lineNoCov">          0 :   mybasedata[0]-&gt;retrieveValueWithIndex( tindex, false, cvals );</span></a>
+<a name="334"><span class="lineNum">     334 </span><span class="lineNoCov">          0 :   return newval*cvals[0]*cvals[1];</span></a>
+<a name="335"><span class="lineNum">     335 </span>            : }</a>
+<a name="336"><span class="lineNum">     336 </span>            : </a>
+<a name="337"><span class="lineNum">     337 </span><span class="lineCov">        137 : void DistanceFromContour::apply() {</span></a>
+<a name="338"><span class="lineNum">     338 </span><span class="lineCov">        274 :   if( getPntrToComponent(&quot;qdist&quot;)-&gt;applyForce( forces ) ) setForcesOnAtoms( forces );</span></a>
+<a name="339"><span class="lineNum">     339 </span><span class="lineCov">        137 : }</span></a>
+<a name="340"><span class="lineNum">     340 </span>            : </a>
+<a name="341"><span class="lineNum">     341 </span>            : }</a>
+<a name="342"><span class="lineNum">     342 </span><span class="lineCov">       5874 : }</span></a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

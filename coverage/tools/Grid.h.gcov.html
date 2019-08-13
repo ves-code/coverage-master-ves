@@ -1,0 +1,415 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+<meta name="robots" content="noindex">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - plumed test coverage - tools/Grid.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">tools</a> - Grid.h<span style="font-size: 80%;"> (source / <a href="Grid.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">plumed test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryMed">88.9 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-08-13 10:15:31</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntryLo">57.1 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (c) 2011-2019 The plumed team</a>
+<a name="3"><span class="lineNum">       3 </span>            :    (see the PEOPLE file at the root of the distribution for a list of names)</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            :    See http://www.plumed.org for more information.</a>
+<a name="6"><span class="lineNum">       6 </span>            : </a>
+<a name="7"><span class="lineNum">       7 </span>            :    This file is part of plumed, version 2.</a>
+<a name="8"><span class="lineNum">       8 </span>            : </a>
+<a name="9"><span class="lineNum">       9 </span>            :    plumed is free software: you can redistribute it and/or modify</a>
+<a name="10"><span class="lineNum">      10 </span>            :    it under the terms of the GNU Lesser General Public License as published by</a>
+<a name="11"><span class="lineNum">      11 </span>            :    the Free Software Foundation, either version 3 of the License, or</a>
+<a name="12"><span class="lineNum">      12 </span>            :    (at your option) any later version.</a>
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<a name="14"><span class="lineNum">      14 </span>            :    plumed is distributed in the hope that it will be useful,</a>
+<a name="15"><span class="lineNum">      15 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="16"><span class="lineNum">      16 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="17"><span class="lineNum">      17 </span>            :    GNU Lesser General Public License for more details.</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span>            :    You should have received a copy of the GNU Lesser General Public License</a>
+<a name="20"><span class="lineNum">      20 </span>            :    along with plumed.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="21"><span class="lineNum">      21 </span>            : +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */</a>
+<a name="22"><span class="lineNum">      22 </span>            : #ifndef __PLUMED_tools_Grid_h</a>
+<a name="23"><span class="lineNum">      23 </span>            : #define __PLUMED_tools_Grid_h</a>
+<a name="24"><span class="lineNum">      24 </span>            : </a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &lt;vector&gt;</a>
+<a name="26"><span class="lineNum">      26 </span>            : #include &lt;string&gt;</a>
+<a name="27"><span class="lineNum">      27 </span>            : #include &lt;map&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>            : #include &lt;cmath&gt;</a>
+<a name="29"><span class="lineNum">      29 </span>            : #include &lt;memory&gt;</a>
+<a name="30"><span class="lineNum">      30 </span>            : </a>
+<a name="31"><span class="lineNum">      31 </span>            : namespace PLMD {</a>
+<a name="32"><span class="lineNum">      32 </span>            : </a>
+<a name="33"><span class="lineNum">      33 </span>            : </a>
+<a name="34"><span class="lineNum">      34 </span>            : // simple function to enable various weighting</a>
+<a name="35"><span class="lineNum">      35 </span>            : </a>
+<a name="36"><span class="lineNum">      36 </span><span class="lineCov">         84 : class WeightBase {</span></a>
+<a name="37"><span class="lineNum">      37 </span>            : public:</a>
+<a name="38"><span class="lineNum">      38 </span>            :   virtual double projectInnerLoop(double &amp;input, double &amp;v)=0;</a>
+<a name="39"><span class="lineNum">      39 </span>            :   virtual double projectOuterLoop(double &amp;v)=0;</a>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">         84 :   virtual ~WeightBase() {}</span></a>
+<a name="41"><span class="lineNum">      41 </span>            : };</a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">          2 : class BiasWeight:public WeightBase {</span></a>
+<a name="44"><span class="lineNum">      44 </span>            : public:</a>
+<a name="45"><span class="lineNum">      45 </span>            :   double beta,invbeta;</a>
+<a name="46"><span class="lineNum">      46 </span><span class="lineCov">          2 :   explicit BiasWeight(double v) {beta=v; invbeta=1./beta;}</span></a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineCov">      13120 :   double projectInnerLoop(double &amp;input, double &amp;v) override {return  input+exp(beta*v);}</span></a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineCov">        164 :   double projectOuterLoop(double &amp;v) override {return -invbeta*std::log(v);}</span></a>
+<a name="49"><span class="lineNum">      49 </span>            : };</a>
+<a name="50"><span class="lineNum">      50 </span>            : </a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 : class ProbWeight:public WeightBase {</span></a>
+<a name="52"><span class="lineNum">      52 </span>            : public:</a>
+<a name="53"><span class="lineNum">      53 </span>            :   double beta,invbeta;</a>
+<a name="54"><span class="lineNum">      54 </span>            :   explicit ProbWeight(double v) {beta=v; invbeta=1./beta;}</a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineNoCov">          0 :   double projectInnerLoop(double &amp;input, double &amp;v) override {return  input+v;}</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 :   double projectOuterLoop(double &amp;v) override {return -invbeta*std::log(v);}</span></a>
+<a name="57"><span class="lineNum">      57 </span>            : };</a>
+<a name="58"><span class="lineNum">      58 </span>            : </a>
+<a name="59"><span class="lineNum">      59 </span>            : </a>
+<a name="60"><span class="lineNum">      60 </span>            : </a>
+<a name="61"><span class="lineNum">      61 </span>            : </a>
+<a name="62"><span class="lineNum">      62 </span>            : </a>
+<a name="63"><span class="lineNum">      63 </span>            : </a>
+<a name="64"><span class="lineNum">      64 </span>            : class Value;</a>
+<a name="65"><span class="lineNum">      65 </span>            : class IFile;</a>
+<a name="66"><span class="lineNum">      66 </span>            : class OFile;</a>
+<a name="67"><span class="lineNum">      67 </span>            : class KernelFunctions;</a>
+<a name="68"><span class="lineNum">      68 </span>            : class Communicator;</a>
+<a name="69"><span class="lineNum">      69 </span>            : </a>
+<a name="70"><span class="lineNum">      70 </span>            : /// \ingroup TOOLBOX</a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">         45 : class GridBase</span></a>
+<a name="72"><span class="lineNum">      72 </span>            : {</a>
+<a name="73"><span class="lineNum">      73 </span>            : public:</a>
+<a name="74"><span class="lineNum">      74 </span>            : // we use a size_t here</a>
+<a name="75"><span class="lineNum">      75 </span>            : // should be 8 bytes on all 64-bit machines</a>
+<a name="76"><span class="lineNum">      76 </span>            : // and more portable than &quot;unsigned long long&quot;</a>
+<a name="77"><span class="lineNum">      77 </span>            :   typedef size_t index_t;</a>
+<a name="78"><span class="lineNum">      78 </span>            : // to restore old implementation (unsigned) use the following instead:</a>
+<a name="79"><span class="lineNum">      79 </span>            : // typedef unsigned index_t;</a>
+<a name="80"><span class="lineNum">      80 </span>            : /// Maximum dimension (exaggerated value).</a>
+<a name="81"><span class="lineNum">      81 </span>            : /// Can be used to replace local std::vectors with std::arrays (allocated on stack).</a>
+<a name="82"><span class="lineNum">      82 </span>            :   static constexpr size_t maxdim=64;</a>
+<a name="83"><span class="lineNum">      83 </span>            : protected:</a>
+<a name="84"><span class="lineNum">      84 </span>            :   std::string funcname;</a>
+<a name="85"><span class="lineNum">      85 </span>            :   std::vector&lt;std::string&gt; argnames;</a>
+<a name="86"><span class="lineNum">      86 </span>            :   std::vector&lt;std::string&gt; str_min_, str_max_;</a>
+<a name="87"><span class="lineNum">      87 </span>            :   std::vector&lt;double&gt; min_,max_,dx_;</a>
+<a name="88"><span class="lineNum">      88 </span>            :   std::vector&lt;unsigned&gt; nbin_;</a>
+<a name="89"><span class="lineNum">      89 </span>            :   std::vector&lt;bool&gt; pbc_;</a>
+<a name="90"><span class="lineNum">      90 </span>            :   index_t maxsize_;</a>
+<a name="91"><span class="lineNum">      91 </span>            :   unsigned dimension_;</a>
+<a name="92"><span class="lineNum">      92 </span>            :   bool dospline_, usederiv_;</a>
+<a name="93"><span class="lineNum">      93 </span>            :   std::string fmt_; // format for output</a>
+<a name="94"><span class="lineNum">      94 </span>            : /// get &quot;neighbors&quot; for spline</a>
+<a name="95"><span class="lineNum">      95 </span>            :   void getSplineNeighbors(const std::vector&lt;unsigned&gt; &amp; indices, std::vector&lt;index_t&gt;&amp; neigh, unsigned&amp; nneigh )const;</a>
+<a name="96"><span class="lineNum">      96 </span>            : // std::vector&lt;index_t&gt; getSplineNeighbors(const std::vector&lt;unsigned&gt; &amp; indices)const;</a>
+<a name="97"><span class="lineNum">      97 </span>            : </a>
+<a name="98"><span class="lineNum">      98 </span>            : </a>
+<a name="99"><span class="lineNum">      99 </span>            : public:</a>
+<a name="100"><span class="lineNum">     100 </span>            : /// this constructor here is Value-aware</a>
+<a name="101"><span class="lineNum">     101 </span>            :   GridBase(const std::string&amp; funcl, const std::vector&lt;Value*&gt; &amp; args, const std::vector&lt;std::string&gt; &amp; gmin,</a>
+<a name="102"><span class="lineNum">     102 </span>            :            const std::vector&lt;std::string&gt; &amp; gmax, const std::vector&lt;unsigned&gt; &amp; nbin, bool dospline,</a>
+<a name="103"><span class="lineNum">     103 </span>            :            bool usederiv);</a>
+<a name="104"><span class="lineNum">     104 </span>            : /// this constructor here is not Value-aware</a>
+<a name="105"><span class="lineNum">     105 </span>            :   GridBase(const std::string&amp; funcl, const std::vector&lt;std::string&gt; &amp;names, const std::vector&lt;std::string&gt; &amp; gmin,</a>
+<a name="106"><span class="lineNum">     106 </span>            :            const std::vector&lt;std::string&gt; &amp; gmax, const std::vector&lt;unsigned&gt; &amp; nbin, bool dospline,</a>
+<a name="107"><span class="lineNum">     107 </span>            :            bool usederiv, const std::vector&lt;bool&gt; &amp;isperiodic, const std::vector&lt;std::string&gt; &amp;pmin,</a>
+<a name="108"><span class="lineNum">     108 </span>            :            const std::vector&lt;std::string&gt; &amp;pmax );</a>
+<a name="109"><span class="lineNum">     109 </span>            : /// this is the real initializator</a>
+<a name="110"><span class="lineNum">     110 </span>            :   void Init(const std::string &amp; funcl, const std::vector&lt;std::string&gt; &amp;names, const std::vector&lt;std::string&gt; &amp; gmin,</a>
+<a name="111"><span class="lineNum">     111 </span>            :             const std::vector&lt;std::string&gt; &amp; gmax, const std::vector&lt;unsigned&gt; &amp; nbin, bool dospline, bool usederiv,</a>
+<a name="112"><span class="lineNum">     112 </span>            :             const std::vector&lt;bool&gt; &amp;isperiodic, const std::vector&lt;std::string&gt; &amp;pmin, const std::vector&lt;std::string&gt; &amp;pmax);</a>
+<a name="113"><span class="lineNum">     113 </span>            : /// get lower boundary</a>
+<a name="114"><span class="lineNum">     114 </span>            :   std::vector&lt;std::string&gt; getMin() const;</a>
+<a name="115"><span class="lineNum">     115 </span>            : /// get upper boundary</a>
+<a name="116"><span class="lineNum">     116 </span>            :   std::vector&lt;std::string&gt; getMax() const;</a>
+<a name="117"><span class="lineNum">     117 </span>            : /// get bin size</a>
+<a name="118"><span class="lineNum">     118 </span>            :   std::vector&lt;double&gt; getDx() const;</a>
+<a name="119"><span class="lineNum">     119 </span>            :   double getDx(index_t j) const ;</a>
+<a name="120"><span class="lineNum">     120 </span>            : /// get bin volume</a>
+<a name="121"><span class="lineNum">     121 </span>            :   double getBinVolume() const;</a>
+<a name="122"><span class="lineNum">     122 </span>            : /// get number of bins</a>
+<a name="123"><span class="lineNum">     123 </span>            :   std::vector&lt;unsigned&gt; getNbin() const;</a>
+<a name="124"><span class="lineNum">     124 </span>            : /// get if periodic</a>
+<a name="125"><span class="lineNum">     125 </span>            :   std::vector&lt;bool&gt; getIsPeriodic() const;</a>
+<a name="126"><span class="lineNum">     126 </span>            : /// get grid dimension</a>
+<a name="127"><span class="lineNum">     127 </span>            :   unsigned getDimension() const;</a>
+<a name="128"><span class="lineNum">     128 </span>            : /// get argument names  of this grid</a>
+<a name="129"><span class="lineNum">     129 </span>            :   std::vector&lt;std::string&gt; getArgNames() const;</a>
+<a name="130"><span class="lineNum">     130 </span>            : /// get if the grid has derivatives</a>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">    1942807 :   bool hasDerivatives() const {return usederiv_;}</span></a>
+<a name="132"><span class="lineNum">     132 </span>            : </a>
+<a name="133"><span class="lineNum">     133 </span>            : /// methods to handle grid indices</a>
+<a name="134"><span class="lineNum">     134 </span>            :   void getIndices(index_t index, std::vector&lt;unsigned&gt;&amp; rindex) const;</a>
+<a name="135"><span class="lineNum">     135 </span>            :   void getIndices(const std::vector&lt;double&gt; &amp; x, std::vector&lt;unsigned&gt;&amp; rindex) const;</a>
+<a name="136"><span class="lineNum">     136 </span>            :   std::vector&lt;unsigned&gt; getIndices(index_t index) const;</a>
+<a name="137"><span class="lineNum">     137 </span>            :   std::vector&lt;unsigned&gt; getIndices(const std::vector&lt;double&gt; &amp; x) const;</a>
+<a name="138"><span class="lineNum">     138 </span>            :   index_t getIndex(const std::vector&lt;unsigned&gt; &amp; indices) const;</a>
+<a name="139"><span class="lineNum">     139 </span>            :   index_t getIndex(const std::vector&lt;double&gt; &amp; x) const;</a>
+<a name="140"><span class="lineNum">     140 </span>            :   std::vector&lt;double&gt; getPoint(index_t index) const;</a>
+<a name="141"><span class="lineNum">     141 </span>            :   std::vector&lt;double&gt; getPoint(const std::vector&lt;unsigned&gt; &amp; indices) const;</a>
+<a name="142"><span class="lineNum">     142 </span>            :   std::vector&lt;double&gt; getPoint(const std::vector&lt;double&gt; &amp; x) const;</a>
+<a name="143"><span class="lineNum">     143 </span>            : /// faster versions relying on preallocated vectors</a>
+<a name="144"><span class="lineNum">     144 </span>            :   void getPoint(index_t index,std::vector&lt;double&gt; &amp; point) const;</a>
+<a name="145"><span class="lineNum">     145 </span>            :   void getPoint(const std::vector&lt;unsigned&gt; &amp; indices,std::vector&lt;double&gt; &amp; point) const;</a>
+<a name="146"><span class="lineNum">     146 </span>            :   void getPoint(const std::vector&lt;double&gt; &amp; x,std::vector&lt;double&gt; &amp; point) const;</a>
+<a name="147"><span class="lineNum">     147 </span>            : </a>
+<a name="148"><span class="lineNum">     148 </span>            : /// get neighbors</a>
+<a name="149"><span class="lineNum">     149 </span>            :   std::vector&lt;index_t&gt; getNeighbors(index_t index,const std::vector&lt;unsigned&gt; &amp; neigh) const;</a>
+<a name="150"><span class="lineNum">     150 </span>            :   std::vector&lt;index_t&gt; getNeighbors(const std::vector&lt;unsigned&gt; &amp; indices,const std::vector&lt;unsigned&gt; &amp; neigh) const;</a>
+<a name="151"><span class="lineNum">     151 </span>            :   std::vector&lt;index_t&gt; getNeighbors(const std::vector&lt;double&gt; &amp; x,const std::vector&lt;unsigned&gt; &amp; neigh) const;</a>
+<a name="152"><span class="lineNum">     152 </span>            : /// get nearest neighbors (those separated by exactly one lattice unit)</a>
+<a name="153"><span class="lineNum">     153 </span>            :   std::vector&lt;index_t&gt; getNearestNeighbors(const index_t index) const;</a>
+<a name="154"><span class="lineNum">     154 </span>            :   std::vector&lt;index_t&gt; getNearestNeighbors(const std::vector&lt;unsigned&gt; &amp;indices) const;</a>
+<a name="155"><span class="lineNum">     155 </span>            : </a>
+<a name="156"><span class="lineNum">     156 </span>            : /// write header for grid file</a>
+<a name="157"><span class="lineNum">     157 </span>            :   void writeHeader(OFile&amp; file);</a>
+<a name="158"><span class="lineNum">     158 </span>            : </a>
+<a name="159"><span class="lineNum">     159 </span>            : /// read grid from file</a>
+<a name="160"><span class="lineNum">     160 </span>            :   static std::unique_ptr&lt;GridBase&gt; create(const std::string&amp;,const std::vector&lt;Value*&gt;&amp;,IFile&amp;,bool,bool,bool);</a>
+<a name="161"><span class="lineNum">     161 </span>            : /// read grid from file and check boundaries are what is expected from input</a>
+<a name="162"><span class="lineNum">     162 </span>            :   static std::unique_ptr&lt;GridBase&gt; create(const std::string&amp;,const std::vector&lt;Value*&gt;&amp;, IFile&amp;,</a>
+<a name="163"><span class="lineNum">     163 </span>            :                                           const std::vector&lt;std::string&gt;&amp;,const std::vector&lt;std::string&gt;&amp;,</a>
+<a name="164"><span class="lineNum">     164 </span>            :                                           const std::vector&lt;unsigned&gt;&amp;,bool,bool,bool);</a>
+<a name="165"><span class="lineNum">     165 </span>            : /// get grid size</a>
+<a name="166"><span class="lineNum">     166 </span>            :   virtual index_t getSize() const=0;</a>
+<a name="167"><span class="lineNum">     167 </span>            : /// get grid value</a>
+<a name="168"><span class="lineNum">     168 </span>            :   virtual double getValue(index_t index) const=0;</a>
+<a name="169"><span class="lineNum">     169 </span>            :   double getValue(const std::vector&lt;unsigned&gt; &amp; indices) const;</a>
+<a name="170"><span class="lineNum">     170 </span>            :   double getValue(const std::vector&lt;double&gt; &amp; x) const;</a>
+<a name="171"><span class="lineNum">     171 </span>            : /// get grid value and derivatives</a>
+<a name="172"><span class="lineNum">     172 </span>            :   virtual double getValueAndDerivatives(index_t index, std::vector&lt;double&gt;&amp; der) const=0;</a>
+<a name="173"><span class="lineNum">     173 </span>            :   double getValueAndDerivatives(const std::vector&lt;unsigned&gt; &amp; indices, std::vector&lt;double&gt;&amp; der) const;</a>
+<a name="174"><span class="lineNum">     174 </span>            :   double getValueAndDerivatives(const std::vector&lt;double&gt; &amp; x, std::vector&lt;double&gt;&amp; der) const;</a>
+<a name="175"><span class="lineNum">     175 </span>            : </a>
+<a name="176"><span class="lineNum">     176 </span>            : /// set grid value</a>
+<a name="177"><span class="lineNum">     177 </span>            :   virtual void setValue(index_t index, double value)=0;</a>
+<a name="178"><span class="lineNum">     178 </span>            :   void setValue(const std::vector&lt;unsigned&gt; &amp; indices, double value);</a>
+<a name="179"><span class="lineNum">     179 </span>            : /// set grid value and derivatives</a>
+<a name="180"><span class="lineNum">     180 </span>            :   virtual void setValueAndDerivatives(index_t index, double value, std::vector&lt;double&gt;&amp; der)=0;</a>
+<a name="181"><span class="lineNum">     181 </span>            :   void setValueAndDerivatives(const std::vector&lt;unsigned&gt; &amp; indices, double value, std::vector&lt;double&gt;&amp; der);</a>
+<a name="182"><span class="lineNum">     182 </span>            : /// add to grid value</a>
+<a name="183"><span class="lineNum">     183 </span>            :   virtual void addValue(index_t index, double value)=0;</a>
+<a name="184"><span class="lineNum">     184 </span>            :   void addValue(const std::vector&lt;unsigned&gt; &amp; indices, double value);</a>
+<a name="185"><span class="lineNum">     185 </span>            : /// add to grid value and derivatives</a>
+<a name="186"><span class="lineNum">     186 </span>            :   virtual void addValueAndDerivatives(index_t index, double value, std::vector&lt;double&gt;&amp; der)=0;</a>
+<a name="187"><span class="lineNum">     187 </span>            :   void addValueAndDerivatives(const std::vector&lt;unsigned&gt; &amp; indices, double value, std::vector&lt;double&gt;&amp; der);</a>
+<a name="188"><span class="lineNum">     188 </span>            : /// add a kernel function to the grid</a>
+<a name="189"><span class="lineNum">     189 </span>            :   void addKernel( const KernelFunctions&amp; kernel );</a>
+<a name="190"><span class="lineNum">     190 </span>            : </a>
+<a name="191"><span class="lineNum">     191 </span>            : /// get minimum value</a>
+<a name="192"><span class="lineNum">     192 </span>            :   virtual double getMinValue() const = 0;</a>
+<a name="193"><span class="lineNum">     193 </span>            : /// get maximum value</a>
+<a name="194"><span class="lineNum">     194 </span>            :   virtual double getMaxValue() const = 0;</a>
+<a name="195"><span class="lineNum">     195 </span>            : </a>
+<a name="196"><span class="lineNum">     196 </span>            : /// dump grid on file</a>
+<a name="197"><span class="lineNum">     197 </span>            :   virtual void writeToFile(OFile&amp;)=0;</a>
+<a name="198"><span class="lineNum">     198 </span>            : /// dump grid to gaussian cube file</a>
+<a name="199"><span class="lineNum">     199 </span>            :   void writeCubeFile(OFile&amp;, const double&amp; lunit);</a>
+<a name="200"><span class="lineNum">     200 </span>            : </a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">       4404 :   virtual ~GridBase() {}</span></a>
+<a name="202"><span class="lineNum">     202 </span>            : </a>
+<a name="203"><span class="lineNum">     203 </span>            : /// set output format</a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineCov">        143 :   void setOutputFmt(const std::string &amp; ss) {fmt_=ss;}</span></a>
+<a name="205"><span class="lineNum">     205 </span>            : /// reset output format to the default %14.9f format</a>
+<a name="206"><span class="lineNum">     206 </span>            :   void resetToDefaultOutputFmt() {fmt_=&quot;%14.9f&quot;;}</a>
+<a name="207"><span class="lineNum">     207 </span>            : ///</a>
+<a name="208"><span class="lineNum">     208 </span>            : /// Find the maximum over paths of the minimum value of the gridded function along the paths</a>
+<a name="209"><span class="lineNum">     209 </span>            : /// for all paths of neighboring grid lattice points from a source point to a sink point.</a>
+<a name="210"><span class="lineNum">     210 </span>            :   double findMaximalPathMinimum(const std::vector&lt;double&gt; &amp;source, const std::vector&lt;double&gt; &amp;sink);</a>
+<a name="211"><span class="lineNum">     211 </span>            : };</a>
+<a name="212"><span class="lineNum">     212 </span>            : </a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineCov">       4201 : class Grid : public GridBase</span></a>
+<a name="214"><span class="lineNum">     214 </span>            : {</a>
+<a name="215"><span class="lineNum">     215 </span>            :   std::vector&lt;double&gt; grid_;</a>
+<a name="216"><span class="lineNum">     216 </span>            :   std::vector&lt;double&gt; der_;</a>
+<a name="217"><span class="lineNum">     217 </span>            :   double contour_location=0.0;</a>
+<a name="218"><span class="lineNum">     218 </span>            : public:</a>
+<a name="219"><span class="lineNum">     219 </span><span class="lineCov">       1327 :   Grid(const std::string&amp; funcl, const std::vector&lt;Value*&gt; &amp; args, const std::vector&lt;std::string&gt; &amp; gmin,</span></a>
+<a name="220"><span class="lineNum">     220 </span>            :        const std::vector&lt;std::string&gt; &amp; gmax,</a>
+<a name="221"><span class="lineNum">     221 </span>            :        const std::vector&lt;unsigned&gt; &amp; nbin, bool dospline, bool usederiv):</a>
+<a name="222"><span class="lineNum">     222 </span><span class="lineCov">       2654 :     GridBase(funcl,args,gmin,gmax,nbin,dospline,usederiv)</span></a>
+<a name="223"><span class="lineNum">     223 </span>            :   {</a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineCov">       2654 :     grid_.assign(maxsize_,0.0);</span></a>
+<a name="225"><span class="lineNum">     225 </span><span class="lineCov">       1543 :     if(usederiv_) der_.assign(maxsize_*dimension_,0.0);</span></a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineCov">       1327 :   }</span></a>
+<a name="227"><span class="lineNum">     227 </span>            : /// this constructor here is not Value-aware</a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineCov">         84 :   Grid(const std::string&amp; funcl, const std::vector&lt;std::string&gt; &amp;names, const std::vector&lt;std::string&gt; &amp; gmin,</span></a>
+<a name="229"><span class="lineNum">     229 </span>            :        const std::vector&lt;std::string&gt; &amp; gmax, const std::vector&lt;unsigned&gt; &amp; nbin, bool dospline,</a>
+<a name="230"><span class="lineNum">     230 </span>            :        bool usederiv, const std::vector&lt;bool&gt; &amp;isperiodic, const std::vector&lt;std::string&gt; &amp;pmin,</a>
+<a name="231"><span class="lineNum">     231 </span>            :        const std::vector&lt;std::string&gt; &amp;pmax ):</a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineCov">        168 :     GridBase(funcl,names,gmin,gmax,nbin,dospline,usederiv,isperiodic,pmin,pmax)</span></a>
+<a name="233"><span class="lineNum">     233 </span>            :   {</a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">        168 :     grid_.assign(maxsize_,0.0);</span></a>
+<a name="235"><span class="lineNum">     235 </span><span class="lineCov">         84 :     if(usederiv_) der_.assign(maxsize_*dimension_,0.0);</span></a>
+<a name="236"><span class="lineNum">     236 </span><span class="lineCov">         84 :   }</span></a>
+<a name="237"><span class="lineNum">     237 </span>            :   index_t getSize() const override;</a>
+<a name="238"><span class="lineNum">     238 </span>            : /// this is to access to Grid:: version of these methods (allowing overloading of virtual methods)</a>
+<a name="239"><span class="lineNum">     239 </span>            :   using GridBase::getValue;</a>
+<a name="240"><span class="lineNum">     240 </span>            :   using GridBase::getValueAndDerivatives;</a>
+<a name="241"><span class="lineNum">     241 </span>            :   using GridBase::setValue;</a>
+<a name="242"><span class="lineNum">     242 </span>            :   using GridBase::setValueAndDerivatives;</a>
+<a name="243"><span class="lineNum">     243 </span>            :   using GridBase::addValue;</a>
+<a name="244"><span class="lineNum">     244 </span>            :   using GridBase::addValueAndDerivatives;</a>
+<a name="245"><span class="lineNum">     245 </span>            : /// get grid value</a>
+<a name="246"><span class="lineNum">     246 </span>            :   double getValue(index_t index) const override;</a>
+<a name="247"><span class="lineNum">     247 </span>            : /// get grid value and derivatives</a>
+<a name="248"><span class="lineNum">     248 </span>            :   double getValueAndDerivatives(index_t index, std::vector&lt;double&gt;&amp; der) const override;</a>
+<a name="249"><span class="lineNum">     249 </span>            : </a>
+<a name="250"><span class="lineNum">     250 </span>            : /// set grid value</a>
+<a name="251"><span class="lineNum">     251 </span>            :   void setValue(index_t index, double value) override;</a>
+<a name="252"><span class="lineNum">     252 </span>            : /// set grid value and derivatives</a>
+<a name="253"><span class="lineNum">     253 </span>            :   void setValueAndDerivatives(index_t index, double value, std::vector&lt;double&gt;&amp; der) override;</a>
+<a name="254"><span class="lineNum">     254 </span>            : /// add to grid value</a>
+<a name="255"><span class="lineNum">     255 </span>            :   void addValue(index_t index, double value) override;</a>
+<a name="256"><span class="lineNum">     256 </span>            : /// add to grid value and derivatives</a>
+<a name="257"><span class="lineNum">     257 </span>            :   void addValueAndDerivatives(index_t index, double value, std::vector&lt;double&gt;&amp; der) override;</a>
+<a name="258"><span class="lineNum">     258 </span>            : </a>
+<a name="259"><span class="lineNum">     259 </span>            : /// get minimum value</a>
+<a name="260"><span class="lineNum">     260 </span>            :   double getMinValue() const override;</a>
+<a name="261"><span class="lineNum">     261 </span>            : /// get maximum value</a>
+<a name="262"><span class="lineNum">     262 </span>            :   double getMaxValue() const override;</a>
+<a name="263"><span class="lineNum">     263 </span>            : /// Scale all grid values and derivatives by a constant factor</a>
+<a name="264"><span class="lineNum">     264 </span>            :   void scaleAllValuesAndDerivatives( const double&amp; scalef );</a>
+<a name="265"><span class="lineNum">     265 </span>            : /// Takes the scalef times the logarithm of all grid values and derivatives</a>
+<a name="266"><span class="lineNum">     266 </span>            :   void logAllValuesAndDerivatives( const double&amp; scalef );</a>
+<a name="267"><span class="lineNum">     267 </span>            : /// dump grid on file</a>
+<a name="268"><span class="lineNum">     268 </span>            :   void writeToFile(OFile&amp;) override;</a>
+<a name="269"><span class="lineNum">     269 </span>            : </a>
+<a name="270"><span class="lineNum">     270 </span>            : /// Set the minimum value of the grid to zero and translates accordingly</a>
+<a name="271"><span class="lineNum">     271 </span>            :   void setMinToZero();</a>
+<a name="272"><span class="lineNum">     272 </span>            : /// apply function: takes  pointer to  function that accepts a double and apply</a>
+<a name="273"><span class="lineNum">     273 </span>            :   void applyFunctionAllValuesAndDerivatives( double (*func)(double val), double (*funcder)(double valder) );</a>
+<a name="274"><span class="lineNum">     274 </span>            : /// Get the difference from the contour</a>
+<a name="275"><span class="lineNum">     275 </span>            :   double getDifferenceFromContour(const std::vector&lt;double&gt; &amp; x, std::vector&lt;double&gt;&amp; der) const ;</a>
+<a name="276"><span class="lineNum">     276 </span>            : /// Find a set of points on a contour in the function</a>
+<a name="277"><span class="lineNum">     277 </span>            :   void findSetOfPointsOnContour(const double&amp; target, const std::vector&lt;bool&gt;&amp; nosearch, unsigned&amp; npoints, std::vector&lt;std::vector&lt;double&gt; &gt;&amp; points );</a>
+<a name="278"><span class="lineNum">     278 </span>            : /// Since this method returns a concrete Grid, it should be here and not in GridBase - GB</a>
+<a name="279"><span class="lineNum">     279 </span>            : /// project a high dimensional grid onto a low dimensional one: this should be changed at some time</a>
+<a name="280"><span class="lineNum">     280 </span>            : /// to enable many types of weighting</a>
+<a name="281"><span class="lineNum">     281 </span>            :   Grid project( const std::vector&lt;std::string&gt; &amp; proj, WeightBase *ptr2obj  );</a>
+<a name="282"><span class="lineNum">     282 </span>            :   void projectOnLowDimension(double &amp;val, std::vector&lt;int&gt; &amp;varHigh, WeightBase* ptr2obj );</a>
+<a name="283"><span class="lineNum">     283 </span>            :   void mpiSumValuesAndDerivatives( Communicator&amp; comm );</a>
+<a name="284"><span class="lineNum">     284 </span>            : /// Integrate the function calculated on the grid</a>
+<a name="285"><span class="lineNum">     285 </span>            :   double integrate( std::vector&lt;unsigned&gt;&amp; npoints );</a>
+<a name="286"><span class="lineNum">     286 </span>            :   void clear();</a>
+<a name="287"><span class="lineNum">     287 </span>            : };</a>
+<a name="288"><span class="lineNum">     288 </span>            : </a>
+<a name="289"><span class="lineNum">     289 </span>            : </a>
+<a name="290"><span class="lineNum">     290 </span>            : class SparseGrid : public GridBase</a>
+<a name="291"><span class="lineNum">     291 </span>            : {</a>
+<a name="292"><span class="lineNum">     292 </span>            : </a>
+<a name="293"><span class="lineNum">     293 </span>            :   std::map&lt;index_t,double&gt; map_;</a>
+<a name="294"><span class="lineNum">     294 </span>            :   std::map&lt; index_t,std::vector&lt;double&gt; &gt; der_;</a>
+<a name="295"><span class="lineNum">     295 </span>            : </a>
+<a name="296"><span class="lineNum">     296 </span>            : public:</a>
+<a name="297"><span class="lineNum">     297 </span><span class="lineCov">         12 :   SparseGrid(const std::string&amp; funcl, const std::vector&lt;Value*&gt; &amp; args, const std::vector&lt;std::string&gt; &amp; gmin,</span></a>
+<a name="298"><span class="lineNum">     298 </span>            :              const std::vector&lt;std::string&gt; &amp; gmax,</a>
+<a name="299"><span class="lineNum">     299 </span>            :              const std::vector&lt;unsigned&gt; &amp; nbin, bool dospline, bool usederiv):</a>
+<a name="300"><span class="lineNum">     300 </span><span class="lineCov">         24 :     GridBase(funcl,args,gmin,gmax,nbin,dospline,usederiv) {}</span></a>
+<a name="301"><span class="lineNum">     301 </span>            : </a>
+<a name="302"><span class="lineNum">     302 </span>            :   index_t getSize() const override;</a>
+<a name="303"><span class="lineNum">     303 </span>            :   index_t getMaxSize() const;</a>
+<a name="304"><span class="lineNum">     304 </span>            : </a>
+<a name="305"><span class="lineNum">     305 </span>            : /// this is to access to Grid:: version of these methods (allowing overloading of virtual methods)</a>
+<a name="306"><span class="lineNum">     306 </span>            :   using GridBase::getValue;</a>
+<a name="307"><span class="lineNum">     307 </span>            :   using GridBase::getValueAndDerivatives;</a>
+<a name="308"><span class="lineNum">     308 </span>            :   using GridBase::setValue;</a>
+<a name="309"><span class="lineNum">     309 </span>            :   using GridBase::setValueAndDerivatives;</a>
+<a name="310"><span class="lineNum">     310 </span>            :   using GridBase::addValue;</a>
+<a name="311"><span class="lineNum">     311 </span>            :   using GridBase::addValueAndDerivatives;</a>
+<a name="312"><span class="lineNum">     312 </span>            : </a>
+<a name="313"><span class="lineNum">     313 </span>            : /// get grid value</a>
+<a name="314"><span class="lineNum">     314 </span>            :   double getValue(index_t index) const override;</a>
+<a name="315"><span class="lineNum">     315 </span>            : /// get grid value and derivatives</a>
+<a name="316"><span class="lineNum">     316 </span>            :   double getValueAndDerivatives(index_t index, std::vector&lt;double&gt;&amp; der) const override;</a>
+<a name="317"><span class="lineNum">     317 </span>            : </a>
+<a name="318"><span class="lineNum">     318 </span>            : /// set grid value</a>
+<a name="319"><span class="lineNum">     319 </span>            :   void setValue(index_t index, double value) override;</a>
+<a name="320"><span class="lineNum">     320 </span>            : /// set grid value and derivatives</a>
+<a name="321"><span class="lineNum">     321 </span>            :   void setValueAndDerivatives(index_t index, double value, std::vector&lt;double&gt;&amp; der) override;</a>
+<a name="322"><span class="lineNum">     322 </span>            : /// add to grid value</a>
+<a name="323"><span class="lineNum">     323 </span>            :   void addValue(index_t index, double value) override;</a>
+<a name="324"><span class="lineNum">     324 </span>            : /// add to grid value and derivatives</a>
+<a name="325"><span class="lineNum">     325 </span>            :   void addValueAndDerivatives(index_t index, double value, std::vector&lt;double&gt;&amp; der) override;</a>
+<a name="326"><span class="lineNum">     326 </span>            : </a>
+<a name="327"><span class="lineNum">     327 </span>            : /// get minimum value</a>
+<a name="328"><span class="lineNum">     328 </span>            :   double getMinValue() const override;</a>
+<a name="329"><span class="lineNum">     329 </span>            : /// get maximum value</a>
+<a name="330"><span class="lineNum">     330 </span>            :   double getMaxValue() const override;</a>
+<a name="331"><span class="lineNum">     331 </span>            : /// dump grid on file</a>
+<a name="332"><span class="lineNum">     332 </span>            :   void writeToFile(OFile&amp;) override;</a>
+<a name="333"><span class="lineNum">     333 </span>            : </a>
+<a name="334"><span class="lineNum">     334 </span><span class="lineCov">         36 :   virtual ~SparseGrid() {}</span></a>
+<a name="335"><span class="lineNum">     335 </span>            : };</a>
+<a name="336"><span class="lineNum">     336 </span>            : }</a>
+<a name="337"><span class="lineNum">     337 </span>            : </a>
+<a name="338"><span class="lineNum">     338 </span>            : #endif</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+<meta name="robots" content="noindex">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - plumed test coverage - tools/Matrix.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">tools</a> - Matrix.h<span style="font-size: 80%;"> (source / <a href="Matrix.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">plumed test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">138</td>
+            <td class="headerCovTableEntry">138</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-08-13 10:15:31</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (c) 2011-2019 The plumed team</a>
+<a name="3"><span class="lineNum">       3 </span>            :    (see the PEOPLE file at the root of the distribution for a list of names)</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            :    See http://www.plumed.org for more information.</a>
+<a name="6"><span class="lineNum">       6 </span>            : </a>
+<a name="7"><span class="lineNum">       7 </span>            :    This file is part of plumed, version 2.</a>
+<a name="8"><span class="lineNum">       8 </span>            : </a>
+<a name="9"><span class="lineNum">       9 </span>            :    plumed is free software: you can redistribute it and/or modify</a>
+<a name="10"><span class="lineNum">      10 </span>            :    it under the terms of the GNU Lesser General Public License as published by</a>
+<a name="11"><span class="lineNum">      11 </span>            :    the Free Software Foundation, either version 3 of the License, or</a>
+<a name="12"><span class="lineNum">      12 </span>            :    (at your option) any later version.</a>
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<a name="14"><span class="lineNum">      14 </span>            :    plumed is distributed in the hope that it will be useful,</a>
+<a name="15"><span class="lineNum">      15 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="16"><span class="lineNum">      16 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="17"><span class="lineNum">      17 </span>            :    GNU Lesser General Public License for more details.</a>
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<a name="19"><span class="lineNum">      19 </span>            :    You should have received a copy of the GNU Lesser General Public License</a>
+<a name="20"><span class="lineNum">      20 </span>            :    along with plumed.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="21"><span class="lineNum">      21 </span>            : +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */</a>
+<a name="22"><span class="lineNum">      22 </span>            : #ifndef __PLUMED_tools_Matrix_h</a>
+<a name="23"><span class="lineNum">      23 </span>            : #define __PLUMED_tools_Matrix_h</a>
+<a name="24"><span class="lineNum">      24 </span>            : #include &lt;vector&gt;</a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &lt;string&gt;</a>
+<a name="26"><span class="lineNum">      26 </span>            : #include &lt;set&gt;</a>
+<a name="27"><span class="lineNum">      27 </span>            : #include &lt;cmath&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>            : #include &quot;Exception.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>            : #include &quot;MatrixSquareBracketsAccess.h&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>            : #include &quot;Tools.h&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>            : #include &quot;Log.h&quot;</a>
+<a name="32"><span class="lineNum">      32 </span>            : #include &quot;lapack/lapack.h&quot;</a>
+<a name="33"><span class="lineNum">      33 </span>            : </a>
+<a name="34"><span class="lineNum">      34 </span>            : namespace PLMD {</a>
+<a name="35"><span class="lineNum">      35 </span>            : </a>
+<a name="36"><span class="lineNum">      36 </span>            : /// Calculate the dot product between two vectors</a>
+<a name="37"><span class="lineNum">      37 </span>            : template &lt;typename T&gt; T dotProduct( const std::vector&lt;T&gt;&amp; A, const std::vector&lt;T&gt;&amp; B ) {</a>
+<a name="38"><span class="lineNum">      38 </span>            :   plumed_assert( A.size()==B.size() );</a>
+<a name="39"><span class="lineNum">      39 </span>            :   T val; for(unsigned i=0; i&lt;A.size(); ++i) { val+=A[i]*B[i]; }</a>
+<a name="40"><span class="lineNum">      40 </span>            :   return val;</a>
+<a name="41"><span class="lineNum">      41 </span>            : }</a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<a name="43"><span class="lineNum">      43 </span>            : /// Calculate the dot product between a vector and itself</a>
+<a name="44"><span class="lineNum">      44 </span>            : template &lt;typename T&gt; T norm( const std::vector&lt;T&gt;&amp; A ) {</a>
+<a name="45"><span class="lineNum">      45 </span>            :   T val; for(unsigned i=0; i&lt;A.size(); ++i) { val+=A[i]*A[i]; }</a>
+<a name="46"><span class="lineNum">      46 </span>            :   return val;</a>
+<a name="47"><span class="lineNum">      47 </span>            : }</a>
+<a name="48"><span class="lineNum">      48 </span>            : </a>
+<a name="49"><span class="lineNum">      49 </span>            : /// This class stores a full matrix and allows one to do some simple matrix operations</a>
+<a name="50"><span class="lineNum">      50 </span>            : template &lt;typename T&gt;</a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">     478556 : class Matrix:</span></a>
+<a name="52"><span class="lineNum">      52 </span>            :   public MatrixSquareBracketsAccess&lt;Matrix&lt;T&gt;,T&gt;</a>
+<a name="53"><span class="lineNum">      53 </span>            : {</a>
+<a name="54"><span class="lineNum">      54 </span>            :   /// Multiply matrix by scalar</a>
+<a name="55"><span class="lineNum">      55 </span>            :   template &lt;typename U&gt; friend Matrix&lt;U&gt; operator*(U&amp;, const Matrix&lt;U&gt;&amp; );</a>
+<a name="56"><span class="lineNum">      56 </span>            :   /// Matrix matrix multiply</a>
+<a name="57"><span class="lineNum">      57 </span>            :   template &lt;typename U&gt; friend void mult( const Matrix&lt;U&gt;&amp;, const Matrix&lt;U&gt;&amp;, Matrix&lt;U&gt;&amp; );</a>
+<a name="58"><span class="lineNum">      58 </span>            :   /// Matrix times a std::vector</a>
+<a name="59"><span class="lineNum">      59 </span>            :   template &lt;typename U&gt; friend void mult( const Matrix&lt;U&gt;&amp;, const std::vector&lt;U&gt;&amp;, std::vector&lt;U&gt;&amp; );</a>
+<a name="60"><span class="lineNum">      60 </span>            :   /// std::vector times a Matrix</a>
+<a name="61"><span class="lineNum">      61 </span>            :   template &lt;typename U&gt; friend void mult( const std::vector&lt;U&gt;&amp;, const Matrix&lt;U&gt;&amp;, std::vector&lt;U&gt;&amp; );</a>
+<a name="62"><span class="lineNum">      62 </span>            :   /// Matrix transpose</a>
+<a name="63"><span class="lineNum">      63 </span>            :   template &lt;typename U&gt; friend void transpose( const Matrix&lt;U&gt;&amp;, Matrix&lt;U&gt;&amp; );</a>
+<a name="64"><span class="lineNum">      64 </span>            :   /// Output the entire matrix on a single line</a>
+<a name="65"><span class="lineNum">      65 </span>            :   template &lt;typename U&gt; friend Log&amp; operator&lt;&lt;(Log&amp;, const Matrix&lt;U&gt;&amp; );</a>
+<a name="66"><span class="lineNum">      66 </span>            :   /// Output the Matrix in matrix form</a>
+<a name="67"><span class="lineNum">      67 </span>            :   template &lt;typename U&gt; friend void matrixOut( Log&amp;, const Matrix&lt;U&gt;&amp; );</a>
+<a name="68"><span class="lineNum">      68 </span>            :   /// Diagonalize a symmetric matrix - returns zero if diagonalization worked</a>
+<a name="69"><span class="lineNum">      69 </span>            :   template &lt;typename U&gt; friend int diagMat( const Matrix&lt;U&gt;&amp;, std::vector&lt;double&gt;&amp;, Matrix&lt;double&gt;&amp; );</a>
+<a name="70"><span class="lineNum">      70 </span>            :   /// Calculate the Moore-Penrose Pseudoinverse of a matrix</a>
+<a name="71"><span class="lineNum">      71 </span>            :   template &lt;typename U&gt; friend int pseudoInvert( const Matrix&lt;U&gt;&amp;, Matrix&lt;double&gt;&amp; );</a>
+<a name="72"><span class="lineNum">      72 </span>            :   /// Calculate the logarithm of the determinant of a symmetric matrix - returns zero if succesfull</a>
+<a name="73"><span class="lineNum">      73 </span>            :   template &lt;typename U&gt; friend int logdet( const Matrix&lt;U&gt;&amp;, double&amp; );</a>
+<a name="74"><span class="lineNum">      74 </span>            :   /// Invert a matrix (works for both symmetric and assymetric matrices) - returns zero if sucesfull</a>
+<a name="75"><span class="lineNum">      75 </span>            :   template &lt;typename U&gt; friend int Invert( const Matrix&lt;U&gt;&amp;, Matrix&lt;double&gt;&amp; );</a>
+<a name="76"><span class="lineNum">      76 </span>            :   /// Do a cholesky decomposition of a matrix</a>
+<a name="77"><span class="lineNum">      77 </span>            :   template &lt;typename U&gt; friend void cholesky( const Matrix&lt;U&gt;&amp;, Matrix&lt;U&gt;&amp; );</a>
+<a name="78"><span class="lineNum">      78 </span>            :   /// Solve a system of equations using the cholesky decomposition</a>
+<a name="79"><span class="lineNum">      79 </span>            :   template &lt;typename U&gt; friend void chol_elsolve( const Matrix&lt;U&gt;&amp;, const std::vector&lt;U&gt;&amp;, std::vector&lt;U&gt;&amp; );</a>
+<a name="80"><span class="lineNum">      80 </span>            : private:</a>
+<a name="81"><span class="lineNum">      81 </span>            :   /// Number of elements in matrix (nrows*ncols)</a>
+<a name="82"><span class="lineNum">      82 </span>            :   unsigned sz;</a>
+<a name="83"><span class="lineNum">      83 </span>            :   /// Number of rows in matrix</a>
+<a name="84"><span class="lineNum">      84 </span>            :   unsigned rw;</a>
+<a name="85"><span class="lineNum">      85 </span>            :   /// Number of columns in matrix</a>
+<a name="86"><span class="lineNum">      86 </span>            :   unsigned cl;</a>
+<a name="87"><span class="lineNum">      87 </span>            :   /// The data in the matrix</a>
+<a name="88"><span class="lineNum">      88 </span>            :   std::vector&lt;T&gt; data;</a>
+<a name="89"><span class="lineNum">      89 </span>            : public:</a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">   10893650 :   Matrix(const unsigned nr=0, const unsigned nc=0 )  : sz(nr*nc), rw(nr), cl(nc), data(nr*nc) {}</span></a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">        507 :   Matrix(const Matrix&lt;T&gt;&amp; t) : sz(t.sz), rw(t.rw), cl(t.cl), data(t.data) {}</span></a>
+<a name="92"><span class="lineNum">      92 </span>            :   /// Resize the matrix</a>
+<a name="93"><span class="lineNum">      93 </span><span class="lineCov">        295 :   void resize( const unsigned nr, const unsigned nc ) { rw=nr; cl=nc; sz=nr*nc; data.resize(sz); }</span></a>
+<a name="94"><span class="lineNum">      94 </span>            :   /// Return the number of rows</a>
+<a name="95"><span class="lineNum">      95 </span><span class="lineCov">   37505290 :   inline unsigned nrows() const { return rw; }</span></a>
+<a name="96"><span class="lineNum">      96 </span>            :   /// Return the number of columns</a>
+<a name="97"><span class="lineNum">      97 </span><span class="lineCov">  115630864 :   inline unsigned ncols() const { return cl; }</span></a>
+<a name="98"><span class="lineNum">      98 </span>            :   /// Return the contents of the matrix as a vector of length rw*cl</a>
+<a name="99"><span class="lineNum">      99 </span>            :   inline std::vector&lt;T&gt;&amp; getVector() { return data; }</a>
+<a name="100"><span class="lineNum">     100 </span>            :   /// Set the matrix from a vector input</a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">        908 :   inline void setFromVector( const std::vector&lt;T&gt;&amp; vecin ) { plumed_assert( vecin.size()==sz ); for(unsigned i=0; i&lt;sz; ++i) data[i]=vecin[i]; }</span></a>
+<a name="102"><span class="lineNum">     102 </span>            :   /// Return element i,j of the matrix</a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov"> 6555634987 :   inline T operator () (const unsigned&amp; i, const unsigned&amp; j) const { return data[j+i*cl]; }</span></a>
+<a name="104"><span class="lineNum">     104 </span>            :   /// Return a referenre to element i,j of the matrix</a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov"> 2385353063 :   inline T&amp; operator () (const unsigned&amp; i, const unsigned&amp; j)      { return data[j+i*cl]; }</span></a>
+<a name="106"><span class="lineNum">     106 </span>            :   /// Set all elements of the matrix equal to the value of v</a>
+<a name="107"><span class="lineNum">     107 </span>            :   Matrix&lt;T&gt;&amp; operator=(const T&amp; v) {</a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">   13122930 :     for(unsigned i=0; i&lt;sz; ++i) { data[i]=v; }</span></a>
+<a name="109"><span class="lineNum">     109 </span>            :     return *this;</a>
+<a name="110"><span class="lineNum">     110 </span>            :   }</a>
+<a name="111"><span class="lineNum">     111 </span>            :   /// Set the Matrix equal to another Matrix</a>
+<a name="112"><span class="lineNum">     112 </span>            :   Matrix&lt;T&gt;&amp; operator=(const Matrix&lt;T&gt;&amp; m) {</a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">       5058 :     sz=m.sz;</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">       5058 :     rw=m.rw;</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">       5058 :     cl=m.cl;</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">       5058 :     data=m.data;</span></a>
+<a name="117"><span class="lineNum">     117 </span>            :     return *this;</a>
+<a name="118"><span class="lineNum">     118 </span>            :   }</a>
+<a name="119"><span class="lineNum">     119 </span>            :   /// Set the Matrix equal to the value of a standard vector - used for readin</a>
+<a name="120"><span class="lineNum">     120 </span>            :   Matrix&lt;T&gt;&amp; operator=(const std::vector&lt;T&gt;&amp; v) {</a>
+<a name="121"><span class="lineNum">     121 </span>            :     plumed_dbg_assert( v.size()==sz );</a>
+<a name="122"><span class="lineNum">     122 </span>            :     for(unsigned i=0; i&lt;sz; ++i) { data[i]=v[i]; }</a>
+<a name="123"><span class="lineNum">     123 </span>            :     return *this;</a>
+<a name="124"><span class="lineNum">     124 </span>            :   }</a>
+<a name="125"><span class="lineNum">     125 </span>            :   /// Add v to all elements of the Matrix</a>
+<a name="126"><span class="lineNum">     126 </span>            :   Matrix&lt;T&gt; operator+=(const T&amp; v) {</a>
+<a name="127"><span class="lineNum">     127 </span>            :     for(unsigned i=0; i&lt;sz; ++i) { data[i]+=v; }</a>
+<a name="128"><span class="lineNum">     128 </span>            :     return *this;</a>
+<a name="129"><span class="lineNum">     129 </span>            :   }</a>
+<a name="130"><span class="lineNum">     130 </span>            :   /// Multiply all elements by v</a>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">         14 :   Matrix&lt;T&gt; operator*=(const T&amp; v) {</span></a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">     387536 :     for(unsigned i=0; i&lt;sz; ++i) { data[i]*=v; }</span></a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">         14 :     return *this;</span></a>
+<a name="134"><span class="lineNum">     134 </span>            :   }</a>
+<a name="135"><span class="lineNum">     135 </span>            :   /// Matrix addition</a>
+<a name="136"><span class="lineNum">     136 </span>            :   Matrix&lt;T&gt;&amp; operator+=(const Matrix&lt;T&gt;&amp; m) {</a>
+<a name="137"><span class="lineNum">     137 </span>            :     plumed_dbg_assert( m.rw==rw &amp;&amp; m.cl==cl );</a>
+<a name="138"><span class="lineNum">     138 </span>            :     data+=m.data;</a>
+<a name="139"><span class="lineNum">     139 </span>            :     return *this;</a>
+<a name="140"><span class="lineNum">     140 </span>            :   }</a>
+<a name="141"><span class="lineNum">     141 </span>            :   /// Subtract v from all elements of the Matrix</a>
+<a name="142"><span class="lineNum">     142 </span>            :   Matrix&lt;T&gt; operator-=(const T&amp; v) {</a>
+<a name="143"><span class="lineNum">     143 </span>            :     for(unsigned i=0; i&lt;sz; ++i) { data-=v; }</a>
+<a name="144"><span class="lineNum">     144 </span>            :     return *this;</a>
+<a name="145"><span class="lineNum">     145 </span>            :   }</a>
+<a name="146"><span class="lineNum">     146 </span>            :   /// Matrix subtraction</a>
+<a name="147"><span class="lineNum">     147 </span>            :   Matrix&lt;T&gt;&amp; operator-=(const Matrix&lt;T&gt;&amp; m) {</a>
+<a name="148"><span class="lineNum">     148 </span>            :     plumed_dbg_assert( m.rw==rw &amp;&amp; m.cl==cl );</a>
+<a name="149"><span class="lineNum">     149 </span>            :     data-=m.data;</a>
+<a name="150"><span class="lineNum">     150 </span>            :     return *this;</a>
+<a name="151"><span class="lineNum">     151 </span>            :   }</a>
+<a name="152"><span class="lineNum">     152 </span>            :   /// Test if the matrix is symmetric or not</a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">      23978 :   unsigned isSymmetric() const {</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">      23978 :     if (rw!=cl) { return 0; }</span></a>
+<a name="155"><span class="lineNum">     155 </span>            :     unsigned sym=1;</a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">     660195 :     for(unsigned i=1; i&lt;rw; ++i) for(unsigned j=0; j&lt;i; ++j) if( std::fabs(data[i+j*cl]-data[j+i*cl])&gt;1.e-10 ) { sym=0; break; }</span></a>
+<a name="157"><span class="lineNum">     157 </span>            :     return sym;</a>
+<a name="158"><span class="lineNum">     158 </span>            :   }</a>
+<a name="159"><span class="lineNum">     159 </span>            : };</a>
+<a name="160"><span class="lineNum">     160 </span>            : </a>
+<a name="161"><span class="lineNum">     161 </span>            : /// Multiply matrix by scalar</a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">         12 : template &lt;typename T&gt; Matrix&lt;T&gt; operator*(T&amp; v, const Matrix&lt;T&gt;&amp; m ) {</span></a>
+<a name="163"><span class="lineNum">     163 </span>            :   Matrix&lt;T&gt; new_m(m);</a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">         24 :   new_m*=v;</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">         12 :   return new_m;</span></a>
+<a name="166"><span class="lineNum">     166 </span>            : }</a>
+<a name="167"><span class="lineNum">     167 </span>            : </a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">      13725 : template &lt;typename T&gt; void mult( const Matrix&lt;T&gt;&amp; A, const Matrix&lt;T&gt;&amp; B, Matrix&lt;T&gt;&amp; C ) {</span></a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">      13725 :   plumed_assert(A.cl==B.rw);</span></a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">      13725 :   if( A.rw !=C.rw  || B.cl !=C.cl ) { C.resize( A.rw, B.cl ); } C=static_cast&lt;T&gt;( 0 );</span></a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineCov"> 4014220082 :   for(unsigned i=0; i&lt;A.rw; ++i) for(unsigned j=0; j&lt;B.cl; ++j) for (unsigned k=0; k&lt;A.cl; ++k) C(i,j)+=A(i,k)*B(k,j);</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">      13725 : }</span></a>
+<a name="173"><span class="lineNum">     173 </span>            : </a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">         57 : template &lt;typename T&gt; void mult( const Matrix&lt;T&gt;&amp; A, const std::vector&lt;T&gt;&amp; B, std::vector&lt;T&gt;&amp; C) {</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">        114 :   plumed_assert( A.cl==B.size() );</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">         57 :   if( C.size()!=A.rw  ) { C.resize(A.rw); }</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">        232 :   for(unsigned i=0; i&lt;A.rw; ++i) { C[i]= static_cast&lt;T&gt;( 0 ); }</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">        726 :   for(unsigned i=0; i&lt;A.rw; ++i) for(unsigned k=0; k&lt;A.cl; ++k) C[i]+=A(i,k)*B[k] ;</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">         59 : }</span></a>
+<a name="180"><span class="lineNum">     180 </span>            : </a>
+<a name="181"><span class="lineNum">     181 </span>            : template &lt;typename T&gt; void mult( const std::vector&lt;T&gt;&amp; A, const Matrix&lt;T&gt;&amp; B, std::vector&lt;T&gt;&amp; C) {</a>
+<a name="182"><span class="lineNum">     182 </span>            :   plumed_assert( B.rw==A.size() );</a>
+<a name="183"><span class="lineNum">     183 </span>            :   if( C.size()!=B.cl ) {C.resize( B.cl );}</a>
+<a name="184"><span class="lineNum">     184 </span>            :   for(unsigned i=0; i&lt;B.cl; ++i) { C[i]=static_cast&lt;T&gt;( 0 ); }</a>
+<a name="185"><span class="lineNum">     185 </span>            :   for(unsigned i=0; i&lt;B.cl; ++i) for(unsigned k=0; k&lt;B.rw; ++k) C[i]+=A[k]*B(k,i);</a>
+<a name="186"><span class="lineNum">     186 </span>            : }</a>
+<a name="187"><span class="lineNum">     187 </span>            : </a>
+<a name="188"><span class="lineNum">     188 </span>            : template &lt;typename T&gt; void transpose( const Matrix&lt;T&gt;&amp; A, Matrix&lt;T&gt;&amp; AT ) {</a>
+<a name="189"><span class="lineNum">     189 </span>            :   if( A.rw!=AT.cl || A.cl!=AT.rw ) AT.resize( A.cl, A.rw );</a>
+<a name="190"><span class="lineNum">     190 </span>            :   for(unsigned i=0; i&lt;A.cl; ++i) for(unsigned j=0; j&lt;A.rw; ++j) AT(i,j)=A(j,i);</a>
+<a name="191"><span class="lineNum">     191 </span>            : }</a>
+<a name="192"><span class="lineNum">     192 </span>            : </a>
+<a name="193"><span class="lineNum">     193 </span>            : template &lt;typename T&gt; Log&amp; operator&lt;&lt;(Log&amp; ostr, const Matrix&lt;T&gt;&amp; mat) {</a>
+<a name="194"><span class="lineNum">     194 </span>            :   for(unsigned i=0; i&lt;mat.sz; ++i) ostr&lt;&lt;mat.data[i]&lt;&lt;&quot; &quot;;</a>
+<a name="195"><span class="lineNum">     195 </span>            :   return ostr;</a>
+<a name="196"><span class="lineNum">     196 </span>            : }</a>
+<a name="197"><span class="lineNum">     197 </span>            : </a>
+<a name="198"><span class="lineNum">     198 </span>            : template &lt;typename T&gt; void matrixOut( Log&amp; ostr, const Matrix&lt;T&gt;&amp; mat) {</a>
+<a name="199"><span class="lineNum">     199 </span>            :   for(unsigned i=0; i&lt;mat.rw; ++i) {</a>
+<a name="200"><span class="lineNum">     200 </span>            :     for(unsigned j=0; j&lt;mat.cl; ++j) { ostr&lt;&lt;mat(i,j)&lt;&lt;&quot; &quot;; }</a>
+<a name="201"><span class="lineNum">     201 </span>            :     ostr&lt;&lt;&quot;\n&quot;;</a>
+<a name="202"><span class="lineNum">     202 </span>            :   }</a>
+<a name="203"><span class="lineNum">     203 </span>            :   return;</a>
+<a name="204"><span class="lineNum">     204 </span>            : }</a>
+<a name="205"><span class="lineNum">     205 </span>            : </a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineCov">      14151 : template &lt;typename T&gt; int diagMat( const Matrix&lt;T&gt;&amp; A, std::vector&lt;double&gt;&amp; eigenvals, Matrix&lt;double&gt;&amp; eigenvecs ) {</span></a>
+<a name="207"><span class="lineNum">     207 </span>            : </a>
+<a name="208"><span class="lineNum">     208 </span>            :   // Check matrix is square and symmetric</a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineCov">      14151 :   plumed_assert( A.rw==A.cl ); plumed_assert( A.isSymmetric()==1 );</span></a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineCov">      14151 :   std::vector&lt;double&gt; da(A.sz);</span></a>
+<a name="211"><span class="lineNum">     211 </span>            :   unsigned k=0;</a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">      14151 :   std::vector&lt;double&gt; evals(A.cl);</span></a>
+<a name="213"><span class="lineNum">     213 </span>            :   // Transfer the matrix to the local array</a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">     464954 :   for (unsigned i=0; i&lt;A.cl; ++i) for (unsigned j=0; j&lt;A.rw; ++j) da[k++]=static_cast&lt;double&gt;( A(j,i) );</span></a>
+<a name="215"><span class="lineNum">     215 </span>            : </a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineCov">      14151 :   int n=A.cl; int lwork=-1, liwork=-1, m, info, one=1;</span></a>
+<a name="217"><span class="lineNum">     217 </span><span class="lineCov">      14151 :   std::vector&lt;double&gt; work(A.cl);</span></a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">      14151 :   std::vector&lt;int&gt; iwork(A.cl);</span></a>
+<a name="219"><span class="lineNum">     219 </span><span class="lineCov">      14151 :   double vl, vu, abstol=0.0;</span></a>
+<a name="220"><span class="lineNum">     220 </span><span class="lineCov">      14151 :   std::vector&lt;int&gt; isup(2*A.cl);</span></a>
+<a name="221"><span class="lineNum">     221 </span><span class="lineCov">      14151 :   std::vector&lt;double&gt; evecs(A.sz);</span></a>
+<a name="222"><span class="lineNum">     222 </span>            : </a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">      14151 :   plumed_lapack_dsyevr(&quot;V&quot;, &quot;I&quot;, &quot;U&quot;, &amp;n, da.data(), &amp;n, &amp;vl, &amp;vu, &amp;one, &amp;n,</span></a>
+<a name="224"><span class="lineNum">     224 </span>            :                        &amp;abstol, &amp;m, evals.data(), evecs.data(), &amp;n,</a>
+<a name="225"><span class="lineNum">     225 </span>            :                        isup.data(), work.data(), &amp;lwork, iwork.data(), &amp;liwork, &amp;info);</a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineCov">      14151 :   if (info!=0) return info;</span></a>
+<a name="227"><span class="lineNum">     227 </span>            : </a>
+<a name="228"><span class="lineNum">     228 </span>            :   // Retrieve correct sizes for work and iwork then reallocate</a>
+<a name="229"><span class="lineNum">     229 </span><span class="lineCov">      14151 :   liwork=iwork[0]; iwork.resize(liwork);</span></a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineCov">      14151 :   lwork=static_cast&lt;int&gt;( work[0] ); work.resize(lwork);</span></a>
+<a name="231"><span class="lineNum">     231 </span>            : </a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineCov">      14151 :   plumed_lapack_dsyevr(&quot;V&quot;, &quot;I&quot;, &quot;U&quot;, &amp;n, da.data(), &amp;n, &amp;vl, &amp;vu, &amp;one, &amp;n,</span></a>
+<a name="233"><span class="lineNum">     233 </span>            :                        &amp;abstol, &amp;m, evals.data(), evecs.data(), &amp;n,</a>
+<a name="234"><span class="lineNum">     234 </span>            :                        isup.data(), work.data(), &amp;lwork, iwork.data(), &amp;liwork, &amp;info);</a>
+<a name="235"><span class="lineNum">     235 </span><span class="lineCov">      14151 :   if (info!=0) return info;</span></a>
+<a name="236"><span class="lineNum">     236 </span>            : </a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineCov">      14151 :   if( eigenvals.size()!=A.cl ) { eigenvals.resize( A.cl ); }</span></a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineCov">      14151 :   if( eigenvecs.rw!=A.rw || eigenvecs.cl!=A.cl ) { eigenvecs.resize( A.rw, A.cl ); }</span></a>
+<a name="239"><span class="lineNum">     239 </span>            :   k=0;</a>
+<a name="240"><span class="lineNum">     240 </span><span class="lineCov">      29689 :   for(unsigned i=0; i&lt;A.cl; ++i) {</span></a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineCov">      59378 :     eigenvals[i]=evals[i];</span></a>
+<a name="242"><span class="lineNum">     242 </span>            :     // N.B. For ease of producing projectors we store the eigenvectors</a>
+<a name="243"><span class="lineNum">     243 </span>            :     // ROW-WISE in the eigenvectors matrix.  The first index is the</a>
+<a name="244"><span class="lineNum">     244 </span>            :     // eigenvector number and the second the component</a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">     931295 :     for(unsigned j=0; j&lt;A.rw; ++j) { eigenvecs(i,j)=evecs[k++]; }</span></a>
+<a name="246"><span class="lineNum">     246 </span>            :   }</a>
+<a name="247"><span class="lineNum">     247 </span>            : </a>
+<a name="248"><span class="lineNum">     248 </span>            :   // This changes eigenvectors so that the first non-null element</a>
+<a name="249"><span class="lineNum">     249 </span>            :   // of each of them is positive</a>
+<a name="250"><span class="lineNum">     250 </span>            :   // We can do it because the phase is arbitrary, and helps making</a>
+<a name="251"><span class="lineNum">     251 </span>            :   // the result reproducible</a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">      29689 :   for(int i=0; i&lt;n; ++i) {</span></a>
+<a name="253"><span class="lineNum">     253 </span>            :     int j;</a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">      59378 :     for(j=0; j&lt;n; j++) if(eigenvecs(i,j)*eigenvecs(i,j)&gt;1e-14) break;</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">     263671 :     if(j&lt;n) if(eigenvecs(i,j)&lt;0.0) for(j=0; j&lt;n; j++) eigenvecs(i,j)*=-1;</span></a>
+<a name="256"><span class="lineNum">     256 </span>            :   }</a>
+<a name="257"><span class="lineNum">     257 </span>            :   return 0;</a>
+<a name="258"><span class="lineNum">     258 </span>            : }</a>
+<a name="259"><span class="lineNum">     259 </span>            : </a>
+<a name="260"><span class="lineNum">     260 </span><span class="lineCov">          1 : template &lt;typename T&gt; int pseudoInvert( const Matrix&lt;T&gt;&amp; A, Matrix&lt;double&gt;&amp; pseudoinverse ) {</span></a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineCov">          1 :   std::vector&lt;double&gt; da(A.sz);</span></a>
+<a name="262"><span class="lineNum">     262 </span>            :   unsigned k=0;</a>
+<a name="263"><span class="lineNum">     263 </span>            :   // Transfer the matrix to the local array</a>
+<a name="264"><span class="lineNum">     264 </span><span class="lineCov">     250001 :   for (unsigned i=0; i&lt;A.cl; ++i) for (unsigned j=0; j&lt;A.rw; ++j) da[k++]=static_cast&lt;double&gt;( A(j,i) );</span></a>
+<a name="265"><span class="lineNum">     265 </span>            : </a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineCov">          1 :   int nsv, info, nrows=A.rw, ncols=A.cl;</span></a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineCov">          1 :   if(A.rw&gt;A.cl) {nsv=A.cl;} else {nsv=A.rw;}</span></a>
+<a name="268"><span class="lineNum">     268 </span>            : </a>
+<a name="269"><span class="lineNum">     269 </span>            :   // Create some containers for stuff from single value decomposition</a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineCov">          1 :   std::vector&lt;double&gt; S(nsv);</span></a>
+<a name="271"><span class="lineNum">     271 </span><span class="lineCov">          1 :   std::vector&lt;double&gt; U(nrows*nrows);</span></a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">          1 :   std::vector&lt;double&gt; VT(ncols*ncols);</span></a>
+<a name="273"><span class="lineNum">     273 </span><span class="lineCov">          1 :   std::vector&lt;int&gt; iwork(8*nsv);</span></a>
+<a name="274"><span class="lineNum">     274 </span>            : </a>
+<a name="275"><span class="lineNum">     275 </span>            :   // This optimizes the size of the work array used in lapack singular value decomposition</a>
+<a name="276"><span class="lineNum">     276 </span><span class="lineCov">          1 :   int lwork=-1;</span></a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">          1 :   std::vector&lt;double&gt; work(1);</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">          1 :   plumed_lapack_dgesdd( &quot;A&quot;, &amp;nrows, &amp;ncols, da.data(), &amp;nrows, S.data(), U.data(), &amp;nrows, VT.data(), &amp;ncols, work.data(), &amp;lwork, iwork.data(), &amp;info );</span></a>
+<a name="279"><span class="lineNum">     279 </span><span class="lineCov">          1 :   if(info!=0) return info;</span></a>
+<a name="280"><span class="lineNum">     280 </span>            : </a>
+<a name="281"><span class="lineNum">     281 </span>            :   // Retrieve correct sizes for work and rellocate</a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineCov">          1 :   lwork=(int) work[0]; work.resize(lwork);</span></a>
+<a name="283"><span class="lineNum">     283 </span>            : </a>
+<a name="284"><span class="lineNum">     284 </span>            :   // This does the singular value decomposition</a>
+<a name="285"><span class="lineNum">     285 </span><span class="lineCov">          1 :   plumed_lapack_dgesdd( &quot;A&quot;, &amp;nrows, &amp;ncols, da.data(), &amp;nrows, S.data(), U.data(), &amp;nrows, VT.data(), &amp;ncols, work.data(), &amp;lwork, iwork.data(), &amp;info );</span></a>
+<a name="286"><span class="lineNum">     286 </span><span class="lineCov">          1 :   if(info!=0) return info;</span></a>
+<a name="287"><span class="lineNum">     287 </span>            : </a>
+<a name="288"><span class="lineNum">     288 </span>            :   // Compute the tolerance on the singular values ( machine epsilon * number of singular values * maximum singular value )</a>
+<a name="289"><span class="lineNum">     289 </span><span class="lineCov">        500 :   double tol; tol=S[0]; for(int i=1; i&lt;nsv; ++i) { if( S[i]&gt;tol ) { tol=S[i]; } } tol*=nsv*epsilon;</span></a>
+<a name="290"><span class="lineNum">     290 </span>            : </a>
+<a name="291"><span class="lineNum">     291 </span>            :   // Get the inverses of the singlular values</a>
+<a name="292"><span class="lineNum">     292 </span><span class="lineCov">          1 :   Matrix&lt;double&gt; Si( ncols, nrows ); Si=0.0;</span></a>
+<a name="293"><span class="lineNum">     293 </span><span class="lineCov">       1500 :   for(int i=0; i&lt;nsv; ++i) { if( S[i]&gt;tol ) { Si(i,i)=1./S[i]; } else { Si(i,i)=0.0; } }</span></a>
+<a name="294"><span class="lineNum">     294 </span>            : </a>
+<a name="295"><span class="lineNum">     295 </span>            :   // Now extract matrices for pseudoinverse</a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineCov">          3 :   Matrix&lt;double&gt; V( ncols, ncols ), UT( nrows, nrows ), tmp( ncols, nrows );</span></a>
+<a name="297"><span class="lineNum">     297 </span><span class="lineCov">     500001 :   k=0; for(int i=0; i&lt;nrows; ++i) { for(int j=0; j&lt;nrows; ++j) { UT(i,j)=U[k++]; } }</span></a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineCov">     750000 :   k=0; for(int i=0; i&lt;ncols; ++i) { for(int j=0; j&lt;ncols; ++j) { V(i,j)=VT[k++]; } }</span></a>
+<a name="299"><span class="lineNum">     299 </span>            : </a>
+<a name="300"><span class="lineNum">     300 </span>            :   // And do matrix algebra to construct the pseudoinverse</a>
+<a name="301"><span class="lineNum">     301 </span><span class="lineCov">          1 :   if( pseudoinverse.rw!=ncols || pseudoinverse.cl!=nrows ) pseudoinverse.resize( ncols, nrows );</span></a>
+<a name="302"><span class="lineNum">     302 </span><span class="lineCov">          1 :   mult( V, Si, tmp ); mult( tmp, UT, pseudoinverse );</span></a>
+<a name="303"><span class="lineNum">     303 </span>            : </a>
+<a name="304"><span class="lineNum">     304 </span>            :   return 0;</a>
+<a name="305"><span class="lineNum">     305 </span>            : }</a>
+<a name="306"><span class="lineNum">     306 </span>            : </a>
+<a name="307"><span class="lineNum">     307 </span><span class="lineCov">       9382 : template &lt;typename T&gt; int Invert( const Matrix&lt;T&gt;&amp; A, Matrix&lt;double&gt;&amp; inverse ) {</span></a>
+<a name="308"><span class="lineNum">     308 </span>            : </a>
+<a name="309"><span class="lineNum">     309 </span><span class="lineCov">       9382 :   if( A.isSymmetric()==1 ) {</span></a>
+<a name="310"><span class="lineNum">     310 </span>            :     // GAT -- I only ever use symmetric matrices so I can invert them like this.</a>
+<a name="311"><span class="lineNum">     311 </span>            :     // I choose to do this as I have had problems with the more general way of doing this that</a>
+<a name="312"><span class="lineNum">     312 </span>            :     // is implemented below.</a>
+<a name="313"><span class="lineNum">     313 </span><span class="lineCov">      18652 :     std::vector&lt;double&gt; eval(A.rw); Matrix&lt;double&gt; evec(A.rw,A.cl), tevec(A.rw,A.cl);</span></a>
+<a name="314"><span class="lineNum">     314 </span><span class="lineCov">       9326 :     int err; err=diagMat( A, eval, evec );</span></a>
+<a name="315"><span class="lineNum">     315 </span><span class="lineCov">       9326 :     if(err!=0) return err;</span></a>
+<a name="316"><span class="lineNum">     316 </span><span class="lineCov">      74168 :     for (unsigned i=0; i&lt;A.rw; ++i) for (unsigned j=0; j&lt;A.cl; ++j) tevec(i,j)=evec(j,i)/eval[j];</span></a>
+<a name="317"><span class="lineNum">     317 </span><span class="lineCov">       9326 :     mult(tevec,evec,inverse);</span></a>
+<a name="318"><span class="lineNum">     318 </span>            :   } else {</a>
+<a name="319"><span class="lineNum">     319 </span><span class="lineCov">         55 :     std::vector&lt;double&gt; da(A.sz);</span></a>
+<a name="320"><span class="lineNum">     320 </span><span class="lineCov">         57 :     std::vector&lt;int&gt; ipiv(A.cl);</span></a>
+<a name="321"><span class="lineNum">     321 </span><span class="lineCov">         57 :     unsigned k=0; int n=A.rw, info;</span></a>
+<a name="322"><span class="lineNum">     322 </span><span class="lineCov">        284 :     for(unsigned i=0; i&lt;A.cl; ++i) for(unsigned j=0; j&lt;A.rw; ++j) da[k++]=static_cast&lt;double&gt;( A(j,i) );</span></a>
+<a name="323"><span class="lineNum">     323 </span>            : </a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineCov">         57 :     plumed_lapack_dgetrf(&amp;n,&amp;n,da.data(),&amp;n,ipiv.data(),&amp;info);</span></a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineCov">         55 :     if(info!=0) return info;</span></a>
+<a name="326"><span class="lineNum">     326 </span>            : </a>
+<a name="327"><span class="lineNum">     327 </span><span class="lineCov">         56 :     int lwork=-1;</span></a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineCov">         56 :     std::vector&lt;double&gt; work(A.cl);</span></a>
+<a name="329"><span class="lineNum">     329 </span><span class="lineCov">         57 :     plumed_lapack_dgetri(&amp;n,da.data(),&amp;n,ipiv.data(),work.data(),&amp;lwork,&amp;info);</span></a>
+<a name="330"><span class="lineNum">     330 </span><span class="lineCov">         56 :     if(info!=0) return info;</span></a>
+<a name="331"><span class="lineNum">     331 </span>            : </a>
+<a name="332"><span class="lineNum">     332 </span><span class="lineCov">         56 :     lwork=static_cast&lt;int&gt;( work[0] ); work.resize(lwork);</span></a>
+<a name="333"><span class="lineNum">     333 </span><span class="lineCov">         57 :     plumed_lapack_dgetri(&amp;n,da.data(),&amp;n,ipiv.data(),work.data(),&amp;lwork,&amp;info);</span></a>
+<a name="334"><span class="lineNum">     334 </span><span class="lineCov">         56 :     if(info!=0) return info;</span></a>
+<a name="335"><span class="lineNum">     335 </span>            : </a>
+<a name="336"><span class="lineNum">     336 </span><span class="lineCov">         57 :     if( inverse.cl!=A.cl || inverse.rw!=A.rw ) { inverse.resize(A.rw,A.cl); }</span></a>
+<a name="337"><span class="lineNum">     337 </span><span class="lineCov">        448 :     k=0; for(unsigned i=0; i&lt;A.rw; ++i) for(unsigned j=0; j&lt;A.cl; ++j) inverse(j,i)=da[k++];</span></a>
+<a name="338"><span class="lineNum">     338 </span>            :   }</a>
+<a name="339"><span class="lineNum">     339 </span>            : </a>
+<a name="340"><span class="lineNum">     340 </span>            :   return 0;</a>
+<a name="341"><span class="lineNum">     341 </span>            : }</a>
+<a name="342"><span class="lineNum">     342 </span>            : </a>
+<a name="343"><span class="lineNum">     343 </span><span class="lineCov">        446 : template &lt;typename T&gt; void cholesky( const Matrix&lt;T&gt;&amp; A, Matrix&lt;T&gt;&amp; B ) {</span></a>
+<a name="344"><span class="lineNum">     344 </span>            : </a>
+<a name="345"><span class="lineNum">     345 </span><span class="lineCov">        446 :   plumed_assert( A.rw==A.cl &amp;&amp; A.isSymmetric() );</span></a>
+<a name="346"><span class="lineNum">     346 </span>            :   Matrix&lt;T&gt; L(A.rw,A.cl); L=0.;</a>
+<a name="347"><span class="lineNum">     347 </span><span class="lineCov">        446 :   std::vector&lt;T&gt; D(A.rw,0.);</span></a>
+<a name="348"><span class="lineNum">     348 </span><span class="lineCov">       1047 :   for(unsigned i=0; i&lt;A.rw; ++i) {</span></a>
+<a name="349"><span class="lineNum">     349 </span><span class="lineCov">        601 :     L(i,i)=static_cast&lt;T&gt;( 1 );</span></a>
+<a name="350"><span class="lineNum">     350 </span><span class="lineCov">        756 :     for (unsigned j=0; j&lt;i; ++j) {</span></a>
+<a name="351"><span class="lineNum">     351 </span><span class="lineCov">        155 :       L(i,j)=A(i,j);</span></a>
+<a name="352"><span class="lineNum">     352 </span><span class="lineCov">        155 :       for (unsigned k=0; k&lt;j; ++k) L(i,j)-=L(i,k)*L(j,k)*D[k];</span></a>
+<a name="353"><span class="lineNum">     353 </span><span class="lineCov">        465 :       if (D[j]!=0.) L(i,j)/=D[j]; else L(i,j)=static_cast&lt;T&gt;( 0 );</span></a>
+<a name="354"><span class="lineNum">     354 </span>            :     }</a>
+<a name="355"><span class="lineNum">     355 </span><span class="lineCov">       1202 :     D[i]=A(i,i);</span></a>
+<a name="356"><span class="lineNum">     356 </span><span class="lineCov">       1066 :     for (unsigned k=0; k&lt;i; ++k) D[i]-=L(i,k)*L(i,k)*D[k];</span></a>
+<a name="357"><span class="lineNum">     357 </span>            :   }</a>
+<a name="358"><span class="lineNum">     358 </span>            : </a>
+<a name="359"><span class="lineNum">     359 </span><span class="lineCov">       1202 :   for(unsigned i=0; i&lt;A.rw; ++i) D[i]=(D[i]&gt;0.?sqrt(D[i]):0.);</span></a>
+<a name="360"><span class="lineNum">     360 </span><span class="lineCov">        446 :   if( B.rw!=A.rw || B.cl!=A.cl ) { B.resize( A.rw, A.cl); }</span></a>
+<a name="361"><span class="lineNum">     361 </span><span class="lineCov">       2268 :   B=0.; for(unsigned i=0; i&lt;A.rw; ++i) for(unsigned j=0; j&lt;=i; ++j) B(i,j)+=L(i,j)*D[j];</span></a>
+<a name="362"><span class="lineNum">     362 </span><span class="lineCov">        446 : }</span></a>
+<a name="363"><span class="lineNum">     363 </span>            : </a>
+<a name="364"><span class="lineNum">     364 </span>            : template &lt;typename T&gt; void chol_elsolve( const Matrix&lt;T&gt;&amp; M, const std::vector&lt;T&gt;&amp; b, std::vector&lt;T&gt;&amp; y ) {</a>
+<a name="365"><span class="lineNum">     365 </span>            : </a>
+<a name="366"><span class="lineNum">     366 </span>            :   plumed_assert( M.rw==M.cl &amp;&amp; M(0,1)==0.0 &amp;&amp; b.size()==M.rw );</a>
+<a name="367"><span class="lineNum">     367 </span>            :   if( y.size()!=M.rw ) { y.resize( M.rw ); }</a>
+<a name="368"><span class="lineNum">     368 </span>            :   for(unsigned i=0; i&lt;M.rw; ++i) {</a>
+<a name="369"><span class="lineNum">     369 </span>            :     y[i]=b[i];</a>
+<a name="370"><span class="lineNum">     370 </span>            :     for(unsigned j=0; j&lt;i; ++j) y[i]-=M(i,j)*y[j];</a>
+<a name="371"><span class="lineNum">     371 </span>            :     y[i]*=1.0/M(i,i);</a>
+<a name="372"><span class="lineNum">     372 </span>            :   }</a>
+<a name="373"><span class="lineNum">     373 </span>            : }</a>
+<a name="374"><span class="lineNum">     374 </span>            : </a>
+<a name="375"><span class="lineNum">     375 </span><span class="lineCov">         46 : template &lt;typename T&gt; int logdet( const Matrix&lt;T&gt;&amp; M, double&amp; ldet ) {</span></a>
+<a name="376"><span class="lineNum">     376 </span>            :   // Check matrix is square and symmetric</a>
+<a name="377"><span class="lineNum">     377 </span><span class="lineCov">         46 :   plumed_assert( M.rw==M.cl || M.isSymmetric() );</span></a>
+<a name="378"><span class="lineNum">     378 </span>            : </a>
+<a name="379"><span class="lineNum">     379 </span><span class="lineCov">         46 :   std::vector&lt;double&gt; da(M.sz);</span></a>
+<a name="380"><span class="lineNum">     380 </span>            :   unsigned k=0;</a>
+<a name="381"><span class="lineNum">     381 </span><span class="lineCov">         46 :   std::vector&lt;double&gt; evals(M.cl);</span></a>
+<a name="382"><span class="lineNum">     382 </span>            :   // Transfer the matrix to the local array</a>
+<a name="383"><span class="lineNum">     383 </span><span class="lineCov">        444 :   for (unsigned i=0; i&lt;M.rw; ++i) for (unsigned j=0; j&lt;M.cl; ++j) da[k++]=static_cast&lt;double&gt;( M(j,i) );</span></a>
+<a name="384"><span class="lineNum">     384 </span>            : </a>
+<a name="385"><span class="lineNum">     385 </span><span class="lineCov">         46 :   int n=M.cl; int lwork=-1, liwork=-1, info, m, one=1;</span></a>
+<a name="386"><span class="lineNum">     386 </span><span class="lineCov">         46 :   std::vector&lt;double&gt; work(M.rw);</span></a>
+<a name="387"><span class="lineNum">     387 </span><span class="lineCov">         46 :   std::vector&lt;int&gt; iwork(M.rw);</span></a>
+<a name="388"><span class="lineNum">     388 </span><span class="lineCov">         46 :   double vl, vu, abstol=0.0;</span></a>
+<a name="389"><span class="lineNum">     389 </span><span class="lineCov">         46 :   std::vector&lt;int&gt; isup(2*M.rw);</span></a>
+<a name="390"><span class="lineNum">     390 </span><span class="lineCov">         46 :   std::vector&lt;double&gt; evecs(M.sz);</span></a>
+<a name="391"><span class="lineNum">     391 </span><span class="lineCov">         46 :   plumed_lapack_dsyevr(&quot;N&quot;, &quot;I&quot;, &quot;U&quot;, &amp;n, da.data(), &amp;n, &amp;vl, &amp;vu, &amp;one, &amp;n,</span></a>
+<a name="392"><span class="lineNum">     392 </span>            :                        &amp;abstol, &amp;m, evals.data(), evecs.data(), &amp;n,</a>
+<a name="393"><span class="lineNum">     393 </span>            :                        isup.data(), work.data(), &amp;lwork, iwork.data(), &amp;liwork, &amp;info);</a>
+<a name="394"><span class="lineNum">     394 </span><span class="lineCov">         46 :   if (info!=0) return info;</span></a>
+<a name="395"><span class="lineNum">     395 </span>            : </a>
+<a name="396"><span class="lineNum">     396 </span>            :   // Retrieve correct sizes for work and iwork then reallocate</a>
+<a name="397"><span class="lineNum">     397 </span><span class="lineCov">         46 :   lwork=static_cast&lt;int&gt;( work[0] ); work.resize(lwork);</span></a>
+<a name="398"><span class="lineNum">     398 </span><span class="lineCov">         46 :   liwork=iwork[0]; iwork.resize(liwork);</span></a>
+<a name="399"><span class="lineNum">     399 </span>            : </a>
+<a name="400"><span class="lineNum">     400 </span><span class="lineCov">         46 :   plumed_lapack_dsyevr(&quot;N&quot;, &quot;I&quot;, &quot;U&quot;, &amp;n, da.data(), &amp;n, &amp;vl, &amp;vu, &amp;one, &amp;n,</span></a>
+<a name="401"><span class="lineNum">     401 </span>            :                        &amp;abstol, &amp;m, evals.data(), evecs.data(), &amp;n,</a>
+<a name="402"><span class="lineNum">     402 </span>            :                        isup.data(), work.data(), &amp;lwork, iwork.data(), &amp;liwork, &amp;info);</a>
+<a name="403"><span class="lineNum">     403 </span><span class="lineCov">         46 :   if (info!=0) return info;</span></a>
+<a name="404"><span class="lineNum">     404 </span>            : </a>
+<a name="405"><span class="lineNum">     405 </span>            :   // Transfer the eigenvalues and eigenvectors to the output</a>
+<a name="406"><span class="lineNum">     406 </span><span class="lineCov">        180 :   ldet=0; for(unsigned i=0; i&lt;M.cl; i++) { ldet+=log(evals[i]); }</span></a>
+<a name="407"><span class="lineNum">     407 </span>            : </a>
+<a name="408"><span class="lineNum">     408 </span>            :   return 0;</a>
+<a name="409"><span class="lineNum">     409 </span>            : }</a>
+<a name="410"><span class="lineNum">     410 </span>            : </a>
+<a name="411"><span class="lineNum">     411 </span>            : </a>
+<a name="412"><span class="lineNum">     412 </span>            : </a>
+<a name="413"><span class="lineNum">     413 </span>            : }</a>
+<a name="414"><span class="lineNum">     414 </span>            : #endif</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
